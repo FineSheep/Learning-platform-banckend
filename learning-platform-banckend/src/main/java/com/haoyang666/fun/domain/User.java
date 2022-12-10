@@ -62,7 +62,7 @@ public class User implements Serializable {
     private Date createTime;
 
     /**
-     * 更新时间
+     * 
      */
     private Date updateTime;
 
@@ -80,6 +80,16 @@ public class User implements Serializable {
      * 个人简介
      */
     private String profile;
+
+    /**
+     * 做题数
+     */
+    private Integer questionNum;
+
+    /**
+     * 正确数
+     */
+    private Integer correctNum;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 帖子
- * @TableName post
+ * 题目
+ * @TableName questions
  */
-@TableName(value ="post")
+@TableName(value ="questions")
 @Data
-public class Post implements Serializable {
+public class Questions implements Serializable {
     /**
      * id
      */
@@ -22,49 +22,34 @@ public class Post implements Serializable {
     private Long id;
 
     /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * 内容
+     * 题目内容
      */
     private String content;
 
     /**
-     * 照片地址
+     * 选项A
      */
-    private String photo;
+    private String optionA;
 
     /**
-     * 状态（0-待审核, 1-通过, 2-拒绝）
+     * 选项B
      */
-    private Integer reviewStatus;
+    private String optionB;
 
     /**
-     * 审核信息
+     * 选项C
      */
-    private String reviewMessage;
+    private String optionC;
 
     /**
-     * 收藏数
+     * 选项D
      */
-    private Integer collectNum;
+    private String optionD;
 
     /**
-     * 评论数
+     * 正确选项
      */
-    private Integer commentNum;
-
-    /**
-     * 点赞数
-     */
-    private Integer thumbNum;
-
-    /**
-     * 创建用户 id
-     */
-    private Long userId;
+    private String correct;
 
     /**
      * 创建时间
@@ -80,11 +65,6 @@ public class Post implements Serializable {
      * 是否删除
      */
     private Integer isDelete;
-
-    /**
-     * 标题
-     */
-    private String title;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

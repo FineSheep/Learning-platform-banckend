@@ -1,0 +1,22 @@
+package com.haoyang666.fun.service.impl;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.haoyang666.fun.domain.Mistakerecord;
+import com.haoyang666.fun.service.MistakerecordService;
+import com.haoyang666.fun.mapper.MistakerecordMapper;
+import org.springframework.stereotype.Service;
+
+/**
+* @author yang
+* @description 针对表【mistakerecord】的数据库操作Service实现
+* @createDate 2022-12-10 16:13:21
+*/
+@Service
+public class MistakerecordServiceImpl extends ServiceImpl<MistakerecordMapper, Mistakerecord>
+    implements MistakerecordService{
+
+}
+
+
+
+

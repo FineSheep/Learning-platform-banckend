@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import fun.haoyang666.www.domain.Questions;
 import fun.haoyang666.www.mapper.QuestionsMapper;
 import fun.haoyang666.www.service.QuestionsService;
+import fun.haoyang666.www.service.impl.QuestionsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

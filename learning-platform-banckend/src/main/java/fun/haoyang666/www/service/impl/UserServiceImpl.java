@@ -1,15 +1,15 @@
-package com.haoyang666.fun.service.impl;
+package fun.haoyang666.www.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.haoyang666.fun.domain.User;
-import com.haoyang666.fun.service.UserService;
-import com.haoyang666.fun.mapper.UserMapper;
+import fun.haoyang666.www.domain.User;
+import fun.haoyang666.www.service.UserService;
+import fun.haoyang666.www.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 /**
 * @author yang
 * @description 针对表【user(用户)】的数据库操作Service实现
-* @createDate 2022-12-10 16:13:21
+* @createDate 2022-12-10 16:20:50
 */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>

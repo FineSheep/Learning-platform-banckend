@@ -1,6 +1,7 @@
-package com.haoyang666.fun;
+package fun.haoyang666.www;
 
 import org.mybatis.spring.annotation.MapperScan;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,8 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @description
  */
 @SpringBootApplication
+@MapperScan("fun.haoyang666.www.mapper")
 public class LearnPlatApplication {
     public static void main(String[] args) {
-        SpringApplication.run(LearnPlatApplication.class, args);
+        SpringApplication.run(LearnPlatApplication.class,args);
     }
 }

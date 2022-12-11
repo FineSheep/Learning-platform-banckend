@@ -2,25 +2,34 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.haoyang666.fun.mapper.QuestionsMapper">
+<mapper namespace="fun.haoyang666.www.mapper.QuestionsMapper">
 
-    <resultMap id="BaseResultMap" type="com.haoyang666.fun.domain.Questions">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="optionA" column="optionA" jdbcType="VARCHAR"/>
-            <result property="optionB" column="optionB" jdbcType="VARCHAR"/>
-            <result property="optionC" column="optionC" jdbcType="VARCHAR"/>
-            <result property="optionD" column="optionD" jdbcType="VARCHAR"/>
-            <result property="correct" column="correct" jdbcType="VARCHAR"/>
-            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.Questions">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="optionA" column="optionA" jdbcType="VARCHAR"/>
+        <result property="optionB" column="optionB" jdbcType="VARCHAR"/>
+        <result property="optionC" column="optionC" jdbcType="VARCHAR"/>
+        <result property="optionD" column="optionD" jdbcType="VARCHAR"/>
+        <result property="correct" column="correct" jdbcType="VARCHAR"/>
+        <result property="analyzation" column="analyze" jdbcType="VARCHAR"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isMulti" column="isDelete" jdbcType="TINYINT"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,content,optionA,
+        id
+        ,content,optionA,
         optionB,optionC,optionD,
-        correct,createTime,updateTime,
-        isDelete
+        correct,analyzation,createTime,
+        updateTime,isDelete,isMulti
     </sql>
+
+<!--    <select id="selectRadon" resultMap="BaseResultMap" parameterType="integer">
+        select distinct <include refid="Base_Column_List"/>
+        from questions
+        order by rand() limit #{integer}
+    </select>-->
 </mapper>

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.haoyang666.fun.mapper.MistakerecordMapper">
+<mapper namespace="fun.haoyang666.www.mapper.MistakeRecordMapper">
 
-    <resultMap id="BaseResultMap" type="com.haoyang666.fun.domain.Mistakerecord">
+    <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.MistakeRecord">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="questionId" column="questionId" jdbcType="BIGINT"/>

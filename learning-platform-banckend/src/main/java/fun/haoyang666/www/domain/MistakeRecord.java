@@ -1,7 +1,8 @@
-package com.haoyang666.fun.domain;
+package fun.haoyang666.www.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
@@ -13,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="mistakerecord")
 @Data
-public class Mistakerecord implements Serializable {
+public class MistakeRecord implements Serializable {
     /**
      * 错题id
      */
@@ -43,6 +44,7 @@ public class Mistakerecord implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

@@ -1,7 +1,7 @@
 package fun.haoyang666.www.exception;
 
 
-import fun.haoyang666.www.common.ErrorCode;
+import fun.haoyang666.www.common.enums.ErrorCode;
 
 /**
  * 自定义异常类

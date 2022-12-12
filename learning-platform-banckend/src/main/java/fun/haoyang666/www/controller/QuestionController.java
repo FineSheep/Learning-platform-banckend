@@ -2,7 +2,7 @@ package fun.haoyang666.www.controller;
 
 import com.alibaba.excel.EasyExcel;
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.common.ErrorCode;
+import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.ResultUtils;
 import fun.haoyang666.www.domain.Questions;
 import fun.haoyang666.www.exception.BusinessException;

@@ -1,5 +1,6 @@
 package fun.haoyang666.www.common;
 
+import fun.haoyang666.www.common.enums.ErrorCode;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @Data
 public class BaseResponse<T> implements Serializable {
 
+    private static final long serialVersionUID = -6103646700230028845L;
     private int code;
 
     private T data;

@@ -1,5 +1,7 @@
 package fun.haoyang666.www.common;
 
+import fun.haoyang666.www.common.enums.ErrorCode;
+
 /**
  * 返回工具类
  *

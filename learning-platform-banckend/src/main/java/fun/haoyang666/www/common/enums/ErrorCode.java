@@ -1,4 +1,4 @@
-package fun.haoyang666.www.common;
+package fun.haoyang666.www.common.enums;
 
 /**
  * 错误码

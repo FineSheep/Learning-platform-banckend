@@ -4,16 +4,10 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.google.gson.Gson;
-import fun.haoyang666.www.domain.Questions;
-import fun.haoyang666.www.mapper.QuestionsMapper;
+import fun.haoyang666.www.domain.entity.Questions;
 import fun.haoyang666.www.service.QuestionsService;
-import fun.haoyang666.www.service.impl.QuestionsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -41,8 +35,8 @@ public class QuestionListener implements ReadListener<Questions> {
     @Override
     public void invoke(Questions questions, AnalysisContext analysisContext) {
         Gson gson = new Gson();
-        if (questions.getCorrect().length() != 1) {
-            questions.setIsMulti(1);
+        if (questions.getCorrect().length() != 1 ) {
+            questions.setType(1);
         }
         log.info("解析到一条数据:{}", gson.toJson(questions));
         cachedDataList.add(questions);

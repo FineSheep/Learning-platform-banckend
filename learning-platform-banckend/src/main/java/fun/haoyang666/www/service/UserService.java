@@ -1,6 +1,6 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.User;
+import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -10,4 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
+    Long userRegister(String email, String password, String userCode);
+
+    void getCode(String email);
 }

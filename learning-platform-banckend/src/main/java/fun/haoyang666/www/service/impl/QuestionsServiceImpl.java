@@ -2,7 +2,7 @@ package fun.haoyang666.www.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.Questions;
+import fun.haoyang666.www.domain.entity.Questions;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.mapper.QuestionsMapper;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author yang
@@ -25,14 +27,15 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
 
 
     @Override
-    public List<Questions> getQuesRandom(int size) {
-        List<Questions> questions = null;
+    public Map<Integer, List<Questions>> getQuesRandom(int size) {
+        Map<Integer, List<Questions>> collects = null;
         try {
-            questions = questionsMapper.selectRadon(size);
+            List<Questions> questions = questionsMapper.selectRadon(size);
+            collects = questions.stream().collect(Collectors.groupingBy(Questions::getType));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
-        return questions;
+        return collects;
     }
 
 

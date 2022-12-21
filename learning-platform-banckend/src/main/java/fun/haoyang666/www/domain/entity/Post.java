@@ -1,4 +1,4 @@
-package fun.haoyang666.www.domain;
+package fun.haoyang666.www.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 

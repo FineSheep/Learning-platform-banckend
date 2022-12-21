@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.MessageTypeEnum;
 import fun.haoyang666.www.exception.BusinessException;
-import fun.haoyang666.www.service.MatchService;
 import fun.haoyang666.www.service.impl.MatchImpl;
 import fun.haoyang666.www.utils.MatchCacheUtil;
 import lombok.Data;
@@ -13,14 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.*;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author yang
@@ -59,7 +58,7 @@ public class MatchSocket {
         this.userId = userId;
         this.session = session;
         matchCacheUtil.addClient(userId, this);
-        System.out.println("=============" + matchCacheUtil);
+//        System.out.println("=============" + matchCacheUtil);
         System.out.println(matchImpl);
         log.info("ChatWebsocket open 连接建立完成 userId: {}", userId);
     }
@@ -103,8 +102,8 @@ public class MatchSocket {
 //            addUser(jsonObject);
         } else if (type == MessageTypeEnum.MATCH_USER) {
 //            matchUser(jsonObject);
-            System.out.println("===========");
-            System.out.println(matchImpl);
+//            System.out.println("===========");
+//            System.out.println(matchImpl);
             matchImpl.match(userId);
         } else if (type == MessageTypeEnum.CANCEL_MATCH) {
 //            cancelMatch(jsonObject);

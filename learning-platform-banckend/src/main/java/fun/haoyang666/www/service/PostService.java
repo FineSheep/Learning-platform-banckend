@@ -1,6 +1,6 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.Post;
+import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

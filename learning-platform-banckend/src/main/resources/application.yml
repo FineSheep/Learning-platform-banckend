@@ -8,9 +8,11 @@ spring:
     port: 6379
     host: 127.0.0.1
     database: 0
+    #knife4j配置
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+      #mybatis-plus日志打印
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false

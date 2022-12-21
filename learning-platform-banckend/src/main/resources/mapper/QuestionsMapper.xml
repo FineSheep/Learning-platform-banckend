@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="fun.haoyang666.www.mapper.QuestionsMapper">
 
-    <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.Questions">
+    <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.entity.Questions">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="optionA" column="optionA" jdbcType="VARCHAR"/>
@@ -15,7 +15,7 @@
         <result property="analyzation" column="analyze" jdbcType="VARCHAR"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-        <result property="isMulti" column="isDelete" jdbcType="TINYINT"/>
+        <result property="type" column="isDelete" jdbcType="TINYINT"/>
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 

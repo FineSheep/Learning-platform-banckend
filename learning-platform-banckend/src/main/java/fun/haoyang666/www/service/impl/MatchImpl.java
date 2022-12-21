@@ -5,13 +5,12 @@ import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
-import fun.haoyang666.www.domain.Questions;
+import fun.haoyang666.www.domain.entity.Questions;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.MatchService;
 import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.socket.MatchSocket;
 import fun.haoyang666.www.utils.MatchCacheUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -41,7 +41,12 @@ public class MatchImpl implements MatchService {
 
     private Condition matchCond = lock.newCondition();
 
-
+    /**
+     * 向成员发送题目
+     * @param ids 房间内成员id
+     * @param data 题目数据
+     * @param <T>
+     */
     public <T> void sendMessage(Set<String> ids, T data) {
         ids.forEach(userId -> {
             try {
@@ -57,13 +62,22 @@ public class MatchImpl implements MatchService {
 
     }
 
+    /**
+     * 获取题目，随机从数据库抽取20道题目，发送给房间内的成员
+     * @param ids 房间内的成员id
+     */
     public void sendQues(Set<String> ids) {
-        List<Questions> ques = questionsService.getQuesRandom(20);
-        sendMessage(ids, ques);
+        Map<Integer, List<Questions>> ques = questionsService.getQuesRandom(20);
+        Gson gson = new Gson();
+        sendMessage(ids, gson.toJson(ques));
     }
+
     @Override
+    /**
+     * 匹配
+     */
     public void match(String userId) {
-        log.info("ChatWebsocket matchUser 用户随机匹配对手开始 , userId: {}", userId);
+        log.info("matchUser 用户随机匹配对手开始 , userId: {}", userId);
         //保证原子性
         lock.lock();
         try {
@@ -84,12 +98,12 @@ public class MatchImpl implements MatchService {
                     //当前用户不在匹配状态
                     if (matchCacheUtil.getUserOnlineStatus(userId).compareTo(StatusEnum.IN_GAME) == 0
                             || matchCacheUtil.getUserOnlineStatus(userId).compareTo(StatusEnum.GAME_OVER) == 0) {
-                        log.info("ChatWebsocket matchUser 当前用户 {} 已退出匹配", userId);
+                        log.info("matchUser 当前用户 {} 已退出匹配", userId);
                         return;
                     }
                     //当前用户取消匹配
                     if (matchCacheUtil.getUserOnlineStatus(userId).compareTo(StatusEnum.IDLE) == 0) {
-                        log.info("ChatWebsocket matchUser 当前用户 {} 已退出匹配", userId);
+                        log.info("matchUser 当前用户 {} 已退出匹配", userId);
                         HashSet<String> idSet = new HashSet<>();
                         idSet.add(userId);
                         sendMessage(idSet, Constant.CANCEL);
@@ -98,7 +112,7 @@ public class MatchImpl implements MatchService {
                     if (receiver != null) {
                         //对手取消匹配
                         if (matchCacheUtil.getUserOnlineStatus(receiver).compareTo(StatusEnum.IN_MATCH) != 0) {
-                            log.info("ChatWebsocket matchUser 当前用户 {}, 匹配对手 {} 已退出匹配状态", userId, receiver);
+                            log.info("matchUser 当前用户 {}, 匹配对手 {} 已退出匹配状态", userId, receiver);
                             HashSet<String> idSet = new HashSet<>();
                             idSet.add(userId);
                             sendMessage(idSet, Constant.CANCEL);
@@ -116,10 +130,10 @@ public class MatchImpl implements MatchService {
                         }
                     } else {
                         try {
-                            log.info("ChatWebsocket matchUser 当前用户 {} 无对手可匹配", userId);
+                            log.info("matchUser 当前用户 {} 无对手可匹配", userId);
                             matchCond.await();
                         } catch (InterruptedException e) {
-                            log.error("ChatWebsocket matchUser 匹配线程 {} 发生异常: {}",
+                            log.error("matchUser 匹配线程 {} 发生异常: {}",
                                     Thread.currentThread().getName(), e.getMessage());
                         }
                     }

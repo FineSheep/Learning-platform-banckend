@@ -1,6 +1,6 @@
 package fun.haoyang666.www.mapper;
 
-import fun.haoyang666.www.domain.Questions;
+import fun.haoyang666.www.domain.entity.Questions;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -15,7 +15,7 @@ import java.util.List;
 public interface QuestionsMapper extends BaseMapper<Questions> {
 
 
-    @Select("select distinct * from questions order by rand() limit #{size}")
+    @Select("select distinct * from questions  order by rand() limit #{size}")
     List<Questions> selectRadon(int size);
 }
 

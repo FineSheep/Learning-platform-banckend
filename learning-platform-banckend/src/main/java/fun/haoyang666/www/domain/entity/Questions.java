@@ -1,4 +1,4 @@
-package fun.haoyang666.www.domain;
+package fun.haoyang666.www.domain.entity;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
@@ -78,9 +78,9 @@ public class Questions implements Serializable {
     @TableLogic
     private Integer isDelete;
     /**
-     * 是否多选
+     * 题型  0-单选 1-多选 2-判断
      */
-    private int isMulti;
+    private int type;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

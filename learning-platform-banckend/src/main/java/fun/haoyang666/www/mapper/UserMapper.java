@@ -1,6 +1,6 @@
 package fun.haoyang666.www.mapper;
 
-import fun.haoyang666.www.domain.User;
+import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

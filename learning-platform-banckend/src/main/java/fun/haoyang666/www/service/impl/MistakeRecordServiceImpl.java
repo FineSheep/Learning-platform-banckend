@@ -1,7 +1,7 @@
 package fun.haoyang666.www.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import fun.haoyang666.www.domain.MistakeRecord;
+import fun.haoyang666.www.domain.entity.MistakeRecord;
 import fun.haoyang666.www.service.MistakeRecordService;
 import fun.haoyang666.www.mapper.MistakeRecordMapper;
 import org.springframework.stereotype.Service;

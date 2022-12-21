@@ -1,7 +1,7 @@
 package fun.haoyang666.www.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import fun.haoyang666.www.domain.Post;
+import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.mapper.PostMapper;
 import org.springframework.stereotype.Service;

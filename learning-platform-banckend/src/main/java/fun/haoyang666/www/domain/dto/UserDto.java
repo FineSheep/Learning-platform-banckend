@@ -1,24 +1,22 @@
-package fun.haoyang666.www.domain.entity;
+package fun.haoyang666.www.domain.dto;
 
-import com.baomidou.mybatisplus.annotation.*;
-
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
- * 用户
- * @TableName user
+ * @author yang
+ * @createTime 2022/12/24 12:43
+ * @description
  */
-@TableName(value ="user")
 @Data
-public class User implements Serializable {
+public class UserDto {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -41,36 +39,18 @@ public class User implements Serializable {
      */
     private Integer gender;
 
-    /**
-     * 密码
-     */
-    private String userPassword;
 
     /**
      * 电话
      */
     private String phone;
 
-    /**
-     * 状态 0 - 正常  1-封号
-     */
-    private Integer userStatus;
 
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
 
-    /**
-     * 
-     */
-    private LocalDateTime updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Integer isDelete;
 
     /**
      * 用户角色 0 - 普通用户 1 - 管理员
@@ -91,7 +71,4 @@ public class User implements Serializable {
      * 正确数
      */
     private Integer correctNum;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

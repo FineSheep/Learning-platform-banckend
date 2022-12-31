@@ -16,7 +16,7 @@ public interface QuestionsMapper extends BaseMapper<Questions> {
 
 
     @Select("select distinct * from questions  order by rand() limit #{size}")
-    List<Questions> selectRadon(int size);
+    List<Questions> selectRandom(int size);
 }
 
 

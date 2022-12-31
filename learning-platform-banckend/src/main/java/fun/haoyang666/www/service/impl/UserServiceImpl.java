@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDto;
+import fun.haoyang666.www.domain.dto.UserInfoDto;
 import fun.haoyang666.www.domain.entity.User;
+import fun.haoyang666.www.domain.vo.UserVo;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
@@ -82,7 +84,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail, email);
         User user = this.getOne(queryWrapper);
-        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
+//        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
+        String safePass = password;
         if (safePass.equals(user.getUserPassword())) {
             UserDto safeUser = new UserDto();
             BeanUtils.copyProperties(user, safeUser);
@@ -109,7 +112,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             //数据插入
             User insertUser = new User();
             insertUser.setEmail(email);
-            insertUser.setId(RandomUtil.randomLong());
             insertUser.setUsername(RandomUtil.randomString(10));
             insertUser.setAvatarUrl(DEFAULT_AVATAR);
             insertUser.setCreateTime(LocalDateTime.now());
@@ -122,11 +124,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return userDto;
         }
     }
+
+    @Override
+    public UserInfoDto userInfo(Long userId) {
+        User user = getUserById(userId);
+        UserInfoDto userInfoDto = new UserInfoDto();
+        BeanUtils.copyProperties(user, userInfoDto);
+        return userInfoDto;
+    }
 /*
     @Override
     public UserDto loginByCode(String email, String code) {
         return null;
     }*/
+
+    private User getUserById(Long id) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getId, id);
+        return this.getOne(queryWrapper);
+    }
 }
 
 

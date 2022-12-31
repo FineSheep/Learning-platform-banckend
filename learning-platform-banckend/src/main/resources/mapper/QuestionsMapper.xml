@@ -27,7 +27,7 @@
         updateTime,isDelete,isMulti
     </sql>
 
-<!--    <select id="selectRadon" resultMap="BaseResultMap" parameterType="integer">
+<!--    <select id="selectRandom" resultMap="BaseResultMap" parameterType="integer">
         select distinct <include refid="Base_Column_List"/>
         from questions
         order by rand() limit #{integer}

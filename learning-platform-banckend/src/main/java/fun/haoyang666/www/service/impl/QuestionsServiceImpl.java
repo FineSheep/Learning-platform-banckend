@@ -30,7 +30,7 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     public Map<Integer, List<Questions>> getQuesRandom(int size) {
         Map<Integer, List<Questions>> collects = null;
         try {
-            List<Questions> questions = questionsMapper.selectRadon(size);
+            List<Questions> questions = questionsMapper.selectRandom(size);
             collects = questions.stream().collect(Collectors.groupingBy(Questions::getType));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);

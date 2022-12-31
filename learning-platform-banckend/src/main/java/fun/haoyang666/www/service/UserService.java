@@ -1,6 +1,7 @@
 package fun.haoyang666.www.service;
 
 import fun.haoyang666.www.domain.dto.UserDto;
+import fun.haoyang666.www.domain.dto.UserInfoDto;
 import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -21,4 +22,6 @@ public interface UserService extends IService<User> {
 //    UserDto loginByCode(String email, String code);
 
     UserDto loginOrRegister(String email, String code);
+
+    UserInfoDto userInfo(Long userId);
 }

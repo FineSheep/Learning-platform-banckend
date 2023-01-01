@@ -2,6 +2,7 @@ package fun.haoyang666.www.mapper;
 
 import fun.haoyang666.www.domain.entity.Information;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.swagger.models.auth.In;
 
 /**
 * @author yang
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity fun.haoyang666.www.domain.entity.Information
 */
 public interface InformationMapper extends BaseMapper<Information> {
+
 
 }
 

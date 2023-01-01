@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import lombok.Data;
 
@@ -29,7 +30,7 @@ public class Information implements Serializable {
     /**
      * 发表时间
      */
-    private Date putTime;
+    private LocalDate putTime;
 
     /**
      * 来源

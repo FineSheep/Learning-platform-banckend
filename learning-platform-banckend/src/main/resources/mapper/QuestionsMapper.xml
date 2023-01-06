@@ -12,7 +12,6 @@
         <result property="optionC" column="optionC" jdbcType="VARCHAR"/>
         <result property="optionD" column="optionD" jdbcType="VARCHAR"/>
         <result property="correct" column="correct" jdbcType="VARCHAR"/>
-        <result property="analyzation" column="analyze" jdbcType="VARCHAR"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
         <result property="type" column="isDelete" jdbcType="TINYINT"/>
@@ -23,7 +22,7 @@
         id
         ,content,optionA,
         optionB,optionC,optionD,
-        correct,analyzation,createTime,
+        correct,createTime,
         updateTime,isDelete,isMulti
     </sql>
 

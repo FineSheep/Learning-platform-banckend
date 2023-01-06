@@ -13,5 +13,5 @@ import java.util.List;
 @Data
 public class InformationDto {
     List<Information> records;
-    long total;
+    boolean hasNext;
 }

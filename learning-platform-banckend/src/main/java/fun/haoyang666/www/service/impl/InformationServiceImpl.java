@@ -10,22 +10,26 @@ import fun.haoyang666.www.mapper.InformationMapper;
 import org.springframework.stereotype.Service;
 
 /**
-* @author yang
-* @description 针对表【information】的数据库操作Service实现
-* @createDate 2022-12-31 16:29:03
-*/
+ * @author yang
+ * @description 针对表【information】的数据库操作Service实现
+ * @createDate 2022-12-31 16:29:03
+ */
 @Service
 public class InformationServiceImpl extends ServiceImpl<InformationMapper, Information>
-    implements InformationService{
+        implements InformationService {
 
     @Override
     public InformationDto getInformationPage(int curPage, int pageSize) {
         LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByAsc(Information::getPutTime);
-        Page<Information> page = this.page(new Page<>(curPage, pageSize),queryWrapper);
-        long count = this.count();
+        queryWrapper.orderByDesc(Information::getPutTime);
+        Page<Information> page = this.page(new Page<>(curPage, pageSize), queryWrapper);
+        long pages = page.getPages();
         InformationDto dto = new InformationDto();
-        dto.setTotal(count);
+        if (curPage < pages) {
+            dto.setHasNext(true);
+        }else {
+            dto.setHasNext(false);
+        }
         dto.setRecords(page.getRecords());
         return dto;
     }

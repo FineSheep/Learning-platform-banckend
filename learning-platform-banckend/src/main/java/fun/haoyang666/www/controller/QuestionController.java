@@ -35,7 +35,7 @@ public class QuestionController {
     @GetMapping("getQues")
     public BaseResponse getQues(int num) {
         if (num <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         Map<Integer, List<Questions>> ques = questionsService.getQuesRandom(num);
         return ResultUtils.success(ques);
@@ -46,7 +46,7 @@ public class QuestionController {
         try {
             EasyExcel.read(file.getInputStream(), Questions.class, new QuestionListener(questionsService)).sheet().doRead();
         } catch (IOException e) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         return ResultUtils.success(null);
     }

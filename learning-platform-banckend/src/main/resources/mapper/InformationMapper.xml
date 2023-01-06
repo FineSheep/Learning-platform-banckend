@@ -16,7 +16,7 @@
 
     <sql id="Base_Column_List">
         id,title,putTime,
-        source,content,link,
+        `source`,content,link,
         photo
     </sql>
 </mapper>

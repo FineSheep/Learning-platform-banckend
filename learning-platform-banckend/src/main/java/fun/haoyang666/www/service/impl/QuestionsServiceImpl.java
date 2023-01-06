@@ -28,13 +28,12 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
 
     @Override
     public Map<Integer, List<Questions>> getQuesRandom(int size) {
-        Map<Integer, List<Questions>> collects = null;
-        try {
-            List<Questions> questions = questionsMapper.selectRandom(size);
-            collects = questions.stream().collect(Collectors.groupingBy(Questions::getType));
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        if (size > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        Map<Integer, List<Questions>> collects = null;
+        List<Questions> questions = questionsMapper.selectRandom(size);
+        collects = questions.stream().collect(Collectors.groupingBy(Questions::getType));
         return collects;
     }
 

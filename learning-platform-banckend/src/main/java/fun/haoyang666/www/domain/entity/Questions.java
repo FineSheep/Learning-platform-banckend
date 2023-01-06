@@ -57,11 +57,6 @@ public class Questions implements Serializable {
     @ExcelProperty("正确选项")
     private String correct;
 
-    /**
-     * 解析
-     */
-    @ExcelProperty("解析")
-    private String analyzation;
 
     /**
      * 创建时间

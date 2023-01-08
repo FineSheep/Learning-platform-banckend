@@ -1,26 +1,35 @@
 package fun.haoyang666.www.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 
- * @TableName mistakerecord
+ * 题目记录关联
+ * @TableName quesrecord
  */
-@TableName(value ="mistakerecord")
+@TableName(value ="quesrecord")
 @Data
-public class MistakeRecord implements Serializable {
+public class Quesrecord implements Serializable {
     /**
-     * 错题id
+     * id
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 记录id
+     */
+    private Long recordId;
+
+    /**
+     * 问题id
+     */
+    private Long questionId;
 
     /**
      * 用户id
@@ -28,24 +37,28 @@ public class MistakeRecord implements Serializable {
     private Long userId;
 
     /**
-     * 题目id
+     * 用户答案
      */
-    private Long questionId;
+    private String userAnswer;
+
+    /**
+     * 正确与否 0-错误  1-正确
+     */
+    private Integer isCorrect;
 
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
-     * 更新时间
+     * 
      */
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     /**
      * 是否删除
      */
-    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

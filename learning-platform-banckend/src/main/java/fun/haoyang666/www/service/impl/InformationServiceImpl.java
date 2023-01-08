@@ -7,6 +7,12 @@ import fun.haoyang666.www.domain.dto.InformationDto;
 import fun.haoyang666.www.domain.entity.Information;
 import fun.haoyang666.www.service.InformationService;
 import fun.haoyang666.www.mapper.InformationMapper;
+import fun.haoyang666.www.service.QuesrecordService;
+import fun.haoyang666.www.service.RecordsService;
+import fun.haoyang666.www.domain.entity.Quesrecord;
+import fun.haoyang666.www.domain.entity.Records;
+import fun.haoyang666.www.mapper.QuesrecordMapper;
+import fun.haoyang666.www.mapper.RecordsMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +38,28 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
         }
         dto.setRecords(page.getRecords());
         return dto;
+    }
+
+    /**
+    * @author yang
+    * @description 针对表【records(用户做题记录)】的数据库操作Service实现
+    * @createDate 2023-01-07 14:00:56
+    */
+    @Service
+    public static class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
+        implements RecordsService {
+
+    }
+
+    /**
+    * @author yang
+    * @description 针对表【quesrecord(题目记录关联)】的数据库操作Service实现
+    * @createDate 2023-01-07 14:00:56
+    */
+    @Service
+    public static class QuesrecordServiceImpl extends ServiceImpl<QuesrecordMapper, Quesrecord>
+        implements QuesrecordService {
+
     }
 }
 

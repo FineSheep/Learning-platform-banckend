@@ -2,19 +2,23 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="fun.haoyang666.www.mapper.MistakeRecordMapper">
+<mapper namespace="fun.haoyang666.www.mapper.QuesrecordMapper">
 
-    <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.entity.MistakeRecord">
+    <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.entity.Quesrecord">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="userId" jdbcType="BIGINT"/>
+            <result property="recordId" column="recordId" jdbcType="BIGINT"/>
             <result property="questionId" column="questionId" jdbcType="BIGINT"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
+            <result property="userAnswer" column="userAnswer" jdbcType="VARCHAR"/>
+            <result property="isCorrect" column="isCorrect" jdbcType="TINYINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,userId,questionId,
+        id,recordId,questionId,
+        userId,userAnswer,isCorrect,
         createTime,updateTime,isDelete
     </sql>
 </mapper>

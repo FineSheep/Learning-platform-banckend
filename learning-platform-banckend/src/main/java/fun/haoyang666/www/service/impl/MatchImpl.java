@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -48,6 +45,8 @@ public class MatchImpl implements MatchService {
      * @param <T>
      */
     public <T> void sendMessage(Set<String> ids, T data) {
+        Stack<Object> objects = new Stack<>();
+        objects.isEmpty();
         ids.forEach(userId -> {
             try {
                 MatchSocket client = matchCacheUtil.getClient(userId);

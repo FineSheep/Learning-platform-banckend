@@ -3,16 +3,10 @@ package fun.haoyang666.www.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import fun.haoyang666.www.domain.dto.InformationDto;
+import fun.haoyang666.www.domain.dto.ScrollerDto;
 import fun.haoyang666.www.domain.entity.Information;
-import fun.haoyang666.www.service.InformationService;
 import fun.haoyang666.www.mapper.InformationMapper;
-import fun.haoyang666.www.service.QuesrecordService;
-import fun.haoyang666.www.service.RecordsService;
-import fun.haoyang666.www.domain.entity.Quesrecord;
-import fun.haoyang666.www.domain.entity.Records;
-import fun.haoyang666.www.mapper.QuesrecordMapper;
-import fun.haoyang666.www.mapper.RecordsMapper;
+import fun.haoyang666.www.service.InformationService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,12 +19,12 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
         implements InformationService {
 
     @Override
-    public InformationDto getInformationPage(int curPage, int pageSize) {
+    public ScrollerDto<Information> getInformationPage(int curPage, int pageSize) {
         LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Information::getPutTime);
         Page<Information> page = this.page(new Page<>(curPage, pageSize), queryWrapper);
         long pages = page.getPages();
-        InformationDto dto = new InformationDto();
+        ScrollerDto<Information> dto = new ScrollerDto<>();
         if (curPage < pages) {
             dto.setHasNext(true);
         }else {
@@ -38,28 +32,6 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
         }
         dto.setRecords(page.getRecords());
         return dto;
-    }
-
-    /**
-    * @author yang
-    * @description 针对表【records(用户做题记录)】的数据库操作Service实现
-    * @createDate 2023-01-07 14:00:56
-    */
-    @Service
-    public static class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
-        implements RecordsService {
-
-    }
-
-    /**
-    * @author yang
-    * @description 针对表【quesrecord(题目记录关联)】的数据库操作Service实现
-    * @createDate 2023-01-07 14:00:56
-    */
-    @Service
-    public static class QuesrecordServiceImpl extends ServiceImpl<QuesrecordMapper, Quesrecord>
-        implements QuesrecordService {
-
     }
 }
 

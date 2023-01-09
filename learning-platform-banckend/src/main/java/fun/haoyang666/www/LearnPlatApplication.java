@@ -15,7 +15,6 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  */
 @SpringBootApplication
 @MapperScan("fun.haoyang666.www.mapper")
-@EnableWebSocket
 public class LearnPlatApplication {
     public static void main(String[] args) {
         SpringApplication.run(LearnPlatApplication.class,args);

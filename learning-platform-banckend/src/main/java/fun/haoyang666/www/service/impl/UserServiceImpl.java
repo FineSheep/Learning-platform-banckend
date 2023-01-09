@@ -128,6 +128,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public UserInfoDto userInfo(Long userId) {
         User user = getUserById(userId);
+        if (user==null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"查无此人");
+        }
         UserInfoDto userInfoDto = new UserInfoDto();
         BeanUtils.copyProperties(user, userInfoDto);
         return userInfoDto;

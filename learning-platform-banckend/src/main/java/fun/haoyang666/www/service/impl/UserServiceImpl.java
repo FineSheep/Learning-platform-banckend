@@ -128,8 +128,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public UserInfoDto userInfo(Long userId) {
         User user = getUserById(userId);
-        if (user==null){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"查无此人");
+        if (user == null) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "查无此人");
         }
         UserInfoDto userInfoDto = new UserInfoDto();
         BeanUtils.copyProperties(user, userInfoDto);
@@ -142,9 +142,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }*/
 
     private User getUserById(Long id) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getId, id);
-        return this.getOne(queryWrapper);
+        User user = this.lambdaQuery().eq(User::getId, id).one();
+        if (user == null) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "查无此人");
+        }
+        return user;
     }
 }
 

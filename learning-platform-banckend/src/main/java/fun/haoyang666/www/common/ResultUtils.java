@@ -1,6 +1,7 @@
 package fun.haoyang666.www.common;
 
 import fun.haoyang666.www.common.enums.ErrorCode;
+import fun.haoyang666.www.common.enums.SuccessCode;
 
 /**
  * 返回工具类
@@ -19,6 +20,8 @@ public class ResultUtils {
     public static <T> BaseResponse<T> success(T data) {
         return new BaseResponse<>(0, data, "ok");
     }
+
+
 
     /**
      * 失败

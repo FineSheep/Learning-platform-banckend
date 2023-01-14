@@ -5,17 +5,19 @@
 <mapper namespace="fun.haoyang666.www.mapper.InformationMapper">
 
     <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.entity.Information">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="putTime" column="putTime" jdbcType="TIMESTAMP"/>
-            <result property="source" column="source" jdbcType="VARCHAR"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="link" column="link" jdbcType="VARCHAR"/>
-            <result property="photo" column="photo" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="putTime" column="putTime" jdbcType="TIMESTAMP"/>
+        <result property="source" column="source" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="link" column="link" jdbcType="VARCHAR"/>
+        <result property="photo" column="photo" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,putTime,
+        id
+        ,title,putTime,
         `source`,content,link,
         photo
     </sql>

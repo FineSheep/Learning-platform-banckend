@@ -3,6 +3,8 @@ package fun.haoyang666.www.service;
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author yang
 * @description 针对表【post(帖子)】的数据库操作Service
@@ -11,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface PostService extends IService<Post> {
 
 
+    void savePost(String content, String title, String description, String photo, long userId, List<Long> tags);
 }

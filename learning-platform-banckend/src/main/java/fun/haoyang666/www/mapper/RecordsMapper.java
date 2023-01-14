@@ -14,7 +14,9 @@ import java.util.List;
 */
 public interface RecordsMapper extends BaseMapper<Records> {
 
-//    List<Records> getRecordsByUId(long uid);
+    List<Records> getRecordsByUId(long uid);
+
+
 
 }
 

@@ -22,6 +22,24 @@
         <result property="title" column="title" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="postMap" type="fun.haoyang666.www.domain.vo.PostVo">
+        <id property="id" column="id"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="photo" column="photo" jdbcType="VARCHAR"/>
+        <result property="reviewStatus" column="reviewStatus" jdbcType="INTEGER"/>
+        <result property="reviewMessage" column="reviewMessage" jdbcType="VARCHAR"/>
+        <result property="collectNum" column="collectNum" jdbcType="INTEGER"/>
+        <result property="commentNum" column="commentNum" jdbcType="INTEGER"/>
+        <result property="thumbNum" column="thumbNum" jdbcType="INTEGER"/>
+        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <association property="user">
+            <id property="id" column="userId"/>
+            <result property="avatarUrl" column="avatarUrl"/>
+        </association>
+    </resultMap>
     <sql id="Base_Column_List">
         id
         ,description,content,
@@ -30,4 +48,26 @@
         userId,tags,createTime,updateTime,
         isDelete,title
     </sql>
+    <select id="selectPosts" resultMap="postMap">
+        select post.id,
+               description,
+               content,
+               photo,
+               reviewStatus,
+               reviewMessage,
+               collectNum,
+               commentNum,
+               thumbNum,
+               tags,
+               post.createTime,
+               title,
+               `user`.id as userId,
+               `user`.avatarUrl
+        from post,
+             `user`
+        where post.userId = `user`.id
+        and post.isDelete = 0
+        and reviewStatus =1
+        limit #{offset},#{pageSize};
+    </select>
 </mapper>

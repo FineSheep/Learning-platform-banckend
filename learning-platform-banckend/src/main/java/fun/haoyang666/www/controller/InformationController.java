@@ -29,7 +29,6 @@ public class InformationController {
         if (pageReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-
         ScrollerDto<Information> dto = informationService.getInformationPage(pageReq.getCurPage(), pageReq.getPageSize());
         return ResultUtils.success(dto);
     }

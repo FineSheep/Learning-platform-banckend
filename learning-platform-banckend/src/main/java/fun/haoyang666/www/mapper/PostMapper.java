@@ -2,6 +2,9 @@ package fun.haoyang666.www.mapper;
 
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import fun.haoyang666.www.domain.vo.PostVo;
+
+import java.util.List;
 
 /**
 * @author yang
@@ -11,6 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface PostMapper extends BaseMapper<Post> {
 
+    List<PostVo> selectPosts(int offset,int pageSize);
 }
 
 

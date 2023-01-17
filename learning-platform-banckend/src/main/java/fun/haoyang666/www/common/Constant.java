@@ -10,4 +10,6 @@ public interface Constant {
     String USER_CODE = "user_code";
     String SALTY = "user";
     String DEFAULT_AVATAR = "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png";
+    int MIN_NUM = 0;
+    int MAX_NUM = 20;
 }

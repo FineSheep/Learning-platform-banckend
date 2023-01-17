@@ -17,5 +17,5 @@ public interface PostService extends IService<Post> {
 
     void savePost(String content, String title, String description, String photo, long userId, List<Long> tags);
 
-    ScrollerDto<PostVo> getPosts(int curPage, int pageSize);
+    ScrollerDto<PostVo> getPosts(long userId,int curPage, int pageSize);
 }

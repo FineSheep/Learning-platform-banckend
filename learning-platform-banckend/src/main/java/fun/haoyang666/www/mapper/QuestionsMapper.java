@@ -2,6 +2,7 @@ package fun.haoyang666.www.mapper;
 
 import fun.haoyang666.www.domain.entity.Questions;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import fun.haoyang666.www.domain.vo.QuesVo;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -15,8 +16,10 @@ import java.util.List;
 public interface QuestionsMapper extends BaseMapper<Questions> {
 
 
-    @Select("select distinct * from questions  order by rand() limit #{size}")
-    List<Questions> selectRandom(int size);
+/*    @Select("select distinct * from questions  order by rand() limit #{size}")
+    List<Questions> selectRandom(int size);*/
+
+    List<QuesVo> selectRandom(long sum);
 }
 
 

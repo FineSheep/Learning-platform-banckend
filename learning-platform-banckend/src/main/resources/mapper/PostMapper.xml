@@ -66,8 +66,33 @@
         from post,
              `user`
         where post.userId = `user`.id
-        and post.isDelete = 0
-        and reviewStatus =1
-        limit #{offset},#{pageSize};
+          and post.isDelete = 0
+          and reviewStatus = 1
+        order by post.createTime desc
+            limit #{offset}, #{pageSize};
     </select>
+
+    <update id="downThumb">
+        update post
+        set thumbNum = thumbNum - 1
+        where id = #{postId};
+    </update>
+
+    <update id="upThumb">
+        update post
+        set thumbNum = thumbNum + 1
+        where id = #{postId};
+    </update>
+
+    <update id="upCollect">
+        update post
+        set collectNum = collectNum + 1
+        where id = #{postId};
+    </update>
+
+    <update id="downCollect">
+        update post
+        set collectNum = collectNum - 1
+        where id = #{postId};
+    </update>
 </mapper>

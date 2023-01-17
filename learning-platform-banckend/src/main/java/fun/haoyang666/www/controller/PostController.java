@@ -6,6 +6,7 @@ import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
 import fun.haoyang666.www.domain.dto.ScrollerDto;
 import fun.haoyang666.www.domain.entity.Post;
+import fun.haoyang666.www.domain.req.GetPostReq;
 import fun.haoyang666.www.domain.req.PageReq;
 import fun.haoyang666.www.domain.req.SavePostReq;
 import fun.haoyang666.www.domain.vo.PostVo;
@@ -55,13 +56,14 @@ public class PostController {
     }
 
     @GetMapping("getPosts")
-    public BaseResponse<ScrollerDto<PostVo>> getPosts(PageReq pageReq) {
-        if (pageReq == null) {
+    public BaseResponse<ScrollerDto<PostVo>> getPosts(GetPostReq getPostReq) {
+        if (getPostReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        int curPage = pageReq.getCurPage();
-        int pageSize = pageReq.getPageSize();
-        ScrollerDto<PostVo> posts = postService.getPosts(curPage, pageSize);
+        int curPage = getPostReq.getCurPage();
+        int pageSize = getPostReq.getPageSize();
+        Long userId = getPostReq.getUserId();
+        ScrollerDto<PostVo> posts = postService.getPosts(userId, curPage, pageSize);
         return ResultUtils.success(posts);
     }
 }

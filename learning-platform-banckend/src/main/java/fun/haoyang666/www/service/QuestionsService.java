@@ -2,6 +2,7 @@ package fun.haoyang666.www.service;
 
 import fun.haoyang666.www.domain.entity.Questions;
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.domain.vo.QuesVo;
 
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,10 @@ import java.util.Map;
 * @createDate 2022-12-10 16:20:50
 */
 public interface QuestionsService extends IService<Questions> {
+    Map<Integer, List<QuesVo>> randomQues(long sum);
 
 
-    Map<Integer, List<Questions>> getQuesRandom(int size);
+//    Map<Integer, List<Questions>> getQuesRandom(int size);
 
 
 }

@@ -12,7 +12,7 @@ import lombok.Data;
  * 题目记录关联
  * @TableName quesrecord
  */
-@TableName(value ="quesrecord")
+@TableName(value ="ques_record")
 @Data
 public class Quesrecord implements Serializable {
     /**

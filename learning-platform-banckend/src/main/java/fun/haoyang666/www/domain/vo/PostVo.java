@@ -29,10 +29,12 @@ public class PostVo {
     private Integer commentNum;
     private Integer thumbNum;
     private String tags;
-    private LocalDate createTime;
+    private LocalDateTime createTime;
     private String title;
     private User user;
-    private List<Tag> tagList;
+    private List<String> tagsName;
+    private boolean collected;
+    private boolean thumbed;
 
 
 }

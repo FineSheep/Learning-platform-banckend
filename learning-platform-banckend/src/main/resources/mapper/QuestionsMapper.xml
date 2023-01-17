@@ -17,18 +17,16 @@
         <result property="type" column="isDelete" jdbcType="TINYINT"/>
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
-
-    <sql id="Base_Column_List">
-        id
-        ,content,optionA,
-        optionB,optionC,optionD,
-        correct,createTime,
-        updateTime,isDelete,isMulti
-    </sql>
-
-<!--    <select id="selectRandom" resultMap="BaseResultMap" parameterType="integer">
-        select distinct <include refid="Base_Column_List"/>
+    <select id="selectRandom" resultType="fun.haoyang666.www.domain.vo.QuesVo">
+        select distinct id,
+                        content,
+                        optionA,
+                        optionB,
+                        optionC,
+                        optionD,
+                        `type`
         from questions
-        order by rand() limit #{integer}
-    </select>-->
+        order by rand()
+            limit #{sum};
+    </select>
 </mapper>

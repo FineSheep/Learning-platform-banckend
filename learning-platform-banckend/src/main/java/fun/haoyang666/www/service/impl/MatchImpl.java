@@ -6,6 +6,7 @@ import fun.haoyang666.www.common.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
 import fun.haoyang666.www.domain.entity.Questions;
+import fun.haoyang666.www.domain.vo.QuesVo;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.MatchService;
 import fun.haoyang666.www.service.QuestionsService;
@@ -34,13 +35,15 @@ public class MatchImpl implements MatchService {
     private QuestionsService questionsService;
     @Autowired
     private MatchCacheUtil matchCacheUtil;
+
     private Lock lock = new ReentrantLock();
 
     private Condition matchCond = lock.newCondition();
 
     /**
      * 向成员发送题目
-     * @param ids 房间内成员id
+     *
+     * @param ids  房间内成员id
      * @param data 题目数据
      * @param <T>
      */
@@ -63,10 +66,11 @@ public class MatchImpl implements MatchService {
 
     /**
      * 获取题目，随机从数据库抽取20道题目，发送给房间内的成员
+     *
      * @param ids 房间内的成员id
      */
     public void sendQues(Set<String> ids) {
-        Map<Integer, List<Questions>> ques = questionsService.getQuesRandom(20);
+        Map<Integer, List<QuesVo>> ques = questionsService.randomQues((long) 20);
         Gson gson = new Gson();
         sendMessage(ids, gson.toJson(ques));
     }

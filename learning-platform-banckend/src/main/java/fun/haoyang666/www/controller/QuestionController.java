@@ -3,10 +3,10 @@ package fun.haoyang666.www.controller;
 import com.alibaba.excel.EasyExcel;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.common.ResultUtils;
+import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.domain.entity.Questions;
 import fun.haoyang666.www.domain.req.GetQuesReq;
-import fun.haoyang666.www.exception.BusinessException;
+import fun.haoyang666.www.domain.vo.QuesVo;
 import fun.haoyang666.www.listener.QuestionListener;
 import fun.haoyang666.www.service.QuestionsService;
 
@@ -52,7 +52,7 @@ public class QuestionController {
     }
 
     @PostMapping("getQuesBy")
-    public BaseResponse getQuesBy(@RequestBody GetQuesReq quesReq) {
+    public BaseResponse<Map<Integer, List<QuesVo>>> getQuesBy(@RequestBody GetQuesReq quesReq) {
         if (quesReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
@@ -60,6 +60,7 @@ public class QuestionController {
         String difficulty = quesReq.getDifficulty();
         String source = quesReq.getSource();
         long userId = quesReq.getUserId();
-        return null;
+        Map<Integer, List<QuesVo>> questions = questionsService.getQuestions(userId, sum, source, difficulty);
+        return ResultUtils.success(questions);
     }
 }

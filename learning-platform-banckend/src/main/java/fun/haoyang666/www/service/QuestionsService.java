@@ -13,6 +13,8 @@ import java.util.Map;
 * @createDate 2022-12-10 16:20:50
 */
 public interface QuestionsService extends IService<Questions> {
+    Map<Integer, List<QuesVo>> getQuestions(long userId, long sum, String source, String difficult);
+
     Map<Integer, List<QuesVo>> randomQues(long sum);
 
 

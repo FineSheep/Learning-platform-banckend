@@ -1,7 +1,7 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.common.ResultUtils;
+import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.SuccessCode;
 import fun.haoyang666.www.service.CollectPostService;
 import fun.haoyang666.www.service.ThumbPostService;

@@ -1,13 +1,12 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.common.ResultUtils;
+import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
 import fun.haoyang666.www.domain.dto.ScrollerDto;
 import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.domain.req.GetPostReq;
-import fun.haoyang666.www.domain.req.PageReq;
 import fun.haoyang666.www.domain.req.SavePostReq;
 import fun.haoyang666.www.domain.vo.PostVo;
 import fun.haoyang666.www.service.PostService;

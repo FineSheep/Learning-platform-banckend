@@ -1,7 +1,7 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.common.ResultUtils;
+import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.ScrollerDto;
 import fun.haoyang666.www.domain.entity.Information;

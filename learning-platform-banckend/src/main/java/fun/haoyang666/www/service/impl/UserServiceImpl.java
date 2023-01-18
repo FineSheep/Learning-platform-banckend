@@ -84,6 +84,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail, email);
         User user = this.getOne(queryWrapper);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "未注册");
+        }
 //        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
         String safePass = password;
         if (safePass.equals(user.getUserPassword())) {

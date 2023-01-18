@@ -1,5 +1,6 @@
-package fun.haoyang666.www.common;
+package fun.haoyang666.www.utils;
 
+import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
 

@@ -3,7 +3,7 @@ package fun.haoyang666.www.exception;
 
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.common.ResultUtils;
+import fun.haoyang666.www.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

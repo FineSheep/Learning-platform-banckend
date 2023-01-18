@@ -2,10 +2,9 @@ package fun.haoyang666.www.service.impl;
 
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.Constant;
-import fun.haoyang666.www.common.ResultUtils;
+import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
-import fun.haoyang666.www.domain.entity.Questions;
 import fun.haoyang666.www.domain.vo.QuesVo;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.MatchService;

@@ -36,14 +36,26 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     @Resource
     private QuesrecordService quesrecordService;
 
-
+    @Override
     public Map<Integer, List<QuesVo>> getQuestions(long userId, long sum, String source, String difficult) {
         if (sum <= Constant.MIN_NUM || sum > Constant.MAX_NUM) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不合法");
 
         }
         QuesEnum quesEnum = QuesEnum.getQuesEnum(source);
-        return null;
+        switch (quesEnum) {
+            case RANDOM_QUES:
+                return randomQues(sum);
+            case MISTAKE_QUES:
+                return mistakeQues(userId, sum);
+            case MIS_QUES:
+                return randomQues(sum);
+            case NEW_QUES:
+                return randomQues(sum);
+            default:
+                throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
     }
 
     @Override

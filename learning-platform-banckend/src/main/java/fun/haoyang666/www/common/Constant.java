@@ -12,4 +12,6 @@ public interface Constant {
     String DEFAULT_AVATAR = "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png";
     int MIN_NUM = 0;
     int MAX_NUM = 20;
+    String DAY_LEADER = "day";
+    String TOTAL_LEADER = "total";
 }

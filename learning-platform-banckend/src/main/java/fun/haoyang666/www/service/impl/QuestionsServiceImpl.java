@@ -5,21 +5,22 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.QuesEnum;
+import fun.haoyang666.www.domain.dto.GradeDto;
 import fun.haoyang666.www.domain.entity.Quesrecord;
 import fun.haoyang666.www.domain.entity.Questions;
+import fun.haoyang666.www.domain.req.GetAnswerReq;
 import fun.haoyang666.www.domain.vo.QuesVo;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.QuesrecordService;
 import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.mapper.QuestionsMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  * @createDate 2022-12-10 16:20:50
  */
 @Service
+@Slf4j
 public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions>
         implements QuestionsService {
 
@@ -64,7 +66,32 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         return quesVos.stream().collect(Collectors.groupingBy(QuesVo::getType));
     }
 
-    public Map<Integer, List<QuesVo>> mistakeQues(long userId, long sum) {
+    @Override
+    public List<GradeDto> judgeGrade(GetAnswerReq getAnswerReq) {
+        List<Long> quesIds = getAnswerReq.getQuesIds();
+        List<Questions> ques = this.listByIds(quesIds);
+        List<GradeDto> gradeDtos = convertToDto(ques, getAnswerReq.getAnswer());
+
+        return gradeDtos;
+    }
+
+    private List<GradeDto> convertToDto(List<Questions> questions, Map<Long, String> userMap) {
+
+        LinkedList<GradeDto> list = new LinkedList<>();
+        for (Questions question : questions) {
+            GradeDto dto = new GradeDto();
+            dto.setQuesId(question.getId());
+            dto.setCorrectAnswer(question.getCorrect());
+            String userAnswer = userMap.get(question.getId());
+            dto.setUserAnswer(userAnswer);
+            dto.setCorrect(question.getCorrect().equalsIgnoreCase(userAnswer));
+            log.info("dto:{}", dto);
+            list.add(dto);
+        }
+        return list;
+    }
+
+    private Map<Integer, List<QuesVo>> mistakeQues(long userId, long sum) {
         List<Quesrecord> records = quesrecordService.lambdaQuery()
                 .eq(Quesrecord::getUserId, userId).eq(Quesrecord::getIsCorrect, 0).list();
         Map<Integer, List<QuesVo>> map = new HashMap<>();
@@ -82,6 +109,7 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     private QuesVo convertVo(Questions questions) {
         QuesVo quesVo = new QuesVo();
         BeanUtils.copyProperties(questions, quesVo);
+
         return quesVo;
     }
 }

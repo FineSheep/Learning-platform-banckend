@@ -31,4 +31,9 @@ public class RecordsController {
         ScrollerDto<RecordVo> record = recordsService.getRecordsByUid(uid, curPage, pageSize);
         return ResultUtils.success(record);
     }
+
+    @GetMapping("save")
+    public void addRecodes(long userId,long time,long sum,long correct){
+        recordsService.saveRecord(userId,time,sum,correct);
+    }
 }

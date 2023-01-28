@@ -2,6 +2,9 @@ package fun.haoyang666.www.service;
 
 import fun.haoyang666.www.domain.entity.Quesrecord;
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.domain.vo.GradeVo;
+
+import java.util.List;
 
 /**
 * @author yang
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface QuesrecordService extends IService<Quesrecord> {
 
+    void saveRecordQues(long recordId, long userId, List<GradeVo> correctList, List<GradeVo> falseList);
 }

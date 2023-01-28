@@ -1,4 +1,4 @@
-package fun.haoyang666.www.domain.dto;
+package fun.haoyang666.www.domain.vo;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class GradeDto {
+public class GradeVo {
     private Long quesId;
     private String correctAnswer;
     private String userAnswer;

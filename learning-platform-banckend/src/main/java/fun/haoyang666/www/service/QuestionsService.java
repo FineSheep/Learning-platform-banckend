@@ -1,6 +1,6 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.dto.GradeDto;
+import fun.haoyang666.www.domain.vo.GradeVo;
 import fun.haoyang666.www.domain.entity.Questions;
 import com.baomidou.mybatisplus.extension.service.IService;
 import fun.haoyang666.www.domain.req.GetAnswerReq;
@@ -19,7 +19,7 @@ public interface QuestionsService extends IService<Questions> {
 
     Map<Integer, List<QuesVo>> randomQues(long sum);
 
-    List<GradeDto> judgeGrade(GetAnswerReq getAnswerReq);
+    List<GradeVo> judgeGrade(GetAnswerReq getAnswerReq);
 
 
 

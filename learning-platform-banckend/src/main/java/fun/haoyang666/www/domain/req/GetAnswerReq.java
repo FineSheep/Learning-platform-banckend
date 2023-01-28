@@ -14,4 +14,6 @@ import java.util.Map;
 public class GetAnswerReq {
     private Map<Long, String> answer;
     private List<Long> quesIds;
+    private Long userId;
+    private Long time;
 }

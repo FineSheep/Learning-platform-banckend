@@ -12,12 +12,14 @@ import fun.haoyang666.www.domain.vo.UserVo;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -30,39 +32,15 @@ import static fun.haoyang666.www.common.Constant.*;
  * @createDate 2022-12-10 16:20:50
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-/*    @Override
-    public Long userRegister(String email, String password, String userCode) {
-        String sysCode = redisTemplate.opsForValue().get(email);
-        if (!userCode.equals(sysCode)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码错误");
-        }
-        //1.校验
-        //  1.1 email是否重复
-        LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
-        query.eq(User::getEmail, email);
-        User user = this.getOne(query);
-        if (user != null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不能重复注册");
-        }
-        //  1.2 密码长度是否符合要求   6-10
-        if (password.length() < 6 || password.length() > 10) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码长度不符合要求");
-        }
-        //2.密码加密
-        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
-        //3.数据插入
-        User saveUser = new User();
-        saveUser.setEmail(email);
-        saveUser.setUserPassword(safePass);
-        saveUser.setId(RandomUtil.randomLong());
-        this.save(saveUser);
-        return saveUser.getId();
-    }*/
+    @Resource
+    private UserMapper userMapper;
+
 
     @Override
     public void getCode(String email) {
@@ -138,11 +116,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         BeanUtils.copyProperties(user, userInfoDto);
         return userInfoDto;
     }
-/*
+
     @Override
-    public UserDto loginByCode(String email, String code) {
-        return null;
-    }*/
+    public int updateScore(long userId, long num) {
+        log.info("user:{}",userId);
+        int i = userMapper.updateCorrectNum(userId, num);
+        return i;
+    }
 
     private User getUserById(Long id) {
         User user = this.lambdaQuery().eq(User::getId, id).one();

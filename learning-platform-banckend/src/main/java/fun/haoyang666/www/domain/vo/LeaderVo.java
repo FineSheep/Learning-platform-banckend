@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class LeaderBorderVo {
+public class LeaderVo {
     private long id;
     private String username;
     private Integer correctNum;

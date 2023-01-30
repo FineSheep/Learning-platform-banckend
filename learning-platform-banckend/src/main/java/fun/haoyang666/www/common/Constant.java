@@ -6,7 +6,8 @@ package fun.haoyang666.www.common;
  * @author yang
  */
 public interface Constant {
-    String CANCEL = "取消成功";
+    String CANCEL = "cancel";
+    String SUCCESS = "success";
     String USER_CODE = "user_code";
     String SALTY = "user";
     String DEFAULT_AVATAR = "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png";

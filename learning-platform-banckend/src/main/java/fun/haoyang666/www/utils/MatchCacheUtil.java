@@ -53,6 +53,7 @@ public class MatchCacheUtil {
      * 移除用户在线状态
      */
     public void removeUserOnlineStatus(String userId) {
+
         redisTemplate.opsForHash().delete(EnumRedisKey.USER_STATUS.getKey(), userId);
     }
 
@@ -73,6 +74,7 @@ public class MatchCacheUtil {
     public void setUserIDLE(String userId) {
         removeUserOnlineStatus(userId);
         redisTemplate.opsForHash().put(EnumRedisKey.USER_STATUS.getKey(), userId, StatusEnum.IDLE.getValue());
+
     }
 
     /**
@@ -102,27 +104,28 @@ public class MatchCacheUtil {
         redisTemplate.opsForHash().put(EnumRedisKey.USER_STATUS.getKey(), userId, StatusEnum.IN_GAME.getValue());
     }
 
-    /**
+/*    *//**
      * 设置处于游戏中的用户在同一房间
-     */
+     *//*
     public void setUserInRoom(String userId1, String userId2) {
         redisTemplate.opsForHash().put(EnumRedisKey.ROOM.getKey(), userId1, userId2);
         redisTemplate.opsForHash().put(EnumRedisKey.ROOM.getKey(), userId2, userId1);
     }
 
-    /**
+    *//**
      * 从房间中移除用户
-     */
+     *//*
     public void removeUserFromRoom(String userId) {
         redisTemplate.opsForHash().delete(EnumRedisKey.ROOM.getKey(), userId);
     }
 
-    /**
+    *//**
      * 从房间中获取用户
-     */
+     *//*
     public String getUserFromRoom(String userId) {
         return redisTemplate.opsForHash().get(EnumRedisKey.ROOM.getKey(), userId).toString();
-    }
+    }*/
+
 
     /**
      * 设置处于游戏中的用户的对战信息

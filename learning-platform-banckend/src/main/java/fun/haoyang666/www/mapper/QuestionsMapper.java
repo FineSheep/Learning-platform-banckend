@@ -20,6 +20,8 @@ public interface QuestionsMapper extends BaseMapper<Questions> {
     List<Questions> selectRandom(int size);*/
 
     List<QuesVo> selectRandom(long sum);
+
+
 }
 
 

@@ -5,20 +5,28 @@
 <mapper namespace="fun.haoyang666.www.mapper.QuesrecordMapper">
 
     <resultMap id="BaseResultMap" type="fun.haoyang666.www.domain.entity.Quesrecord">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="recordId" column="recordId" jdbcType="BIGINT"/>
-            <result property="questionId" column="questionId" jdbcType="BIGINT"/>
-            <result property="userId" column="userId" jdbcType="BIGINT"/>
-            <result property="userAnswer" column="userAnswer" jdbcType="VARCHAR"/>
-            <result property="isCorrect" column="isCorrect" jdbcType="TINYINT"/>
-            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="recordId" column="recordId" jdbcType="BIGINT"/>
+        <result property="questionId" column="questionId" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="userAnswer" column="userAnswer" jdbcType="VARCHAR"/>
+        <result property="isCorrect" column="isCorrect" jdbcType="TINYINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,recordId,questionId,
+        id
+        ,recordId,questionId,
         userId,userAnswer,isCorrect,
         createTime,updateTime,isDelete
     </sql>
+
+    <select id="selectIdsByUserIdMistack" parameterType="long" resultType="long">
+        select distinct questionId
+        from ques_record
+        where userId = #{userId}
+          and isCorrect = 0;
+    </select>
 </mapper>

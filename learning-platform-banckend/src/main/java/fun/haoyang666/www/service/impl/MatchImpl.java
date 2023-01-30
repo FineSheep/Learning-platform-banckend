@@ -2,21 +2,22 @@ package fun.haoyang666.www.service.impl;
 
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.Constant;
-import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
-import fun.haoyang666.www.domain.vo.QuesVo;
 import fun.haoyang666.www.exception.BusinessException;
-import fun.haoyang666.www.service.MatchService;
 import fun.haoyang666.www.service.QuestionsService;
+import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.socket.MatchSocket;
 import fun.haoyang666.www.utils.MatchCacheUtil;
+import fun.haoyang666.www.utils.ResultUtils;
+import fun.haoyang666.www.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
+import java.util.Stack;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -28,12 +29,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Service
 @Slf4j
-public class MatchImpl implements MatchService {
+public class MatchImpl {
 
-    @Autowired
+    @Resource
     private QuestionsService questionsService;
-    @Autowired
+    @Resource
     private MatchCacheUtil matchCacheUtil;
+    @Resource
+    private UserService userService;
 
     private Lock lock = new ReentrantLock();
 
@@ -42,39 +45,24 @@ public class MatchImpl implements MatchService {
     /**
      * 向成员发送题目
      *
-     * @param ids  房间内成员id
-     * @param data 题目数据
+     * @param id   接收者id
+     * @param data 发送的信息
      * @param <T>
      */
-    public <T> void sendMessage(Set<String> ids, T data) {
+    public <T> void sendMessage(T data, String id) {
         Stack<Object> objects = new Stack<>();
         objects.isEmpty();
-        ids.forEach(userId -> {
-            try {
-                MatchSocket client = matchCacheUtil.getClient(userId);
-                Gson gson = new Gson();
-                String json = gson.toJson(ResultUtils.success(data));
-                client.getSession().getBasicRemote().sendText(json);
-            } catch (IOException e) {
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR);
-            }
-        });
-
-
+        try {
+            MatchSocket client = matchCacheUtil.getClient(id);
+            Gson gson = new Gson();
+            String json = gson.toJson(ResultUtils.success(data));
+            client.getSession().getBasicRemote().sendText(json);
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
     }
 
-    /**
-     * 获取题目，随机从数据库抽取20道题目，发送给房间内的成员
-     *
-     * @param ids 房间内的成员id
-     */
-    public void sendQues(Set<String> ids) {
-        Map<Integer, List<QuesVo>> ques = questionsService.randomQues((long) 20);
-        Gson gson = new Gson();
-        sendMessage(ids, gson.toJson(ques));
-    }
 
-    @Override
     /**
      * 匹配
      */
@@ -89,7 +77,8 @@ public class MatchImpl implements MatchService {
         } finally {
             lock.unlock();
         }
-        new Thread(() -> {
+        ExecutorService threadPool = ThreadPool.instance();
+        threadPool.execute(() -> {
             boolean flag = true;
             String receiver = null;
             while (flag) {
@@ -97,6 +86,7 @@ public class MatchImpl implements MatchService {
                 // 当前用户不处于待匹配状态
                 lock.lock();
                 try {
+                    log.info("============用户：{}开始循环匹配============", userId);
                     //当前用户不在匹配状态
                     if (matchCacheUtil.getUserOnlineStatus(userId).compareTo(StatusEnum.IN_GAME) == 0
                             || matchCacheUtil.getUserOnlineStatus(userId).compareTo(StatusEnum.GAME_OVER) == 0) {
@@ -106,29 +96,24 @@ public class MatchImpl implements MatchService {
                     //当前用户取消匹配
                     if (matchCacheUtil.getUserOnlineStatus(userId).compareTo(StatusEnum.IDLE) == 0) {
                         log.info("matchUser 当前用户 {} 已退出匹配", userId);
-                        HashSet<String> idSet = new HashSet<>();
-                        idSet.add(userId);
-                        sendMessage(idSet, Constant.CANCEL);
+                        sendMessage(Constant.CANCEL, userId);
                     }
                     receiver = matchCacheUtil.getUserInMatchRandom(userId);
                     if (receiver != null) {
                         //对手取消匹配
                         if (matchCacheUtil.getUserOnlineStatus(receiver).compareTo(StatusEnum.IN_MATCH) != 0) {
                             log.info("matchUser 当前用户 {}, 匹配对手 {} 已退出匹配状态", userId, receiver);
-                            HashSet<String> idSet = new HashSet<>();
-                            idSet.add(userId);
-                            sendMessage(idSet, Constant.CANCEL);
+                            sendMessage(Constant.CANCEL, userId);
                         } else {
-                            //加入对战房间
+                            //设置游戏状态
                             matchCacheUtil.setUserInGame(userId);
                             matchCacheUtil.setUserInGame(receiver);
-                            matchCacheUtil.setUserInRoom(userId, receiver);
+                            //   matchCacheUtil.setUserInRoom(userId, receiver);
                             flag = false;
                             log.info("匹配成功{}---->{}", userId, receiver);
-                            HashSet<String> ids = new HashSet<>();
-                            ids.add(userId);
-                            ids.add(receiver);
-                            sendQues(ids);
+                            //双方发送对手信息
+                            sendMessage(receiver, userId);
+                            sendMessage(userId, receiver);
                         }
                     } else {
                         try {
@@ -144,6 +129,12 @@ public class MatchImpl implements MatchService {
                 }
             }
 
-        }).start();
+        });
+    }
+
+
+    public void cancel(String userId) {
+        log.info("取消匹配");
+        matchCacheUtil.setUserIDLE(userId);
     }
 }

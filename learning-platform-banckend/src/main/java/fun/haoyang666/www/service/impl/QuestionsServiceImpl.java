@@ -13,6 +13,7 @@ import fun.haoyang666.www.domain.req.GetAnswerReq;
 import fun.haoyang666.www.domain.vo.LeaderVo;
 import fun.haoyang666.www.domain.vo.QuesVo;
 import fun.haoyang666.www.exception.BusinessException;
+import fun.haoyang666.www.mapper.QuesrecordMapper;
 import fun.haoyang666.www.service.QuesrecordService;
 import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.mapper.QuestionsMapper;
@@ -44,6 +45,8 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     private QuestionsMapper questionsMapper;
     @Resource
     private QuesrecordService quesrecordService;
+    @Resource
+    private QuesrecordMapper quesrecordMapper;
     @Resource
     private UserService userService;
     @Resource
@@ -142,13 +145,11 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     }
 
     private Map<Integer, List<QuesVo>> mistakeQues(long userId, long sum) {
-        List<Quesrecord> records = quesrecordService.lambdaQuery()
-                .eq(Quesrecord::getUserId, userId).eq(Quesrecord::getIsCorrect, 0).list();
+        List<Long> ids = quesrecordMapper.selectIdsByUserIdMistack(userId);
         Map<Integer, List<QuesVo>> map = new HashMap<>();
-        if (records.size() <= sum) {
+        if (ids.size() <= sum) {
             map = randomQues(sum);
         } else {
-            List<Long> ids = records.stream().map(Quesrecord::getId).collect(Collectors.toList());
             List<Long> randomIds = RandomUtil.randomEleList(ids, (int) sum);
             map = this.listByIds(randomIds).stream().map(this::convertVo).collect(Collectors.groupingBy(QuesVo::getType));
         }
@@ -157,8 +158,8 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
 
     private QuesVo convertVo(Questions questions) {
         QuesVo quesVo = new QuesVo();
+        log.info("ques:{}", questions);
         BeanUtils.copyProperties(questions, quesVo);
-
         return quesVo;
     }
 }

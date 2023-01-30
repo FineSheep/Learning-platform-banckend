@@ -16,11 +16,7 @@ public enum EnumRedisKey {
     /**
      * userOnline 匹配信息
      */
-    USER_MATCH_INFO,
-    /**
-     * 房间
-     */
-    ROOM;
+    USER_MATCH_INFO;
 
     public String getKey() {
         return this.name();

@@ -59,7 +59,6 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     public Map<Integer, List<QuesVo>> getQuestions(long userId, long sum, String source, String difficult) {
         if (sum <= Constant.MIN_NUM || sum > Constant.MAX_NUM) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "题目数量不合法");
-
         }
         QuesEnum quesEnum = QuesEnum.getQuesEnum(source);
         switch (quesEnum) {
@@ -113,6 +112,11 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         quesrecordService.saveRecordQues(recordId, userId, correctList, falseList);
         userService.updateScore(getAnswerReq.getUserId(), correctCount);
         return gradeVos;
+    }
+
+    @Override
+    public Map<Integer, List<QuesVo>> getQuesRandom() {
+        return randomQues(20);
     }
 
     private void dayLeader(long userId, long count) {

@@ -71,7 +71,11 @@ public class QuestionController {
         log.info("req:{}", getAnswerReq);
         List<GradeVo> gradeVos = questionsService.judgeGrade(getAnswerReq);
         return ResultUtils.success(gradeVos);
+    }
 
-//        return null;
+    @GetMapping("getQuesRandom")
+    public BaseResponse getQuesRandom() {
+        Map<Integer, List<QuesVo>> questions = questionsService.getQuesRandom();
+        return ResultUtils.success(questions);
     }
 }

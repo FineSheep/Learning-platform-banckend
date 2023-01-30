@@ -5,8 +5,6 @@ import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
 import fun.haoyang666.www.exception.BusinessException;
-import fun.haoyang666.www.service.QuestionsService;
-import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.socket.MatchSocket;
 import fun.haoyang666.www.utils.MatchCacheUtil;
 import fun.haoyang666.www.utils.ResultUtils;
@@ -31,12 +29,10 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class MatchImpl {
 
-    @Resource
-    private QuestionsService questionsService;
+
     @Resource
     private MatchCacheUtil matchCacheUtil;
-    @Resource
-    private UserService userService;
+
 
     private Lock lock = new ReentrantLock();
 
@@ -131,7 +127,6 @@ public class MatchImpl {
 
         });
     }
-
 
     public void cancel(String userId) {
         log.info("取消匹配");

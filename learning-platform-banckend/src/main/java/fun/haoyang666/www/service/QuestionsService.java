@@ -21,6 +21,8 @@ public interface QuestionsService extends IService<Questions> {
 
     List<GradeVo> judgeGrade(GetAnswerReq getAnswerReq);
 
+    Map<Integer, List<QuesVo>> getQuesRandom();
+
 
 
 //    Map<Integer, List<Questions>> getQuesRandom(int size);

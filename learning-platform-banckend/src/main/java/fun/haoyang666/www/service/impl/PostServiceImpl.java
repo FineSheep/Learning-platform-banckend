@@ -3,12 +3,12 @@ package fun.haoyang666.www.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.dto.ScrollerDto;
+import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.CollectPost;
 import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.domain.entity.Tag;
 import fun.haoyang666.www.domain.entity.ThumbPost;
-import fun.haoyang666.www.domain.vo.PostVo;
+import fun.haoyang666.www.domain.vo.PostVO;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.CollectPostService;
 import fun.haoyang666.www.service.PostService;
@@ -63,8 +63,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     }
 
     @Override
-    public ScrollerDto<PostVo> getPosts(long userId, int curPage, int pageSize) {
-        ScrollerDto<PostVo> dto = new ScrollerDto<>();
+    public ScrollerDTO<PostVO> getPosts(long userId, int curPage, int pageSize) {
+        ScrollerDTO<PostVO> dto = new ScrollerDTO<>();
         long count = this.count();
         int offset = 0;
         if ((curPage - 1) * pageSize > 0) {
@@ -72,9 +72,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         }
         //获取标签，转换为map
         Map<Long, String> tagMap = tagService.list().stream().collect(Collectors.toMap(Tag::getId, Tag::getTagName));
-        List<PostVo> postVos = postMapper.selectPosts(offset, pageSize);
+        List<PostVO> postVOS = postMapper.selectPosts(offset, pageSize);
         //标签转化为名字
-        postVos.forEach(item -> {
+        postVOS.forEach(item -> {
             String tagsStr = item.getTags();
             Gson gson = new Gson();
             Long[] tags = gson.fromJson(tagsStr, Long[].class);
@@ -91,7 +91,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
                 item.setThumbed(true);
             }
         });
-        dto.setRecords(postVos);
+        dto.setRecords(postVOS);
         if (count <= (long) curPage * pageSize) {
             dto.setHasNext(false);
         } else {

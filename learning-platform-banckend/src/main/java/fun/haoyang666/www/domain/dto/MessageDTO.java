@@ -12,7 +12,7 @@ import java.util.Set;
  * @description
  */
 @Data
-public class MessageDto<T> {
+public class MessageDTO<T> {
 
     /**
      * 消息类型

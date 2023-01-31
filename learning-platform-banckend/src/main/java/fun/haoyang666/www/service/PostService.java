@@ -1,9 +1,9 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.dto.ScrollerDto;
+import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
-import fun.haoyang666.www.domain.vo.PostVo;
+import fun.haoyang666.www.domain.vo.PostVO;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface PostService extends IService<Post> {
 
     void savePost(String content, String title, String description, String photo, long userId, List<Long> tags);
 
-    ScrollerDto<PostVo> getPosts(long userId,int curPage, int pageSize);
+    ScrollerDTO<PostVO> getPosts(long userId, int curPage, int pageSize);
 }

@@ -13,7 +13,7 @@ import java.util.Date;
  * @description
  */
 @Data
-public class RecordVo implements Serializable {
+public class RecordVO implements Serializable {
 
     private static final long serialVersionUID = -5489787637306748545L;
 

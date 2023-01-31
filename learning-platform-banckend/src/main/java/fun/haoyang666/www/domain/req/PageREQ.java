@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class PageReq {
+public class PageREQ {
     protected int curPage;
     protected int pageSize;
 }

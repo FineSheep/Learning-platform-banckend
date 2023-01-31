@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @description
  */
 @Data
-public class UploadImgReq implements Serializable {
+public class UploadImgREQ implements Serializable {
     private static final long serialVersionUID = 2035143354862563512L;
     private Long userId;
     private MultipartFile file;

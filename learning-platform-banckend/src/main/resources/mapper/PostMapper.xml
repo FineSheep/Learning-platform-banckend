@@ -22,7 +22,7 @@
         <result property="title" column="title" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <resultMap id="postMap" type="fun.haoyang666.www.domain.vo.PostVo">
+    <resultMap id="postMap" type="fun.haoyang666.www.domain.vo.PostVO">
         <id property="id" column="id"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>

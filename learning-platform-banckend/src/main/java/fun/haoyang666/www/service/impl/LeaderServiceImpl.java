@@ -2,7 +2,7 @@ package fun.haoyang666.www.service.impl;
 
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.domain.entity.User;
-import fun.haoyang666.www.domain.vo.LeaderVo;
+import fun.haoyang666.www.domain.vo.LeaderVO;
 import fun.haoyang666.www.service.LeaderService;
 import fun.haoyang666.www.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,28 +25,28 @@ import java.util.stream.Collectors;
 public class LeaderServiceImpl implements LeaderService {
 
     @Resource
-    private RedisTemplate<String, LeaderVo> redisTemplate;
+    private RedisTemplate<String, LeaderVO> redisTemplate;
 
     @Resource
     private UserService userService;
 
     @Override
-    public Map<String, List<LeaderVo>> leaderBorder() {
-        List<LeaderVo> day = dayLeader();
-        List<LeaderVo> total = totalLeader();
-        HashMap<String, List<LeaderVo>> map = new HashMap<>();
+    public Map<String, List<LeaderVO>> leaderBorder() {
+        List<LeaderVO> day = dayLeader();
+        List<LeaderVO> total = totalLeader();
+        HashMap<String, List<LeaderVO>> map = new HashMap<>();
         map.put(Constant.DAY_LEADER, day);
         map.put(Constant.TOTAL_LEADER, total);
         return map;
     }
 
-    private List<LeaderVo> dayLeader() {
-        ZSetOperations<String, LeaderVo> zSet = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<LeaderVo>> typedTuples = zSet.reverseRangeWithScores(Constant.REDIS_DAY_LEADER, 0, 4);
+    private List<LeaderVO> dayLeader() {
+        ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<LeaderVO>> typedTuples = zSet.reverseRangeWithScores(Constant.REDIS_DAY_LEADER, 0, 4);
         if (typedTuples == null || typedTuples.size() == 0) {
             return new ArrayList<>();
         }
-        List<LeaderVo> list = typedTuples.stream().map(item -> {
+        List<LeaderVO> list = typedTuples.stream().map(item -> {
             double score = item.getScore();
             item.getValue().setCorrectNum((int) score);
             return item.getValue();
@@ -54,15 +54,15 @@ public class LeaderServiceImpl implements LeaderService {
         return list;
     }
 
-    private List<LeaderVo> totalLeader() {
-        ZSetOperations<String, LeaderVo> zSet = redisTemplate.opsForZSet();
-        Set<LeaderVo> range = zSet.reverseRange(Constant.REDIS_TOTAL_LEADER, 0, 4);
+    private List<LeaderVO> totalLeader() {
+        ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
+        Set<LeaderVO> range = zSet.reverseRange(Constant.REDIS_TOTAL_LEADER, 0, 4);
         if (range == null || range.size() == 0) {
             setTotalLeader();
             range = zSet.reverseRange(Constant.REDIS_TOTAL_LEADER, 0, 4);
 
         }
-        ArrayList<LeaderVo> list = new ArrayList<>(range);
+        ArrayList<LeaderVO> list = new ArrayList<>(range);
         return list;
     }
 
@@ -70,9 +70,9 @@ public class LeaderServiceImpl implements LeaderService {
      * 获取总榜
      */
     public void setTotalLeader() {
-        ZSetOperations<String, LeaderVo> zSet = redisTemplate.opsForZSet();
+        ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
         zSet.removeRange(Constant.REDIS_TOTAL_LEADER, 0, -1);
-        List<LeaderVo> vos = userService.lambdaQuery().orderByDesc(User::getCorrectNum).last("limit 5").list()
+        List<LeaderVO> vos = userService.lambdaQuery().orderByDesc(User::getCorrectNum).last("limit 5").list()
                 .stream().map(this::convert).collect(Collectors.toList());
         vos.forEach(item -> {
             zSet.add(Constant.REDIS_TOTAL_LEADER, item, item.getCorrectNum());
@@ -80,8 +80,8 @@ public class LeaderServiceImpl implements LeaderService {
 
     }
 
-    private LeaderVo convert(User user) {
-        LeaderVo vo = new LeaderVo();
+    private LeaderVO convert(User user) {
+        LeaderVO vo = new LeaderVO();
         BeanUtils.copyProperties(user, vo);
         return vo;
     }

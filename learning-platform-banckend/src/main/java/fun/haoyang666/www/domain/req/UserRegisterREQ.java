@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class UserRegisterReq {
+public class UserRegisterREQ {
     private String email;
     private String password;
     private String checkPassword;

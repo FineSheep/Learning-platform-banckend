@@ -14,7 +14,7 @@ import java.util.Date;
  * @description
  */
 @Data
-public class UserUpdateReq {
+public class UserUpdateREQ {
     /**
      * 用户昵称
      */

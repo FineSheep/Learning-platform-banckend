@@ -4,11 +4,11 @@ import lombok.Data;
 
 /**
  * @author yang
- * @createTime 2022/12/24 12:45
+ * @createTime 2022/12/24 17:18
  * @description
  */
 @Data
-public class UserLoginByPassWordReq {
+public class UserLoginByCodeREQ {
     private String email;
-    private String password;
+    private String code;
 }

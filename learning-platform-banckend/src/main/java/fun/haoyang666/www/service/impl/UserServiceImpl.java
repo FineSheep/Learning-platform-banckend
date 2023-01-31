@@ -5,10 +5,9 @@ import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.dto.UserDto;
-import fun.haoyang666.www.domain.dto.UserInfoDto;
+import fun.haoyang666.www.domain.dto.UserDTO;
+import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
-import fun.haoyang666.www.domain.vo.UserVo;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
@@ -17,11 +16,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static fun.haoyang666.www.common.Constant.*;
@@ -58,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserDto userLogin(String email, String password) {
+    public UserDTO userLogin(String email, String password) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail, email);
         User user = this.getOne(queryWrapper);
@@ -68,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 //        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
         String safePass = password;
         if (safePass.equals(user.getUserPassword())) {
-            UserDto safeUser = new UserDto();
+            UserDTO safeUser = new UserDTO();
             BeanUtils.copyProperties(user, safeUser);
             return safeUser;
         } else {
@@ -78,7 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserDto loginOrRegister(String email, String code) {
+    public UserDTO loginOrRegister(String email, String code) {
         String redisCode = redisTemplate.opsForValue().get("code:" + email);
         if (!code.equals(redisCode)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码错误或失效");
@@ -86,7 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
         query.eq(User::getEmail, email);
         User user = this.getOne(query);
-        UserDto userDto = new UserDto();
+        UserDTO userDto = new UserDTO();
         if (user == null) {
             //用户没有注册
             //开始注册
@@ -107,19 +106,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserInfoDto userInfo(Long userId) {
+    public UserInfoDTO userInfo(Long userId) {
         User user = getUserById(userId);
         if (user == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "查无此人");
         }
-        UserInfoDto userInfoDto = new UserInfoDto();
+        UserInfoDTO userInfoDto = new UserInfoDTO();
         BeanUtils.copyProperties(user, userInfoDto);
         return userInfoDto;
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public int updateScore(long userId, long num) {
-        log.info("user:{}",userId);
+        log.info("user:{}", userId);
         int i = userMapper.updateCorrectNum(userId, num);
         return i;
     }

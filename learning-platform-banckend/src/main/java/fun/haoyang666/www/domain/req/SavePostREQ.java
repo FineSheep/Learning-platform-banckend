@@ -10,7 +10,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class SavePostReq {
+public class SavePostREQ {
     private long userId;
     private List<Long> tags;
     private String content;

@@ -1,7 +1,7 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.domain.vo.LeaderVo;
+import fun.haoyang666.www.domain.vo.LeaderVO;
 import fun.haoyang666.www.service.LeaderService;
 import fun.haoyang666.www.utils.ResultUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ public class LeaderController {
 
     @GetMapping("getLeader")
     public BaseResponse getLeader() {
-        Map<String, List<LeaderVo>> leader = leaderService.leaderBorder();
+        Map<String, List<LeaderVO>> leader = leaderService.leaderBorder();
         return ResultUtils.success(leader);
     }
 }

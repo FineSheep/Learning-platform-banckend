@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class GetQuesReq {
+public class GetQuesREQ {
     private long userId;
     private long sum;
     private String source;

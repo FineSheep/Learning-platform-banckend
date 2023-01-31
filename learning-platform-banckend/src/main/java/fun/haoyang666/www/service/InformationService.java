@@ -1,7 +1,7 @@
 package fun.haoyang666.www.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import fun.haoyang666.www.domain.dto.ScrollerDto;
+import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Information;
 
 /**
@@ -11,6 +11,6 @@ import fun.haoyang666.www.domain.entity.Information;
  */
 public interface InformationService extends IService<Information> {
 
-    ScrollerDto<Information> getInformationPage(int curPage, int pageSize);
+    ScrollerDTO<Information> getInformationPage(int curPage, int pageSize);
 
 }

@@ -1,6 +1,5 @@
-package fun.haoyang666.www.domain.dto;
+package fun.haoyang666.www.domain.vo;
 
-import fun.haoyang666.www.domain.vo.QuesVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PKDto {
-    Map<Integer, List<QuesVo>> ques;
-    List<UserInfoDto> users;
+public class PKVO {
+    private Map<Integer, List<QuesVO>> ques;
+    private String opponent;
 }

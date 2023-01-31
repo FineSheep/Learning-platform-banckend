@@ -18,7 +18,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class PostVo {
+public class PostVO {
     private Long id;
     private String description;
     private String content;

@@ -3,11 +3,11 @@ package fun.haoyang666.www.controller;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.dto.UserDto;
-import fun.haoyang666.www.domain.dto.UserInfoDto;
+import fun.haoyang666.www.domain.dto.UserDTO;
+import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
-import fun.haoyang666.www.domain.req.UserLoginByCodeReq;
-import fun.haoyang666.www.domain.req.UserLoginByPassWordReq;
+import fun.haoyang666.www.domain.req.UserLoginByCodeREQ;
+import fun.haoyang666.www.domain.req.UserLoginByPassWordREQ;
 import fun.haoyang666.www.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping("loginByPassword")
-    public BaseResponse<UserDto> loginByPassword(@RequestBody UserLoginByPassWordReq userLoginByPassWordReq) {
+    public BaseResponse<UserDTO> loginByPassword(@RequestBody UserLoginByPassWordREQ userLoginByPassWordReq) {
         if (userLoginByPassWordReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
@@ -60,12 +60,12 @@ public class UserController {
         if (StringUtils.isAnyBlank(email, password)) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        UserDto userDto = userService.userLogin(email, password);
+        UserDTO userDto = userService.userLogin(email, password);
         return ResultUtils.success(userDto);
     }
 
     @PostMapping("loginOrRegister")
-    public BaseResponse<UserDto> loginByCode(@RequestBody UserLoginByCodeReq userLoginByCodeReq) {
+    public BaseResponse<UserDTO> loginByCode(@RequestBody UserLoginByCodeREQ userLoginByCodeReq) {
         if (userLoginByCodeReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
@@ -74,7 +74,7 @@ public class UserController {
         if (StringUtils.isAnyBlank(email, code)) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        UserDto userDto = userService.loginOrRegister(email, code);
+        UserDTO userDto = userService.loginOrRegister(email, code);
         return ResultUtils.success(userDto);
     }
 
@@ -85,11 +85,11 @@ public class UserController {
     }
 
     @GetMapping("userInfo/{userId}")
-    public BaseResponse<UserInfoDto> userInfo(@PathVariable Long userId) {
+    public BaseResponse<UserInfoDTO> userInfo(@PathVariable Long userId) {
         if (userId == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        UserInfoDto userDto = userService.userInfo(userId);
+        UserInfoDTO userDto = userService.userInfo(userId);
         return ResultUtils.success(userDto);
     }
 }

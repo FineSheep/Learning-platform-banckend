@@ -1,4 +1,5 @@
 package fun.haoyang666.www.common.enums;
+
 /**
  * @author yang
  */
@@ -24,4 +25,8 @@ public enum MessageTypeEnum {
      * 游戏结束
      */
     GAME_OVER,
+    /**
+     * 心跳检测
+     */
+    PING,
 }

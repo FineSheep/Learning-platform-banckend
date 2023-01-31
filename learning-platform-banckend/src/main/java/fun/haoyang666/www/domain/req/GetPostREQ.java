@@ -8,6 +8,6 @@ import lombok.Data;
  * @description
  */
 @Data
-public class GetPostReq extends PageReq{
+public class GetPostREQ extends PageREQ {
     private Long userId;
 }

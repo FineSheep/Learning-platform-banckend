@@ -17,7 +17,7 @@
         <result property="type" column="isDelete" jdbcType="TINYINT"/>
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
-    <select id="selectRandom" resultType="fun.haoyang666.www.domain.vo.QuesVo">
+    <select id="selectRandom" resultType="fun.haoyang666.www.domain.vo.QuesVO">
         select distinct id,
                         content,
                         optionA,

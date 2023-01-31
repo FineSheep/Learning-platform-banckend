@@ -2,7 +2,7 @@ package fun.haoyang666.www.job;
 
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.domain.entity.User;
-import fun.haoyang666.www.domain.vo.LeaderVo;
+import fun.haoyang666.www.domain.vo.LeaderVO;
 import fun.haoyang666.www.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class LeaderBorderJob {
 
     @Resource
-    private RedisTemplate<String, LeaderVo> redisTemplate;
+    private RedisTemplate<String, LeaderVO> redisTemplate;
 
     @Resource
     private UserService userService;
@@ -40,7 +40,7 @@ public class LeaderBorderJob {
      * 移除日榜，日榜实时刷新
      */
     public void cleaDayLeader() {
-        ZSetOperations<String, LeaderVo> zSet = redisTemplate.opsForZSet();
+        ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
         zSet.removeRange(Constant.REDIS_DAY_LEADER, 0, -1);
     }
 
@@ -48,9 +48,9 @@ public class LeaderBorderJob {
      * 获取总榜
      */
     public void totalLeader() {
-        ZSetOperations<String, LeaderVo> zSet = redisTemplate.opsForZSet();
+        ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
         zSet.removeRange(Constant.REDIS_TOTAL_LEADER, 0, -1);
-        List<LeaderVo> vos = userService.lambdaQuery().orderByDesc(User::getCorrectNum).last("limit 5").list()
+        List<LeaderVO> vos = userService.lambdaQuery().orderByDesc(User::getCorrectNum).last("limit 5").list()
                 .stream().map(this::convert).collect(Collectors.toList());
         vos.forEach(item -> {
             zSet.add(Constant.REDIS_TOTAL_LEADER, item, item.getCorrectNum());
@@ -58,8 +58,8 @@ public class LeaderBorderJob {
 
     }
 
-    private LeaderVo convert(User user) {
-        LeaderVo vo = new LeaderVo();
+    private LeaderVO convert(User user) {
+        LeaderVO vo = new LeaderVO();
         BeanUtils.copyProperties(user, vo);
         return vo;
     }

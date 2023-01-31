@@ -16,6 +16,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -53,13 +54,13 @@ public class MatchSocket {
         this.userId = userId;
         this.session = session;
         matchCacheUtil.addClient(userId, this);
+//        matchCacheUtil.setUserIDLE(userId);
         log.info("ChatWebsocket open 连接建立完成 userId: {}", userId);
     }
 
     @OnError
     public void onError(Session session, Throwable error) {
         log.error("ChatWebsocket onError 发生了错误 userId: {}, errorMessage: {}", userId, error.getMessage());
-        onClose();
         log.info("ChatWebsocket onError 连接断开完成 userId: {}", userId);
     }
 
@@ -71,7 +72,7 @@ public class MatchSocket {
         //移除在线状态
         matchCacheUtil.removeUserOnlineStatus(userId);
         //移除对战室状态
-    //    matchCacheUtil.removeUserFromRoom(userId);
+        //    matchCacheUtil.removeUserFromRoom(userId);
         //移除游戏中的用户的对战信息
         matchCacheUtil.removeUserMatchInfo(userId);
         //记录数据库
@@ -89,13 +90,11 @@ public class MatchSocket {
         Map<String, String> map = gson.fromJson(message, gsonType);
         MessageTypeEnum type = gson.fromJson(map.get("type"), MessageTypeEnum.class);
         log.info("ChatWebsocket onMessage userId: {}, 来自客户端的消息类型 type: {}", userId, type);
-        if (type == MessageTypeEnum.ADD_USER) {
-            //预留
-//            addUser(jsonObject);
+        if (type == MessageTypeEnum.PING) {
+            log.info("websocket心跳检测：{}", LocalDateTime.now());
         } else if (type == MessageTypeEnum.MATCH_USER) {
             matchImpl.match(userId);
         } else if (type == MessageTypeEnum.CANCEL_MATCH) {
-//            cancelMatch(jsonObject);
             matchImpl.cancel(userId);
         } else if (type == MessageTypeEnum.PLAY_GAME) {
 //            toPlay(jsonObject);

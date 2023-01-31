@@ -11,7 +11,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class QuesVo {
+public class QuesVO {
 
     private Long id;
 

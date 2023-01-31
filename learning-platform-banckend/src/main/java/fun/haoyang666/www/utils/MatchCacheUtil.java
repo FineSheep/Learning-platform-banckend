@@ -3,6 +3,8 @@ package fun.haoyang666.www.utils;
 import fun.haoyang666.www.common.enums.EnumRedisKey;
 import fun.haoyang666.www.common.enums.StatusEnum;
 import fun.haoyang666.www.socket.MatchSocket;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
  * @author yang
  */
 @Component
+@Slf4j
 public class MatchCacheUtil {
 
     /**
@@ -53,8 +56,10 @@ public class MatchCacheUtil {
      * 移除用户在线状态
      */
     public void removeUserOnlineStatus(String userId) {
+        log.info("user:{}",userId);
+        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
 
-        redisTemplate.opsForHash().delete(EnumRedisKey.USER_STATUS.getKey(), userId);
+        redisTemplate.opsForHash().delete(EnumRedisKey.USER_STATUS.getKey(), userId.toString());
     }
 
     /**
@@ -92,7 +97,6 @@ public class MatchCacheUtil {
         Optional<Map.Entry<Object, Object>> any = redisTemplate.opsForHash().entries(EnumRedisKey.USER_STATUS.getKey())
                 .entrySet().stream().filter(entry -> entry.getValue().equals(StatusEnum.IN_MATCH.getValue()) && !entry.getKey().equals(userId))
                 .findAny();
-
         return any.map(entry -> entry.getKey().toString()).orElse(null);
     }
 
@@ -103,29 +107,6 @@ public class MatchCacheUtil {
         removeUserOnlineStatus(userId);
         redisTemplate.opsForHash().put(EnumRedisKey.USER_STATUS.getKey(), userId, StatusEnum.IN_GAME.getValue());
     }
-
-/*    *//**
-     * 设置处于游戏中的用户在同一房间
-     *//*
-    public void setUserInRoom(String userId1, String userId2) {
-        redisTemplate.opsForHash().put(EnumRedisKey.ROOM.getKey(), userId1, userId2);
-        redisTemplate.opsForHash().put(EnumRedisKey.ROOM.getKey(), userId2, userId1);
-    }
-
-    *//**
-     * 从房间中移除用户
-     *//*
-    public void removeUserFromRoom(String userId) {
-        redisTemplate.opsForHash().delete(EnumRedisKey.ROOM.getKey(), userId);
-    }
-
-    *//**
-     * 从房间中获取用户
-     *//*
-    public String getUserFromRoom(String userId) {
-        return redisTemplate.opsForHash().get(EnumRedisKey.ROOM.getKey(), userId).toString();
-    }*/
-
 
     /**
      * 设置处于游戏中的用户的对战信息

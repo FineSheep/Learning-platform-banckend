@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class GradeVo {
+public class GradeVO {
     private Long quesId;
     private String correctAnswer;
     private String userAnswer;

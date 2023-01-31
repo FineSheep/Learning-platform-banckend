@@ -11,9 +11,11 @@ import java.util.Map;
  * @description
  */
 @Data
-public class GetAnswerReq {
+public class GetAnswerREQ {
     private Map<Long, String> answer;
     private List<Long> quesIds;
     private Long userId;
     private Long time;
+    private Long opponent;
+    private Boolean result;
 }

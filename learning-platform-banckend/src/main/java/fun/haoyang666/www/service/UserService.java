@@ -1,7 +1,7 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.dto.UserDto;
-import fun.haoyang666.www.domain.dto.UserInfoDto;
+import fun.haoyang666.www.domain.dto.UserDTO;
+import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,13 +17,13 @@ public interface UserService extends IService<User> {
     void getCode(String email);
 
 
-    UserDto userLogin(String email, String password);
+    UserDTO userLogin(String email, String password);
 
 //    UserDto loginByCode(String email, String code);
 
-    UserDto loginOrRegister(String email, String code);
+    UserDTO loginOrRegister(String email, String code);
 
-    UserInfoDto userInfo(Long userId);
+    UserInfoDTO userInfo(Long userId);
 
 
     int updateScore(long userId, long num);

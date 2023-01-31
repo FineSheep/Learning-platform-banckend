@@ -10,7 +10,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class UserMistakeDto {
+public class UserMistakeDTO {
     private long userId;
     private List<Long> records;
 }

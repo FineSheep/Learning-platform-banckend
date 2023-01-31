@@ -10,7 +10,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class ScrollerDto<T> {
+public class ScrollerDTO<T> {
     private List<T> records;
     private boolean hasNext;
 }

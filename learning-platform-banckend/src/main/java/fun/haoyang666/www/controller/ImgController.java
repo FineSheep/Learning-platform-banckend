@@ -4,7 +4,6 @@ import cn.xuyanwu.spring.file.storage.FileInfo;
 import cn.xuyanwu.spring.file.storage.FileStorageService;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.req.UploadImgReq;
 import fun.haoyang666.www.service.UploadImgService;
 import fun.haoyang666.www.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;

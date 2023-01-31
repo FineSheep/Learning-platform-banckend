@@ -8,7 +8,7 @@ import lombok.Data;
  * @description
  */
 @Data
-public class DayLeaderVo {
+public class DayLeaderVO {
     private long id;
     private String userName;
 }

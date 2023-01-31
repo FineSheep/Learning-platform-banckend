@@ -3,8 +3,8 @@ package fun.haoyang666.www.controller;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.dto.ScrollerDto;
-import fun.haoyang666.www.domain.vo.RecordVo;
+import fun.haoyang666.www.domain.dto.ScrollerDTO;
+import fun.haoyang666.www.domain.vo.RecordVO;
 import fun.haoyang666.www.service.RecordsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +28,12 @@ public class RecordsController {
         if (curPage < 0 || pageSize > 50) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        ScrollerDto<RecordVo> record = recordsService.getRecordsByUid(uid, curPage, pageSize);
+        ScrollerDTO<RecordVO> record = recordsService.getRecordsByUid(uid, curPage, pageSize);
         return ResultUtils.success(record);
     }
 
-    @GetMapping("save")
+/*    @GetMapping("save")
     public void addRecodes(long userId,long time,long sum,long correct){
-        recordsService.saveRecord(userId,time,sum,correct);
-    }
+        recordsService.saveRecord(userId,time,sum,correct, , );
+    }*/
 }

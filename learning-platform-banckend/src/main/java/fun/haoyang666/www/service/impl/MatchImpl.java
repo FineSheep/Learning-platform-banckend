@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
+import fun.haoyang666.www.domain.vo.PKVO;
+import fun.haoyang666.www.domain.vo.QuesVO;
 import fun.haoyang666.www.exception.BusinessException;
+import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.socket.MatchSocket;
 import fun.haoyang666.www.utils.MatchCacheUtil;
 import fun.haoyang666.www.utils.ResultUtils;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.Condition;
@@ -28,14 +33,11 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 @Slf4j
 public class MatchImpl {
-
-
     @Resource
     private MatchCacheUtil matchCacheUtil;
-
-
+    @Resource
+    private QuestionsService questionsService;
     private Lock lock = new ReentrantLock();
-
     private Condition matchCond = lock.newCondition();
 
     /**
@@ -108,8 +110,9 @@ public class MatchImpl {
                             flag = false;
                             log.info("匹配成功{}---->{}", userId, receiver);
                             //双方发送对手信息
-                            sendMessage(receiver, userId);
-                            sendMessage(userId, receiver);
+                            sendQues(userId, receiver);
+                          /*  sendMessage(receiver, userId);
+                            sendMessage(userId, receiver);*/
                         }
                     } else {
                         try {
@@ -126,6 +129,12 @@ public class MatchImpl {
             }
 
         });
+    }
+
+    public void sendQues(String userId, String receiver) {
+        Map<Integer, List<QuesVO>> questions = questionsService.getQuesRandom();
+        sendMessage(new PKVO(questions, receiver), userId);
+        sendMessage(new PKVO(questions, userId), receiver);
     }
 
     public void cancel(String userId) {

@@ -4,11 +4,11 @@ import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
-import fun.haoyang666.www.domain.dto.ScrollerDto;
+import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Post;
-import fun.haoyang666.www.domain.req.GetPostReq;
-import fun.haoyang666.www.domain.req.SavePostReq;
-import fun.haoyang666.www.domain.vo.PostVo;
+import fun.haoyang666.www.domain.req.GetPostREQ;
+import fun.haoyang666.www.domain.req.SavePostREQ;
+import fun.haoyang666.www.domain.vo.PostVO;
 import fun.haoyang666.www.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +31,7 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("savePost")
-    public BaseResponse savePost(@RequestBody SavePostReq postReq) {
+    public BaseResponse savePost(@RequestBody SavePostREQ postReq) {
         if (postReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
@@ -55,14 +55,14 @@ public class PostController {
     }
 
     @GetMapping("getPosts")
-    public BaseResponse<ScrollerDto<PostVo>> getPosts(GetPostReq getPostReq) {
+    public BaseResponse<ScrollerDTO<PostVO>> getPosts(GetPostREQ getPostReq) {
         if (getPostReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
         Long userId = getPostReq.getUserId();
-        ScrollerDto<PostVo> posts = postService.getPosts(userId, curPage, pageSize);
+        ScrollerDTO<PostVO> posts = postService.getPosts(userId, curPage, pageSize);
         return ResultUtils.success(posts);
     }
 }

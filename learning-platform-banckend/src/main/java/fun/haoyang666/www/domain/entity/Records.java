@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 
 /**
  * 用户做题记录
+ *
  * @TableName records
  */
-@TableName(value ="records")
+@TableName(value = "records")
 @Data
 public class Records implements Serializable {
     /**
@@ -43,6 +44,10 @@ public class Records implements Serializable {
      * 游戏结果 0-输  1-赢
      */
     private Integer result;
+    /**
+     * 是否pk
+     */
+    private Integer PK;
 
     /**
      * 题目总数
@@ -60,7 +65,7 @@ public class Records implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 
+     *
      */
     private LocalDateTime updateTime;
 

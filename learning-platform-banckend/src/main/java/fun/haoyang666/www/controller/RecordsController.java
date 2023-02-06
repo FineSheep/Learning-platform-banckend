@@ -6,11 +6,13 @@ import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.vo.RecordVO;
 import fun.haoyang666.www.service.RecordsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author yang
@@ -19,6 +21,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("records")
+@Slf4j
 public class RecordsController {
     @Resource
     private RecordsService recordsService;
@@ -32,8 +35,10 @@ public class RecordsController {
         return ResultUtils.success(record);
     }
 
-/*    @GetMapping("save")
-    public void addRecodes(long userId,long time,long sum,long correct){
-        recordsService.saveRecord(userId,time,sum,correct, , );
-    }*/
+    @GetMapping("pkRecords")
+    public BaseResponse pkRecords(long uid) {
+        log.info("uid---->{}",uid);
+        List<RecordVO> pkRecords = recordsService.getPKRecords(uid);
+        return ResultUtils.success(pkRecords);
+    }
 }

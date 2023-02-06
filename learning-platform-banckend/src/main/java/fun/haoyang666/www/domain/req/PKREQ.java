@@ -1,9 +1,11 @@
-package fun.haoyang666.www.domain.dto;
+package fun.haoyang666.www.domain.req;
 
 import fun.haoyang666.www.common.enums.MessageTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yang
@@ -11,10 +13,15 @@ import java.io.Serializable;
  * @description
  */
 @Data
-public class PKDTO implements Serializable {
+public class PKREQ implements Serializable {
 
     private static final long serialVersionUID = -1729095441702160755L;
     private MessageTypeEnum type;
-    private String receiver;
+    private Map<Long, String> answer;
+    private List<Long> quesIds;
+    private String userId;
+    private Long time;
+    private String opponent;
+    private Boolean result;
 
 }

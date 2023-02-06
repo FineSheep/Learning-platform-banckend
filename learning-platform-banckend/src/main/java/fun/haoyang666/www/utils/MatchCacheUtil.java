@@ -56,7 +56,7 @@ public class MatchCacheUtil {
      * 移除用户在线状态
      */
     public void removeUserOnlineStatus(String userId) {
-        log.info("user:{}",userId);
+        log.info("user:{}", userId);
         HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
 
         redisTemplate.opsForHash().delete(EnumRedisKey.USER_STATUS.getKey(), userId.toString());
@@ -109,9 +109,39 @@ public class MatchCacheUtil {
     }
 
     /**
+     * 用户处于同一房间
+     *
+     * @param userId
+     * @param receiverId
+     */
+    public void setUserInRoom(String userId, String receiverId) {
+        redisTemplate.opsForHash().put(EnumRedisKey.ROOM.toString(), userId, receiverId);
+        redisTemplate.opsForHash().put(EnumRedisKey.ROOM.toString(), receiverId, userId);
+    }
+
+    /**
+     * 移除对战房间
+     *
+     * @param userId
+     */
+    public void removeRoom(String userId) {
+        redisTemplate.opsForHash().delete(EnumRedisKey.ROOM.toString(), userId);
+    }
+
+    /**
+     * 查询对手是否在游戏中。。。
+     *
+     * @param id
+     * @return
+     */
+    public boolean getUserRoom(String id) {
+        return redisTemplate.opsForHash().get(EnumRedisKey.ROOM.toString(), id) != null;
+    }
+
+    /**
      * 设置处于游戏中的用户的对战信息
      */
-    public void setUserMatchInfo(String userId, String userMatchInfo) {
+    public void setUserMatchInfo(String userId, Object userMatchInfo) {
         redisTemplate.opsForHash().put(EnumRedisKey.USER_MATCH_INFO.getKey(), userId, userMatchInfo);
     }
 
@@ -125,8 +155,8 @@ public class MatchCacheUtil {
     /**
      * 获取处于游戏中的用户的对战信息
      */
-    public String getUserMatchInfo(String userId) {
-        return redisTemplate.opsForHash().get(EnumRedisKey.USER_MATCH_INFO.getKey(), userId).toString();
+    public Object getUserMatchInfo(String userId) {
+        return redisTemplate.opsForHash().get(EnumRedisKey.USER_MATCH_INFO.getKey(), userId);
     }
 
     /**

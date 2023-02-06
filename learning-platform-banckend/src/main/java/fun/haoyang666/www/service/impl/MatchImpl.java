@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.StatusEnum;
-import fun.haoyang666.www.domain.vo.PKVO;
-import fun.haoyang666.www.domain.vo.QuesVO;
+import fun.haoyang666.www.domain.req.PKREQ;
+import fun.haoyang666.www.domain.vo.*;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.socket.MatchSocket;
@@ -14,6 +14,8 @@ import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -78,7 +80,7 @@ public class MatchImpl {
         ExecutorService threadPool = ThreadPool.instance();
         threadPool.execute(() -> {
             boolean flag = true;
-            String receiver = null;
+            String opponent = null;
             while (flag) {
                 // 获取除自己以外的其他待匹配用户
                 // 当前用户不处于待匹配状态
@@ -96,23 +98,23 @@ public class MatchImpl {
                         log.info("matchUser 当前用户 {} 已退出匹配", userId);
                         sendMessage(Constant.CANCEL, userId);
                     }
-                    receiver = matchCacheUtil.getUserInMatchRandom(userId);
-                    if (receiver != null) {
+                    opponent = matchCacheUtil.getUserInMatchRandom(userId);
+                    if (opponent != null) {
                         //对手取消匹配
-                        if (matchCacheUtil.getUserOnlineStatus(receiver).compareTo(StatusEnum.IN_MATCH) != 0) {
-                            log.info("matchUser 当前用户 {}, 匹配对手 {} 已退出匹配状态", userId, receiver);
+                        if (matchCacheUtil.getUserOnlineStatus(opponent).compareTo(StatusEnum.IN_MATCH) != 0) {
+                            log.info("matchUser 当前用户 {}, 匹配对手 {} 已退出匹配状态", userId, opponent);
                             sendMessage(Constant.CANCEL, userId);
                         } else {
                             //设置游戏状态
                             matchCacheUtil.setUserInGame(userId);
-                            matchCacheUtil.setUserInGame(receiver);
-                            //   matchCacheUtil.setUserInRoom(userId, receiver);
+                            matchCacheUtil.setUserInGame(opponent);
+                            matchCacheUtil.setUserInRoom(userId, opponent);
                             flag = false;
-                            log.info("匹配成功{}---->{}", userId, receiver);
-                            //双方发送对手信息
-                            sendQues(userId, receiver);
-                          /*  sendMessage(receiver, userId);
-                            sendMessage(userId, receiver);*/
+                            log.info("匹配成功{}---->{}", userId, opponent);
+                            //双方发送匹配信息
+                            sendQues(userId, opponent);
+                          /*  sendMessage(opponent, userId);
+                            sendMessage(userId, opponent);*/
                         }
                     } else {
                         try {
@@ -131,14 +133,93 @@ public class MatchImpl {
         });
     }
 
-    public void sendQues(String userId, String receiver) {
+    public void sendQues(String userId, String opponent) {
         Map<Integer, List<QuesVO>> questions = questionsService.getQuesRandom();
-        sendMessage(new PKVO(questions, receiver), userId);
-        sendMessage(new PKVO(questions, userId), receiver);
+        sendMessage(new PKVO(questions, opponent), userId);
+        sendMessage(new PKVO(questions, userId), opponent);
     }
 
     public void cancel(String userId) {
         log.info("取消匹配");
         matchCacheUtil.setUserIDLE(userId);
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
+    public synchronized void gameOver(PKREQ pkreq) {
+        boolean userRoom = matchCacheUtil.getUserRoom(pkreq.getOpponent());
+        String userId = pkreq.getUserId();
+        matchCacheUtil.removeRoom(userId);
+        CorrectVO vo = questionsService.beforeJudge(pkreq.getQuesIds(), pkreq.getAnswer(), pkreq.getTime());
+        vo.setUserId(userId);
+        matchCacheUtil.setUserMatchInfo(userId, vo);
+        if (userRoom) {
+            sendMessage("对手还在游戏中，请耐心等待。", userId);
+        } else {
+            //判断输赢并写入数据库
+            String opponent = pkreq.getOpponent();
+            CorrectVO userInfo = getVo(userId);
+            log.info("vo1:{}", userInfo);
+            CorrectVO opponentInfo = getVo(opponent);
+            log.info("vo2:{}", opponentInfo);
+            String victoryId = judgeVictory(userInfo, opponentInfo);
+            log.info("victoryId:{}", victoryId);
+
+            //写入胜利者
+            PKResultVO victory;
+            PKResultVO failure;
+            if (victoryId.equals(userId)) {
+                victory = convertPKResultVO(userInfo, true, opponent);
+                failure = convertPKResultVO(opponentInfo, false, userId);
+            } else {
+                victory = convertPKResultVO(opponentInfo, true, userId);
+                failure = convertPKResultVO(userInfo, false, opponent);
+            }
+            //写入数据库
+            questionsService.PKGrade(victory);
+            questionsService.PKGrade(failure);
+            //移除房间以及对战信息
+            sendMessage("赶快查看对战记录吧。", userId);
+
+
+        }
+    }
+
+    public PKResultVO convertPKResultVO(CorrectVO vo, Boolean isVictory, String opponent) {
+        PKResultVO pkResultVO = new PKResultVO();
+        pkResultVO.setResult(isVictory);
+        pkResultVO.setOpponent(opponent);
+        pkResultVO.setCorrectList(vo.getCorrect());
+        pkResultVO.setFailureList(vo.getFailure());
+        pkResultVO.setUserId(vo.getUserId());
+        pkResultVO.setTime(vo.getTime());
+        return pkResultVO;
+    }
+
+    /**
+     * 获取redis中信息
+     */
+    public CorrectVO getVo(String id) {
+        CorrectVO correctVO = (CorrectVO) matchCacheUtil.getUserMatchInfo(id);
+        return correctVO;
+    }
+
+    /**
+     * 返回获胜者id
+     *
+     * @param userInfo
+     * @param opponentInfo
+     * @return
+     */
+    public String judgeVictory(CorrectVO userInfo, CorrectVO opponentInfo) {
+        if (userInfo.getCorrect().size() > opponentInfo.getCorrect().size()) {
+            return userInfo.getUserId();
+        }
+        if (userInfo.getCorrect().size() == opponentInfo.getCorrect().size()) {
+            if (userInfo.getTime() > opponentInfo.getTime()) {
+                return userInfo.getUserId();
+            }
+        }
+        return opponentInfo.getUserId();
     }
 }

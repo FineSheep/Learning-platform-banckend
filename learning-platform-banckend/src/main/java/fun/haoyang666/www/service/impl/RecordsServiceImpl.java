@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +36,7 @@ public class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
     public ScrollerDTO<RecordVO> getRecordsByUid(long uid, int curPage, int pageSize) {
         LambdaQueryWrapper<Records> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Records::getUserId, uid);
+        queryWrapper.eq(Records::getPK, 0);
         Page<Records> page = this.page(new Page<>(curPage, pageSize), queryWrapper);
         long pages = page.getPages();
         ScrollerDTO<RecordVO> dto = new ScrollerDTO<>();
@@ -59,11 +61,24 @@ public class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
         records.setStartTime(startTime);
         records.setCurrectSum(correct);
         records.setEndTime(endTime);
+        records.setOpponent(opponent);
+        if (result == null) {
+            records.setResult(null);
+        } else {
+            records.setResult(result ? 1 : 0);
+            records.setPK(1);
+        }
         this.save(records);
         log.info("record:{}", records);
         return records.getId();
     }
 
+    @Override
+    public List<RecordVO> getPKRecords(long uid) {
+        List<Records> list = this.lambdaQuery().eq(Records::getUserId, uid).eq(Records::getPK, 1).list();
+        List<RecordVO> result = list.stream().map(this::toRecordVo).collect(Collectors.toList());
+        return result;
+    }
 
 
     /**

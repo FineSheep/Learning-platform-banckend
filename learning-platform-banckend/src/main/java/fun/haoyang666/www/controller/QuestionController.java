@@ -2,6 +2,7 @@ package fun.haoyang666.www.controller;
 
 import com.alibaba.excel.EasyExcel;
 import fun.haoyang666.www.common.BaseResponse;
+import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.vo.GradeVO;
 import fun.haoyang666.www.domain.req.GetAnswerREQ;
@@ -69,8 +70,8 @@ public class QuestionController {
     @PostMapping("putAnswer")
     public BaseResponse putAnswer(@RequestBody GetAnswerREQ getAnswerReq) {
         log.info("req:{}", getAnswerReq);
-        List<GradeVO> gradeVOS = questionsService.judgeGrade(getAnswerReq);
-        return ResultUtils.success(gradeVOS);
+        questionsService.judgeGrade(getAnswerReq);
+        return ResultUtils.success(Constant.SUCCESS);
     }
 
     @GetMapping("getQuesRandom")

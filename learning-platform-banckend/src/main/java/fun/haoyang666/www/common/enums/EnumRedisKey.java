@@ -6,15 +6,19 @@ package fun.haoyang666.www.common.enums;
 public enum EnumRedisKey {
 
     /**
-     * userOnline 在线状态
+     * 在线状态
      */
     USER_STATUS,
     /**
-     * userOnline 对局信息
+     * 对局信息
      */
     USER_IN_PLAY,
     /**
-     * userOnline 匹配信息
+     * 房间信息
+     */
+    ROOM,
+    /**
+     * 匹配信息
      */
     USER_MATCH_INFO;
 

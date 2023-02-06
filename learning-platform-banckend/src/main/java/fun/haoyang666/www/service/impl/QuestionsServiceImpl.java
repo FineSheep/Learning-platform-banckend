@@ -6,11 +6,9 @@ import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.QuesEnum;
 import fun.haoyang666.www.domain.entity.User;
-import fun.haoyang666.www.domain.vo.GradeVO;
+import fun.haoyang666.www.domain.vo.*;
 import fun.haoyang666.www.domain.entity.Questions;
 import fun.haoyang666.www.domain.req.GetAnswerREQ;
-import fun.haoyang666.www.domain.vo.LeaderVO;
-import fun.haoyang666.www.domain.vo.QuesVO;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.mapper.QuesrecordMapper;
 import fun.haoyang666.www.service.QuesrecordService;
@@ -83,26 +81,18 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
-    public List<GradeVO> judgeGrade(GetAnswerREQ getAnswerReq) {
+    public void judgeGrade(GetAnswerREQ getAnswerReq) {
         List<Long> quesIds = getAnswerReq.getQuesIds();
         Long userId = getAnswerReq.getUserId();
         Long time = getAnswerReq.getTime();
         Long opponent = getAnswerReq.getOpponent();
         Boolean result = getAnswerReq.getResult();
         Map<Long, String> answer = getAnswerReq.getAnswer();
-        //查询所有题目
-        List<Questions> ques = this.listByIds(quesIds);
-        //问卷判别
-        List<GradeVO> gradeVOS = convertToDto(ques, answer);
-        //正确错误分类
-        Map<Boolean, List<GradeVO>> collect = gradeVOS.stream().collect(Collectors.groupingBy(GradeVO::isCorrect));
-        //正确总数
-        List<GradeVO> correctList = Optional.ofNullable(collect.get(true)).orElse(new ArrayList<>());
-        log.info("true:{}", correctList);
-        long correctCount = correctList.size();
-        //错误总数
-        List<GradeVO> falseList = Optional.ofNullable(collect.get(false)).orElse(new ArrayList<>());
-        long falseCount = falseList.size();
+        CorrectVO vo = beforeJudge(quesIds, answer, getAnswerReq.getTime());
+        List<GradeVO> correctList = vo.getCorrect();
+        List<GradeVO> failure = vo.getFailure();
+        int correctCount = correctList.size();
+        int falseCount = failure.size();
         //形成做题记录
         long recordId = recordsService.saveRecord(userId, time, correctCount + falseCount, correctCount, opponent, result);
         //记录日榜
@@ -110,15 +100,57 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         //修改用户正确数,写入数据库
         log.info("user:{}", getAnswerReq.getUserId());
         //存储做题记录
-        quesrecordService.saveRecordQues(recordId, userId, correctList, falseList);
+        quesrecordService.saveRecordQues(recordId, userId, correctList, failure);
         userService.updateScore(getAnswerReq.getUserId(), correctCount);
-        return gradeVOS;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
+    public void PKGrade(PKResultVO pkResultVO) {
+        List<GradeVO> correctList = pkResultVO.getCorrectList();
+        List<GradeVO> failureList = pkResultVO.getFailureList();
+        int correctCount = pkResultVO.getCorrectList().size();
+        int falseCount = pkResultVO.getFailureList().size();
+        Long userId = Long.parseLong(pkResultVO.getUserId());
+        Long time = pkResultVO.getTime();
+        Long opponent = Long.parseLong(pkResultVO.getOpponent());
+        Boolean result = pkResultVO.getResult();
+        //形成做题记录
+        long recordId = recordsService.saveRecord(userId, time, correctCount + falseCount, correctCount, opponent, result);
+        //记录日榜
+        dayLeader(userId, correctCount);
+        //修改用户正确数,写入数据库
+        log.info("user:{}", userId);
+        //存储做题记录
+        quesrecordService.saveRecordQues(recordId, userId, correctList, failureList);
+        userService.updateScore(userId, correctCount);
     }
 
     @Override
     public Map<Integer, List<QuesVO>> getQuesRandom() {
         return randomQues(20);
     }
+
+    @Override
+    public CorrectVO beforeJudge(List<Long> quesIds, Map<Long, String> answer, Long time) {
+        //查询所有题目
+        List<Questions> ques = this.listByIds(quesIds);
+        //问卷判别
+        List<GradeVO> gradeVOs = convertToDto(ques, answer);
+        //正确错误分类
+        Map<Boolean, List<GradeVO>> collect = gradeVOs.stream().collect(Collectors.groupingBy(GradeVO::isCorrect));
+        //正确总数
+        List<GradeVO> correctList = Optional.ofNullable(collect.get(true)).orElse(new ArrayList<>());
+        log.info("true:{}", correctList);
+        //错误总数
+        List<GradeVO> falseList = Optional.ofNullable(collect.get(false)).orElse(new ArrayList<>());
+        CorrectVO vo = new CorrectVO();
+        vo.setCorrect(correctList);
+        vo.setFailure(falseList);
+        vo.setTime(time);
+        return vo;
+    }
+
 
     private void dayLeader(long userId, long count) {
         ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();

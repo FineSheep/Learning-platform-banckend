@@ -1,9 +1,9 @@
 package fun.haoyang666.www.socket;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.MessageTypeEnum;
+import fun.haoyang666.www.domain.req.PKREQ;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.impl.MatchImpl;
 import fun.haoyang666.www.utils.MatchCacheUtil;
@@ -15,9 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * @author yang
@@ -33,6 +31,7 @@ public class MatchSocket {
     private Session session;
 
     private String userId;
+    private String opponent;
 
     private static MatchCacheUtil matchCacheUtil;
     private static MatchImpl matchImpl;
@@ -72,12 +71,12 @@ public class MatchSocket {
         //移除在线状态
         matchCacheUtil.removeUserOnlineStatus(userId);
         //移除对战室状态
-        //    matchCacheUtil.removeUserFromRoom(userId);
+        matchCacheUtil.removeRoom(userId);
         //移除游戏中的用户的对战信息
         matchCacheUtil.removeUserMatchInfo(userId);
         //记录数据库
         //------
-
+        log.info("对手：{}", opponent);
         log.info("ChatWebsocket onClose 连接断开完成 userId: {}", userId);
     }
 
@@ -85,10 +84,8 @@ public class MatchSocket {
     public void onMessage(String message, Session session) {
         log.info("ChatWebsocket onMessage userId: {}, 来自客户端的消息 message: {}", userId, message);
         Gson gson = new Gson();
-        Type gsonType = new TypeToken<Map<String, String>>() {
-        }.getType();
-        Map<String, String> map = gson.fromJson(message, gsonType);
-        MessageTypeEnum type = gson.fromJson(map.get("type"), MessageTypeEnum.class);
+        PKREQ PKREQ = gson.fromJson(message, PKREQ.class);
+        MessageTypeEnum type = PKREQ.getType();
         log.info("ChatWebsocket onMessage userId: {}, 来自客户端的消息类型 type: {}", userId, type);
         if (type == MessageTypeEnum.PING) {
             log.info("websocket心跳检测：{}", LocalDateTime.now());
@@ -97,9 +94,9 @@ public class MatchSocket {
         } else if (type == MessageTypeEnum.CANCEL_MATCH) {
             matchImpl.cancel(userId);
         } else if (type == MessageTypeEnum.PLAY_GAME) {
-//            toPlay(jsonObject);
+            opponent = PKREQ.getOpponent();
         } else if (type == MessageTypeEnum.GAME_OVER) {
-//            gameover(jsonObject);
+            matchImpl.gameOver(PKREQ);
         } else {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }

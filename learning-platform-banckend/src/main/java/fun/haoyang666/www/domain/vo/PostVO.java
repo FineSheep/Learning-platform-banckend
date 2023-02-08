@@ -1,14 +1,8 @@
 package fun.haoyang666.www.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import fun.haoyang666.www.domain.entity.User;
-import fun.haoyang666.www.domain.entity.Tag;
-
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

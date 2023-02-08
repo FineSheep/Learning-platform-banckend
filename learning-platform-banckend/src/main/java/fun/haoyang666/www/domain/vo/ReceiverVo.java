@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @description
  */
 @Data
-public class ReceiverVo implements Serializable {
+public class ReceiverVO implements Serializable {
     private static final long serialVersionUID = 7952613791909715037L;
     private Long total;
 }

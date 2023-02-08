@@ -14,36 +14,13 @@ import java.util.Date;
  */
 @Data
 public class RecordVO implements Serializable {
-
     private static final long serialVersionUID = -5489787637306748545L;
-
     private Long id;
-
     private Long answerTime;
-
-    /**
-     * 用户id
-     */
     private Long userId;
-
-    /**
-     * 对手id
-     */
     private Long opponent;
-
-    /**
-     * 游戏结果 0-输  1-赢
-     */
     private Integer result;
-
-    /**
-     * 题目总数
-     */
     private Long sum;
-
-    /**
-     * 正确数量
-     */
     private Long currectSum;
 
     public void setAnswerTime(LocalDateTime startTime, LocalDateTime endTime) {

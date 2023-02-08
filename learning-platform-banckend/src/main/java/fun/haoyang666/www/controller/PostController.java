@@ -49,9 +49,10 @@ public class PostController {
     }
 
     @GetMapping("getPost")
-    public BaseResponse<Post> getPost(long postId) {
-        Post post = postService.lambdaQuery().eq(Post::getId, postId).one();
-        return ResultUtils.success(post);
+    public BaseResponse<PostVO> getPost(Long postId, Long userId) {
+//        Post post = postService.lambdaQuery().eq(Post::getId, postId).one();
+        PostVO vo = postService.getPost(postId, userId);
+        return ResultUtils.success(vo);
     }
 
     @GetMapping("getPosts")

@@ -100,6 +100,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         return dto;
     }
 
+    @Override
+    public PostVO getPost(long id, long userId) {
+        Post post = this.lambdaQuery().eq(Post::getId, id).one();
+        PostVO vo = new PostVO();
+        vo.setCollected(isCollected(userId, id));
+        vo.setThumbed(isThumbed(userId, id));
+        vo.setContent(post.getContent());
+        return vo;
+    }
+
     private boolean isCollected(long userId, long postId) {
         List<Long> collects = collectPostService.lambdaQuery().eq(CollectPost::getUserId, userId).list()
                 .stream().map(CollectPost::getPostId).collect(Collectors.toList());

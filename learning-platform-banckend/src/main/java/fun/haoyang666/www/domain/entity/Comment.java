@@ -3,6 +3,7 @@ package fun.haoyang666.www.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  */
 @TableName("comment")
 @Data
-public class Comment {
+public class Comment implements Serializable {
     private String id;
     private String parentId;
     private String content;

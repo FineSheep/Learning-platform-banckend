@@ -14,8 +14,9 @@ public class CommentVo {
     private String id;
     private String parentId;
     private String content;
-    private Long postId;
+    private Long userId;
     private LocalDateTime createTime;
-    private String userId;
-    private String userAvatar;
+    private Long postId;
+    private String avatar;
+    private String username;
 }

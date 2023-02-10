@@ -1,13 +1,16 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
+import fun.haoyang666.www.common.enums.ErrorCode;
+import fun.haoyang666.www.domain.entity.Comment;
+import fun.haoyang666.www.domain.vo.CommentVo;
 import fun.haoyang666.www.service.CommentService;
 import fun.haoyang666.www.utils.ResultUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author yang
@@ -21,8 +24,22 @@ public class CommentController {
     @Resource
     private CommentService commentService;
 
+    @GetMapping("getAllComments")
+    public BaseResponse<List<CommentVo>> getAllComments(Long postId) {
+        List<CommentVo> lists = commentService.getAllComments(postId);
+        return ResultUtils.success(lists);
+    }
+
     @PostMapping("addComment")
-    public BaseResponse addComment() {
+    public BaseResponse addComment(@RequestBody Comment comment) {
+        String id = comment.getId();
+        String content = comment.getContent();
+        Long postId = comment.getPostId();
+        String userId = comment.getUserId();
+        if (StringUtils.isAnyBlank(id, content, Long.toString(postId), userId)) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+        }
+        commentService.addComment(comment);
         return ResultUtils.success("");
     }
 }

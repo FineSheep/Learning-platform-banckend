@@ -2,6 +2,7 @@ package fun.haoyang666.www.domain.req;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class SavePostREQ {
+public class SavePostREQ implements Serializable {
     private long userId;
     private List<Long> tags;
     private String content;

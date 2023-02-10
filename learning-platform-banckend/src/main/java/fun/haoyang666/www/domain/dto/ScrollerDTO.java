@@ -2,6 +2,7 @@ package fun.haoyang666.www.domain.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class ScrollerDTO<T> {
+public class ScrollerDTO<T>  implements Serializable {
     private List<T> records;
     private boolean hasNext;
 }

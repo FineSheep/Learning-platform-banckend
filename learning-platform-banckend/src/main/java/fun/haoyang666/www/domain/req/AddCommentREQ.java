@@ -6,10 +6,9 @@ import java.io.Serializable;
 
 /**
  * @author yang
- * @createTime 2023/1/16 15:07
+ * @createTime 2023/2/10 15:05
  * @description
  */
 @Data
-public class GetPostREQ extends PageREQ implements Serializable {
-    private Long userId;
+public class AddCommentREQ implements Serializable {
 }

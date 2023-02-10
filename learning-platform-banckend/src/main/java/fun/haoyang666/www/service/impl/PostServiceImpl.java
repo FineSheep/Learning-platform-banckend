@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.ScrollerDTO;
-import fun.haoyang666.www.domain.entity.CollectPost;
-import fun.haoyang666.www.domain.entity.Post;
-import fun.haoyang666.www.domain.entity.Tag;
-import fun.haoyang666.www.domain.entity.ThumbPost;
+import fun.haoyang666.www.domain.entity.*;
 import fun.haoyang666.www.domain.vo.PostVO;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.CollectPostService;
@@ -107,6 +104,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         vo.setCollected(isCollected(userId, id));
         vo.setThumbed(isThumbed(userId, id));
         vo.setContent(post.getContent());
+        User user = new User();
+        user.setId(post.getUserId());
+        vo.setUser(user);
         return vo;
     }
 

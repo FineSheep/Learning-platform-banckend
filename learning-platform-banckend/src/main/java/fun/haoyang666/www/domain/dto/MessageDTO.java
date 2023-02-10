@@ -4,6 +4,7 @@ import fun.haoyang666.www.common.enums.MessageTypeEnum;
 import lombok.Data;
 import org.apache.poi.ss.formula.functions.T;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Set;
  * @description
  */
 @Data
-public class MessageDTO<T> {
+public class MessageDTO<T> implements Serializable {
 
     /**
      * 消息类型

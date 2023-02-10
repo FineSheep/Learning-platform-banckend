@@ -1,12 +1,8 @@
 package fun.haoyang666.www.domain.req;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
-import java.util.Date;
+import java.io.Serializable;
 
 /**
  * @author yang
@@ -14,7 +10,7 @@ import java.util.Date;
  * @description
  */
 @Data
-public class UserUpdateREQ {
+public class UserUpdateREQ implements Serializable {
     /**
      * 用户昵称
      */

@@ -2,6 +2,7 @@ package fun.haoyang666.www.domain.req;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * @description
  */
 @Data
-public class GetAnswerREQ {
+public class GetAnswerREQ implements Serializable {
     private Map<Long, String> answer;
     private List<Long> quesIds;
     private Long userId;

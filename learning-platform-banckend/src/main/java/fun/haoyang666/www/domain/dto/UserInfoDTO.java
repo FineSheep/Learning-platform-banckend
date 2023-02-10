@@ -2,6 +2,7 @@ package fun.haoyang666.www.domain.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
  * @description
  */
 @Data
-public class UserInfoDTO {
+public class UserInfoDTO  implements Serializable {
     /**
      * id
      */

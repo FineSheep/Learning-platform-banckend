@@ -6,13 +6,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * 用户
+ *
  * @TableName user
  */
-@TableName(value ="user")
+@TableName(value = "user")
 @Data
 public class User implements Serializable {
     /**
@@ -62,7 +64,7 @@ public class User implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 
+     *
      */
     private LocalDateTime updateTime;
 
@@ -91,6 +93,8 @@ public class User implements Serializable {
      * 正确数
      */
     private Integer correctNum;
+
+    private LocalDateTime birthday;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -1,6 +1,8 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
+import fun.haoyang666.www.common.Constant;
+import fun.haoyang666.www.domain.req.UserInfoREQ;
 import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDTO;
@@ -26,20 +28,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-/*    @PostMapping("register")
-    public BaseResponse<Long> register(@RequestBody UserRegisterReq registerReq) {
-        if (registerReq == null) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        String email = registerReq.getEmail();
-        String password = registerReq.getPassword();
-        String userCode = registerReq.getUserCode();
-        if (StringUtils.isAnyBlank(email, password, userCode)) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        Long id = userService.userRegister(email, password, userCode);
-        return ResultUtils.success(id);
-    }*/
+    @PostMapping("updateUserInfo")
+    public BaseResponse updateUserInfo(@RequestBody UserInfoREQ req) {
+        userService.updateUserInfo(req);
+        return ResultUtils.success(Constant.SUCCESS);
+    }
 
     @GetMapping("getCode")
     public BaseResponse getCode(String email) {

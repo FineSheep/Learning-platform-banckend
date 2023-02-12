@@ -32,4 +32,10 @@ public class InformationController {
         ScrollerDTO<Information> dto = informationService.getInformationPage(pageReq.getCurPage(), pageReq.getPageSize());
         return ResultUtils.success(dto);
     }
+
+    @GetMapping("getNewById")
+    public BaseResponse getNewById(Long id) {
+        Information info = informationService.getNewById(id);
+        return ResultUtils.success(info);
+    }
 }

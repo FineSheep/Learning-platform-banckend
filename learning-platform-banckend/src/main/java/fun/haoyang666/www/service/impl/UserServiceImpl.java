@@ -8,6 +8,7 @@ import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
+import fun.haoyang666.www.domain.req.UserInfoREQ;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
@@ -122,6 +123,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         log.info("user:{}", userId);
         int i = userMapper.updateCorrectNum(userId, num);
         return i;
+    }
+
+    @Override
+    public void updateUserInfo(UserInfoREQ req) {
+        User user = new User();
+        user.setId(req.getUserId());
+        user.setUsername(req.getUsername());
+        user.setGender(req.getGender());
+        user.setProfile(req.getProfile());
+        user.setPhone(req.getPhone());
+        user.setBirthday(req.getBirthday());
+        this.updateById(user);
     }
 
     private User getUserById(Long id) {

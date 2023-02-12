@@ -33,6 +33,11 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
         dto.setRecords(page.getRecords());
         return dto;
     }
+
+    @Override
+    public Information getNewById(Long id) {
+        return this.getById(id);
+    }
 }
 
 

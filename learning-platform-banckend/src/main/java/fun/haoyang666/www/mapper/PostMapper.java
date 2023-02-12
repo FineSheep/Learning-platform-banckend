@@ -14,15 +14,20 @@ import java.util.List;
  */
 public interface PostMapper extends BaseMapper<Post> {
 
+    int downThumb(long postId);
+
     List<PostVO> selectPosts(int offset, int pageSize);
 
-    int downThumb(long postId);
+    List<PostVO> selectPostsUid(int offset, int pageSize,long uid);
 
     int upThumb(long postId);
 
     int downCollect(long postId);
 
     int upCollect(long postId);
+
+    void updatePostComment(Long postId);
+
 
 }
 

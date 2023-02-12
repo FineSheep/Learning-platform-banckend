@@ -13,4 +13,5 @@ public interface InformationService extends IService<Information> {
 
     ScrollerDTO<Information> getInformationPage(int curPage, int pageSize);
 
+    Information getNewById(Long id);
 }

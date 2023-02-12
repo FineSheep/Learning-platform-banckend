@@ -66,4 +66,15 @@ public class PostController {
         ScrollerDTO<PostVO> posts = postService.getPosts(userId, curPage, pageSize);
         return ResultUtils.success(posts);
     }
+
+    @GetMapping("getPostByUserId")
+    public  BaseResponse getPostByUserId(GetPostREQ getPostReq){
+        int curPage = getPostReq.getCurPage();
+        int pageSize = getPostReq.getPageSize();
+        Long userId = getPostReq.getUserId();
+       List<PostVO> vos= postService.getPostUid(curPage,pageSize,userId);
+        return ResultUtils.success(vos);
+    }
+
+
 }

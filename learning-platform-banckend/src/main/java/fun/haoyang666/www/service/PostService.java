@@ -20,4 +20,6 @@ public interface PostService extends IService<Post> {
     ScrollerDTO<PostVO> getPosts(long userId, int curPage, int pageSize);
 
     PostVO getPost(long id, long userId);
+
+    List<PostVO> getPostUid(int curPage, int pageSize, Long userId);
 }

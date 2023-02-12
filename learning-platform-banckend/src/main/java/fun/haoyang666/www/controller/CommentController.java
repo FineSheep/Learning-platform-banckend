@@ -1,6 +1,7 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
+import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.entity.Comment;
 import fun.haoyang666.www.domain.vo.CommentVo;
@@ -40,6 +41,6 @@ public class CommentController {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         commentService.addComment(comment);
-        return ResultUtils.success("");
+        return ResultUtils.success(Constant.SUCCESS);
     }
 }

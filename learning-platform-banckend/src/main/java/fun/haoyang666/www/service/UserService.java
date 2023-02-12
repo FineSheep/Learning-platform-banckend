@@ -4,6 +4,7 @@ import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.domain.req.UserInfoREQ;
 
 /**
  * @author yang
@@ -27,4 +28,6 @@ public interface UserService extends IService<User> {
 
 
     int updateScore(long userId, long num);
+
+    void updateUserInfo(UserInfoREQ req);
 }

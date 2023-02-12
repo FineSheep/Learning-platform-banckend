@@ -20,6 +20,7 @@
         <result property="profile" column="profile" jdbcType="VARCHAR"/>
         <result property="questionNum" column="questionNum" jdbcType="INTEGER"/>
         <result property="correctNum" column="correctNum" jdbcType="INTEGER"/>
+        <result property="birthday" column="birthday"/>
     </resultMap>
 
     <sql id="Base_Column_List">

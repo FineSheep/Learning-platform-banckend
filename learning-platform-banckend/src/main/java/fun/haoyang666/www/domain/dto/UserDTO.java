@@ -72,4 +72,6 @@ public class UserDTO implements Serializable {
      * 正确数
      */
     private Integer correctNum;
+
+    private LocalDateTime birthday;
 }

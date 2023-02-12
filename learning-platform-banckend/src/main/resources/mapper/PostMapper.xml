@@ -95,4 +95,34 @@
         set collectNum = collectNum - 1
         where id = #{postId};
     </update>
+    <update id="updatePostComment">
+        update post
+        set commentNum = commentNum + 1
+        where id = #{postId};
+    </update>
+
+
+    <select id="selectPostsUid" resultMap="postMap">
+        select post.id,
+               description,
+               content,
+               photo,
+               reviewStatus,
+               reviewMessage,
+               collectNum,
+               commentNum,
+               thumbNum,
+               tags,
+               post.createTime,
+               title,
+               `user`.id as userId,
+               `user`.avatarUrl
+        from post,
+             `user`
+        where post.userId = `user`.id
+          and post.isDelete = 0
+          and post.userId = #{uid}
+        order by post.createTime desc
+            limit #{offset}, #{pageSize};
+    </select>
 </mapper>

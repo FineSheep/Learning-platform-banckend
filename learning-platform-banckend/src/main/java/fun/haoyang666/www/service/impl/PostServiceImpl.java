@@ -1,5 +1,6 @@
 package fun.haoyang666.www.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.enums.ErrorCode;
@@ -108,6 +109,16 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         user.setId(post.getUserId());
         vo.setUser(user);
         return vo;
+    }
+
+    @Override
+    public List<PostVO> getPostUid(int curPage, int pageSize, Long userId) {
+        int offset = 0;
+        if ((curPage - 1) * pageSize > 0) {
+            offset = (curPage - 1) * pageSize;
+        }
+        List<PostVO> postVOS = postMapper.selectPostsUid(offset, pageSize, userId);
+        return postVOS;
     }
 
     private boolean isCollected(long userId, long postId) {

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @description
  */
 @Data
-public class UserInfoDTO  implements Serializable {
+public class UserInfoDTO implements Serializable {
     /**
      * id
      */
@@ -51,4 +51,8 @@ public class UserInfoDTO  implements Serializable {
     private Integer correctNum;
 
     private LocalDateTime birthday;
+
+    private Long postNum;
+    private Long thumbNum;
+    private Long collectNum;
 }

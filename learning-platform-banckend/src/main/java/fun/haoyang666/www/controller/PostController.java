@@ -68,13 +68,17 @@ public class PostController {
     }
 
     @GetMapping("getPostByUserId")
-    public  BaseResponse getPostByUserId(GetPostREQ getPostReq){
+    public BaseResponse getPostByUserId(GetPostREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
         Long userId = getPostReq.getUserId();
-       List<PostVO> vos= postService.getPostUid(curPage,pageSize,userId);
+        List<PostVO> vos = postService.getPostUid(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }
 
+    @GetMapping("deletePost")
+    public BaseResponse deletePost(Long postId) {
+        return ResultUtils.success(postService.removeById(postId));
+    }
 
 }

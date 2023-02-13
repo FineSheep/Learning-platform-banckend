@@ -50,8 +50,6 @@ public class MatchImpl {
      * @param <T>
      */
     public <T> void sendMessage(T data, String id) {
-        Stack<Object> objects = new Stack<>();
-        objects.isEmpty();
         try {
             MatchSocket client = matchCacheUtil.getClient(id);
             Gson gson = new Gson();

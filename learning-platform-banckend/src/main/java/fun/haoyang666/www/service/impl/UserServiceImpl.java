@@ -7,11 +7,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
+import fun.haoyang666.www.domain.entity.CollectPost;
+import fun.haoyang666.www.domain.entity.Post;
+import fun.haoyang666.www.domain.entity.ThumbPost;
 import fun.haoyang666.www.domain.entity.User;
 import fun.haoyang666.www.domain.req.UserInfoREQ;
 import fun.haoyang666.www.exception.BusinessException;
+import fun.haoyang666.www.service.CollectPostService;
+import fun.haoyang666.www.service.PostService;
+import fun.haoyang666.www.service.ThumbPostService;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
+import fun.haoyang666.www.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static fun.haoyang666.www.common.Constant.*;
@@ -37,23 +45,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private PostService postService;
+    @Resource
+    private ThumbPostService thumbPostService;
+    @Resource
+    private CollectPostService collectPostService;
 
 
     @Override
     public void getCode(String email) {
         int code = Math.abs(RandomUtil.randomInt());
         String content = "您的验证码为" + code + ",5分钟内有效！";
-        new Thread(() -> {
-            try {
-                MailUtil.send(email, "验证码", content, false);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new BusinessException(ErrorCode.PARAMS_ERROR, "邮箱错误");
-            }
-        }).start();
+        ExecutorService threadPool = ThreadPool.instance();
+        threadPool.execute(
+                () -> {
+                    try {
+                        MailUtil.send(email, "验证码", content, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new BusinessException(ErrorCode.PARAMS_ERROR, "邮箱错误");
+                    }
+                });
         redisTemplate.opsForValue().set("code:" + email, String.valueOf(code), 5, TimeUnit.MINUTES);
     }
 
@@ -114,6 +129,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         UserInfoDTO userInfoDto = new UserInfoDTO();
         BeanUtils.copyProperties(user, userInfoDto);
+        Long postCount = postService.lambdaQuery().eq(Post::getUserId, userId).count();
+        userInfoDto.setPostNum(postCount);
+        Long thumbCount = thumbPostService.lambdaQuery().eq(ThumbPost::getUserId, userId).count();
+        userInfoDto.setThumbNum(thumbCount);
+        Long collectCount = collectPostService.lambdaQuery().eq(CollectPost::getUserId, userId).count();
+        userInfoDto.setCollectNum(collectCount);
         return userInfoDto;
     }
 

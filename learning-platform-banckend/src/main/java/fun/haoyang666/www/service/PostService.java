@@ -1,6 +1,5 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
 import fun.haoyang666.www.domain.vo.PostVO;
@@ -17,9 +16,13 @@ public interface PostService extends IService<Post> {
 
     void savePost(String content, String title, String description, String photo, long userId, List<Long> tags);
 
-    ScrollerDTO<PostVO> getPosts(long userId, int curPage, int pageSize);
+    List<PostVO> getPosts(long userId, int curPage, int pageSize);
 
     PostVO getPost(long id, long userId);
 
     List<PostVO> getPostUid(int curPage, int pageSize, Long userId);
+
+    List<PostVO> getPostThumb(int curPage, int pageSize, Long userId);
+
+    List<PostVO> getPostCollect(int curPage, int pageSize, Long userId);
 }

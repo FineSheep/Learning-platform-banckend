@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Information;
 
+import java.util.List;
+
 /**
  * @author yang
  * @description 针对表【information】的数据库操作Service
@@ -11,7 +13,7 @@ import fun.haoyang666.www.domain.entity.Information;
  */
 public interface InformationService extends IService<Information> {
 
-    ScrollerDTO<Information> getInformationPage(int curPage, int pageSize);
+    List<Information> getInformationPage(int curPage, int pageSize);
 
     Information getNewById(Long id);
 }

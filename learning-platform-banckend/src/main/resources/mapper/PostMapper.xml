@@ -125,4 +125,58 @@
         order by post.createTime desc
             limit #{offset}, #{pageSize};
     </select>
+    <select id="selectPostThumb" resultMap="postMap">
+        select post.id,
+               description,
+               content,
+               photo,
+               reviewStatus,
+               reviewMessage,
+               collectNum,
+               commentNum,
+               thumbNum,
+               tags,
+               post.createTime,
+               title,
+               `user`.id as userId,
+               `user`.avatarUrl
+        from post,
+             `user`
+        where post.userId = `user`.id
+          and post.isDelete = 0
+          and post.id in (
+            select postId
+            from thumb_post
+            where userId = #{userId}
+        )
+        order by post.createTime desc
+            limit #{offset}, #{pageSize};
+    </select>
+    <select id="selectPostCollect" resultMap="postMap">
+        select post.id,
+               description,
+               content,
+               photo,
+               reviewStatus,
+               reviewMessage,
+               collectNum,
+               commentNum,
+               thumbNum,
+               tags,
+               post.createTime,
+               title,
+               `user`.id as userId,
+               `user`.avatarUrl
+        from post,
+             `user`
+        where post.userId = `user`.id
+          and post.isDelete = 0
+          and post.id in (
+            select postId
+            from collect_post
+            where userId = #{userId}
+        )
+        order by post.createTime desc
+            limit #{offset}, #{pageSize};
+    </select>
 </mapper>

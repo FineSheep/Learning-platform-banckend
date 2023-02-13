@@ -9,6 +9,8 @@ import fun.haoyang666.www.mapper.InformationMapper;
 import fun.haoyang666.www.service.InformationService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author yang
  * @description 针对表【information】的数据库操作Service实现
@@ -19,19 +21,11 @@ public class InformationServiceImpl extends ServiceImpl<InformationMapper, Infor
         implements InformationService {
 
     @Override
-    public ScrollerDTO<Information> getInformationPage(int curPage, int pageSize) {
+    public List<Information> getInformationPage(int curPage, int pageSize) {
         LambdaQueryWrapper<Information> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Information::getPutTime);
         Page<Information> page = this.page(new Page<>(curPage, pageSize), queryWrapper);
-        long pages = page.getPages();
-        ScrollerDTO<Information> dto = new ScrollerDTO<>();
-        if (curPage < pages) {
-            dto.setHasNext(true);
-        }else {
-            dto.setHasNext(false);
-        }
-        dto.setRecords(page.getRecords());
-        return dto;
+        return page.getRecords();
     }
 
     @Override

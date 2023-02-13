@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author yang
@@ -29,7 +30,7 @@ public class InformationController {
         if (pageReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        ScrollerDTO<Information> dto = informationService.getInformationPage(pageReq.getCurPage(), pageReq.getPageSize());
+        List<Information> dto = informationService.getInformationPage(pageReq.getCurPage(), pageReq.getPageSize());
         return ResultUtils.success(dto);
     }
 

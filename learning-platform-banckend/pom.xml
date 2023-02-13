@@ -18,12 +18,12 @@
     </properties>
     <dependencies>
         <!--热部署-->
-        <dependency>
+<!--        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
             <scope>true</scope>
-        </dependency>
+        </dependency>-->
 
         <!--文件存储-->
         <dependency>

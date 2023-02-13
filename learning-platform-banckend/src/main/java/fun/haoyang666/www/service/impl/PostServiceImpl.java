@@ -1,6 +1,5 @@
 package fun.haoyang666.www.service.impl;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.enums.ErrorCode;
@@ -61,9 +60,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     }
 
     @Override
-    public ScrollerDTO<PostVO> getPosts(long userId, int curPage, int pageSize) {
-        ScrollerDTO<PostVO> dto = new ScrollerDTO<>();
-        long count = this.count();
+    public List<PostVO> getPosts(long userId, int curPage, int pageSize) {
         int offset = 0;
         if ((curPage - 1) * pageSize > 0) {
             offset = (curPage - 1) * pageSize;
@@ -89,13 +86,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
                 item.setThumbed(true);
             }
         });
-        dto.setRecords(postVOS);
-        if (count <= (long) curPage * pageSize) {
-            dto.setHasNext(false);
-        } else {
-            dto.setHasNext(true);
-        }
-        return dto;
+
+        return postVOS;
     }
 
     @Override
@@ -118,6 +110,26 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             offset = (curPage - 1) * pageSize;
         }
         List<PostVO> postVOS = postMapper.selectPostsUid(offset, pageSize, userId);
+        return postVOS;
+    }
+
+    @Override
+    public List<PostVO> getPostThumb(int curPage, int pageSize, Long userId) {
+        int offset = 0;
+        if ((curPage - 1) * pageSize > 0) {
+            offset = (curPage - 1) * pageSize;
+        }
+        List<PostVO> postVOS =   postMapper.selectPostThumb(offset, pageSize, userId);
+        return postVOS;
+    }
+
+    @Override
+    public List<PostVO> getPostCollect(int curPage, int pageSize, Long userId) {
+        int offset = 0;
+        if ((curPage - 1) * pageSize > 0) {
+            offset = (curPage - 1) * pageSize;
+        }
+        List<PostVO> postVOS =   postMapper.selectPostCollect(offset, pageSize, userId);
         return postVOS;
     }
 

@@ -5,7 +5,6 @@ import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
 import fun.haoyang666.www.domain.dto.ScrollerDTO;
-import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.domain.req.GetPostREQ;
 import fun.haoyang666.www.domain.req.SavePostREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
@@ -56,14 +55,14 @@ public class PostController {
     }
 
     @GetMapping("getPosts")
-    public BaseResponse<ScrollerDTO<PostVO>> getPosts(GetPostREQ getPostReq) {
+    public BaseResponse<List<PostVO>> getPosts(GetPostREQ getPostReq) {
         if (getPostReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
         Long userId = getPostReq.getUserId();
-        ScrollerDTO<PostVO> posts = postService.getPosts(userId, curPage, pageSize);
+        List<PostVO> posts = postService.getPosts(userId, curPage, pageSize);
         return ResultUtils.success(posts);
     }
 
@@ -79,6 +78,24 @@ public class PostController {
     @GetMapping("deletePost")
     public BaseResponse deletePost(Long postId) {
         return ResultUtils.success(postService.removeById(postId));
+    }
+
+    @GetMapping("getPostThumb")
+    public BaseResponse getPostThumb(GetPostREQ getPostReq) {
+        int curPage = getPostReq.getCurPage();
+        int pageSize = getPostReq.getPageSize();
+        Long userId = getPostReq.getUserId();
+        List<PostVO> vos = postService.getPostThumb(curPage, pageSize, userId);
+        return ResultUtils.success(vos);
+    }
+
+    @GetMapping("getPostCollect")
+    public BaseResponse getPostCollect(GetPostREQ getPostReq) {
+        int curPage = getPostReq.getCurPage();
+        int pageSize = getPostReq.getPageSize();
+        Long userId = getPostReq.getUserId();
+        List<PostVO> vos = postService.getPostCollect(curPage, pageSize, userId);
+        return ResultUtils.success(vos);
     }
 
 }

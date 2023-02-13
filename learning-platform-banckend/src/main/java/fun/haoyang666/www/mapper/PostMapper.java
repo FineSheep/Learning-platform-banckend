@@ -18,7 +18,7 @@ public interface PostMapper extends BaseMapper<Post> {
 
     List<PostVO> selectPosts(int offset, int pageSize);
 
-    List<PostVO> selectPostsUid(int offset, int pageSize,long uid);
+    List<PostVO> selectPostsUid(int offset, int pageSize, long uid);
 
     int upThumb(long postId);
 
@@ -29,6 +29,9 @@ public interface PostMapper extends BaseMapper<Post> {
     void updatePostComment(Long postId);
 
 
+    List<PostVO> selectPostThumb(int offset, int pageSize, Long userId);
+
+    List<PostVO> selectPostCollect(int offset, int pageSize, Long userId);
 }
 
 

@@ -2,6 +2,7 @@ package fun.haoyang666.www.service;
 
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.domain.req.GetPostActionsREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface PostService extends IService<Post> {
     List<PostVO> getPostThumb(int curPage, int pageSize, Long userId);
 
     List<PostVO> getPostCollect(int curPage, int pageSize, Long userId);
+
+    List<PostVO> getPostActions(GetPostActionsREQ req);
 }

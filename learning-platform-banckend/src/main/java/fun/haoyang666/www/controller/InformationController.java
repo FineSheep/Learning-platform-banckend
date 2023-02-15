@@ -1,12 +1,11 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Information;
 import fun.haoyang666.www.domain.req.PageREQ;
 import fun.haoyang666.www.service.InformationService;
+import fun.haoyang666.www.utils.ResultUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

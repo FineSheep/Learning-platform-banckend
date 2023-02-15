@@ -3,7 +3,6 @@ package fun.haoyang666.www.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Information;
 import fun.haoyang666.www.mapper.InformationMapper;
 import fun.haoyang666.www.service.InformationService;

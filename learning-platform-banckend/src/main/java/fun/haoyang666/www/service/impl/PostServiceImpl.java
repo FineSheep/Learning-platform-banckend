@@ -3,18 +3,20 @@ package fun.haoyang666.www.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.enums.ErrorCode;
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.*;
+import fun.haoyang666.www.domain.req.GetPostActionsREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
 import fun.haoyang666.www.exception.BusinessException;
+import fun.haoyang666.www.mapper.PostMapper;
 import fun.haoyang666.www.service.CollectPostService;
 import fun.haoyang666.www.service.PostService;
-import fun.haoyang666.www.mapper.PostMapper;
 import fun.haoyang666.www.service.TagService;
 import fun.haoyang666.www.service.ThumbPostService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,9 +96,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     public PostVO getPost(long id, long userId) {
         Post post = this.lambdaQuery().eq(Post::getId, id).one();
         PostVO vo = new PostVO();
+        BeanUtils.copyProperties(post, vo);
         vo.setCollected(isCollected(userId, id));
         vo.setThumbed(isThumbed(userId, id));
-        vo.setContent(post.getContent());
         User user = new User();
         user.setId(post.getUserId());
         vo.setUser(user);
@@ -110,6 +112,19 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             offset = (curPage - 1) * pageSize;
         }
         List<PostVO> postVOS = postMapper.selectPostsUid(offset, pageSize, userId);
+        //获取标签，转换为map
+/*        Map<Long, String> tagMap = tagService.list().stream().collect(Collectors.toMap(Tag::getId, Tag::getTagName));
+        //标签转化为名字
+        postVOS.forEach(item -> {
+            String tagsStr = item.getTags();
+            Gson gson = new Gson();
+            Long[] tags = gson.fromJson(tagsStr, Long[].class);
+            ArrayList<String> tagsName = new ArrayList<>();
+            Arrays.stream(tags).forEach(index -> {
+                tagsName.add(tagMap.get(index));
+            });
+            item.setTagsName(tagsName);
+        });*/
         return postVOS;
     }
 
@@ -119,7 +134,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         if ((curPage - 1) * pageSize > 0) {
             offset = (curPage - 1) * pageSize;
         }
-        List<PostVO> postVOS =   postMapper.selectPostThumb(offset, pageSize, userId);
+        List<PostVO> postVOS = postMapper.selectPostThumb(offset, pageSize, userId);
         return postVOS;
     }
 
@@ -129,7 +144,20 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         if ((curPage - 1) * pageSize > 0) {
             offset = (curPage - 1) * pageSize;
         }
-        List<PostVO> postVOS =   postMapper.selectPostCollect(offset, pageSize, userId);
+        List<PostVO> postVOS = postMapper.selectPostCollect(offset, pageSize, userId);
+        return postVOS;
+    }
+
+    @Override
+    public List<PostVO> getPostActions(GetPostActionsREQ req) {
+        int curPage = req.getCurPage();
+        int pageSize = req.getPageSize();
+        int offset = 0;
+        if ((curPage - 1) * pageSize > 0) {
+            offset = (curPage - 1) * pageSize;
+        }
+        req.setOffset(offset);
+        List<PostVO> postVOS = postMapper.getPostActions(req);
         return postVOS;
     }
 

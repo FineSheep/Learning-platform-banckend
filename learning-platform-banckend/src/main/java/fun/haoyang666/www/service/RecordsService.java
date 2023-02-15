@@ -1,8 +1,7 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
-import fun.haoyang666.www.domain.entity.Records;
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.domain.entity.Records;
 import fun.haoyang666.www.domain.vo.RecordVO;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public interface RecordsService extends IService<Records> {
 
-    ScrollerDTO<RecordVO> getRecordsByUid(long uid, int curPage, int pageSize);
+    List<RecordVO> getRecordsByUid(long uid, int curPage, int pageSize);
 
     long saveRecord(long userId, long time, long sum, long correct, Long opponent, Boolean result);
 

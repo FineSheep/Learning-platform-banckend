@@ -3,11 +3,10 @@ package fun.haoyang666.www.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Records;
 import fun.haoyang666.www.domain.vo.RecordVO;
-import fun.haoyang666.www.service.RecordsService;
 import fun.haoyang666.www.mapper.RecordsMapper;
+import fun.haoyang666.www.service.RecordsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -28,25 +27,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
         implements RecordsService {
-    @Resource
-    private RecordsMapper recordsMapper;
+
 
     @Override
-    public ScrollerDTO<RecordVO> getRecordsByUid(long uid, int curPage, int pageSize) {
+    public List<RecordVO> getRecordsByUid(long uid, int curPage, int pageSize) {
         LambdaQueryWrapper<Records> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Records::getUserId, uid);
         queryWrapper.eq(Records::getPK, 0);
         Page<Records> page = this.page(new Page<>(curPage, pageSize), queryWrapper);
         long pages = page.getPages();
-        ScrollerDTO<RecordVO> dto = new ScrollerDTO<>();
-        if (curPage < pages) {
-            dto.setHasNext(true);
-        } else {
-            dto.setHasNext(false);
-        }
         List<RecordVO> collect = page.getRecords().stream().map(this::toRecordVo).collect(Collectors.toList());
-        dto.setRecords(collect);
-        return dto;
+        return collect;
     }
 
     @Override

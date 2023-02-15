@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 public class ThreadPool {
 
-    private static ExecutorService threadPool;
+    private volatile static ExecutorService threadPool;
 
     private ThreadPool() {
     }
@@ -20,7 +20,7 @@ public class ThreadPool {
             synchronized (ThreadPool.class) {
                 if (threadPool == null) {
                     threadPool = new ThreadPoolExecutor(3, 5, 3,
-                            TimeUnit.MINUTES, new LinkedBlockingQueue<>(3),
+                            TimeUnit.MINUTES, new LinkedBlockingQueue<>(100),
                             Executors.defaultThreadFactory(),
                             new ThreadPoolExecutor.DiscardOldestPolicy());
                 }

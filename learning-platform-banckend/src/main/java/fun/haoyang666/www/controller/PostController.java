@@ -1,14 +1,14 @@
 package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
-import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
+import fun.haoyang666.www.domain.req.GetPostActionsREQ;
 import fun.haoyang666.www.domain.req.GetPostREQ;
 import fun.haoyang666.www.domain.req.SavePostREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
 import fun.haoyang666.www.service.PostService;
+import fun.haoyang666.www.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +95,12 @@ public class PostController {
         int pageSize = getPostReq.getPageSize();
         Long userId = getPostReq.getUserId();
         List<PostVO> vos = postService.getPostCollect(curPage, pageSize, userId);
+        return ResultUtils.success(vos);
+    }
+
+    @PostMapping("getPostActions")
+    public BaseResponse getPostActions(@RequestBody GetPostActionsREQ req) {
+        List<PostVO> vos = postService.getPostActions(req);
         return ResultUtils.success(vos);
     }
 

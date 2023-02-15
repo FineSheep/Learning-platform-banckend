@@ -1,7 +1,6 @@
 package fun.haoyang666.www.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import fun.haoyang666.www.domain.dto.ScrollerDTO;
 import fun.haoyang666.www.domain.entity.Information;
 
 import java.util.List;

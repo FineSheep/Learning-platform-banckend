@@ -2,8 +2,11 @@ package fun.haoyang666.www.mapper;
 
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import fun.haoyang666.www.domain.req.GetPostActionsREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +35,8 @@ public interface PostMapper extends BaseMapper<Post> {
     List<PostVO> selectPostThumb(int offset, int pageSize, Long userId);
 
     List<PostVO> selectPostCollect(int offset, int pageSize, Long userId);
+
+    List<PostVO> getPostActions(GetPostActionsREQ req);
 }
 
 

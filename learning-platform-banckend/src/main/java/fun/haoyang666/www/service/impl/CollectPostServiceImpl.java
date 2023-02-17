@@ -2,10 +2,16 @@ package fun.haoyang666.www.service.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import fun.haoyang666.www.common.enums.SysMessageEnum;
 import fun.haoyang666.www.domain.entity.CollectPost;
+import fun.haoyang666.www.domain.entity.Message;
+import fun.haoyang666.www.domain.entity.MessageUser;
+import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.mapper.CollectPostMapper;
 import fun.haoyang666.www.mapper.PostMapper;
 import fun.haoyang666.www.service.CollectPostService;
+import fun.haoyang666.www.service.MessageService;
+import fun.haoyang666.www.service.MessageUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +29,9 @@ public class CollectPostServiceImpl extends ServiceImpl<CollectPostMapper, Colle
 
     @Resource
     private PostMapper postMapper;
+    @Resource
+    private MessageService messageService;
+
 
     @Override
     public void collect(long userId, long postId) {
@@ -36,6 +45,10 @@ public class CollectPostServiceImpl extends ServiceImpl<CollectPostMapper, Colle
                 collectPost.setUserId(userId);
                 this.save(collectPost);
                 postMapper.upCollect(postId);
+                Post post = postMapper.selectById(postId);
+                if (userId != post.getUserId()) {
+                    messageService.thumbAndCollect(postId, userId);
+                }
             } else {
                 this.removeById(collect.getId());
                 postMapper.downCollect(postId);

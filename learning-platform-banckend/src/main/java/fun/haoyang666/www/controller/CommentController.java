@@ -36,8 +36,8 @@ public class CommentController {
         String id = comment.getId();
         String content = comment.getContent();
         Long postId = comment.getPostId();
-        String userId = comment.getUserId();
-        if (StringUtils.isAnyBlank(id, content, Long.toString(postId), userId)) {
+        Long userId = comment.getUserId();
+        if (StringUtils.isAnyBlank(id, content, Long.toString(postId), Long.toString(userId))) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         commentService.addComment(comment);

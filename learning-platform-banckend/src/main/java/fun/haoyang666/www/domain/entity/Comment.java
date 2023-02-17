@@ -19,5 +19,5 @@ public class Comment implements Serializable {
     private String content;
     private Long postId;
     private LocalDateTime createTime;
-    private String userId;
+    private Long userId;
 }

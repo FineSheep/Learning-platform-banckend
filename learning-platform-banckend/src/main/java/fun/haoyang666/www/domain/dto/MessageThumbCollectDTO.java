@@ -12,8 +12,10 @@ import java.time.LocalDateTime;
  */
 @Data
 public class MessageThumbCollectDTO  {
+    private Long id;
     private Long messageId;
     private Long sendId;
+    private Long postId;
     private String sendName;
     private String sendAvatar;
     private String title;

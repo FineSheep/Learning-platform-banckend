@@ -24,7 +24,7 @@ public class MessageUser {
     private LocalDateTime updateTime;
     private Long isRead;
     private LocalDateTime readTime;
-    private Long type;
+    private Integer type;
     @TableLogic
     private Integer isDelete;
 }

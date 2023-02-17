@@ -2,5 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="fun.haoyang666.www.mapper.MessageUserMapper">
-
+    <select id="dotMessageAll" resultType="map">
+        SELECT `type`, COUNT(*) `count`
+        FROM message_user
+        WHERE userId = #{userId}
+        GROUP BY `type`;
+    </select>
 </mapper>

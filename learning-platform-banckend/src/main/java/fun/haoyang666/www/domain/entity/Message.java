@@ -20,7 +20,7 @@ public class Message {
     private Long id;
     private String title;
     private String content;
-    private Long type;
+    private Integer type;
     private Long postId;
     private Long createId;
     private LocalDateTime createTime;

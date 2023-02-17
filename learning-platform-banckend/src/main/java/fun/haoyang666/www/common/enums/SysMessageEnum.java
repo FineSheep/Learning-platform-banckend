@@ -11,28 +11,28 @@ public enum SysMessageEnum {
     /**
      * 点赞、收藏
      */
-    THUMB_COLLECT("0", "点赞、收藏"),
+    THUMB_COLLECT(0, "点赞、收藏"),
     /**
      * 评论
      */
-    COMMENT("3", "评论"),
+    COMMENT(3, "评论"),
     /**
      * 系统
      */
-    SYSTEM("1", "系统"),
+    SYSTEM(1, "系统"),
     /**
      * 反馈
      */
-    BACK("2", "反馈");
-    private String code;
+    BACK(2, "反馈");
+    private Integer code;
     private String message;
 
-    SysMessageEnum(String code, String message) {
+    SysMessageEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 

@@ -1,6 +1,7 @@
 package fun.haoyang666.www.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +56,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private ThumbPostService thumbPostService;
     @Resource
     private CollectPostService collectPostService;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
 
     @Override
@@ -63,7 +68,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         threadPool.execute(
                 () -> {
                     try {
-                        MailUtil.send(email, "验证码", content, false);
+                        SimpleMailMessage message = new SimpleMailMessage();
+                        message.setSubject("验证码");
+                        //todo 修改发件人
+                        message.setFrom("2245275262@qq.com");
+                        message.setTo(email);
+                        message.setText(content);
+                        javaMailSender.send(message);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new BusinessException(ErrorCode.PARAMS_ERROR, "邮箱错误");

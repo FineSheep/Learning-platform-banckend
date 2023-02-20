@@ -25,8 +25,8 @@ public class MessageController {
 
     @GetMapping("commentMessage")
     public BaseResponse commentMessage(Long userId, Long curPage, Long pageSize) {
-        MessageResultDTO thumbAndCollect = messageService.commentMessage(userId, curPage, pageSize);
-        return ResultUtils.success(thumbAndCollect);
+        MessageResultDTO commentMessage = messageService.commentMessage(userId, curPage, pageSize);
+        return ResultUtils.success(commentMessage);
     }
 
     @GetMapping("dotMessage")
@@ -42,7 +42,7 @@ public class MessageController {
     }
 
     @GetMapping("readAllComment")
-    public BaseResponse readAll(Long userId) {
+    public BaseResponse readAllComment(Long userId) {
         return ResultUtils.success(messageService.readAllComment(userId));
     }
 
@@ -53,6 +53,45 @@ public class MessageController {
 
     @GetMapping("removeComment")
     public BaseResponse removeComment(Long id) {
-        return ResultUtils.success(messageService.removeComment(id));
+        return ResultUtils.success(messageService.removeMessage(id));
+    }
+
+    @GetMapping("thumbCollectMessage")
+    public BaseResponse thumbCollectMessage(Long userId, Long curPage, Long pageSize) {
+        MessageResultDTO commentMessage = messageService.thumbCollectMessage(userId, curPage, pageSize);
+        return ResultUtils.success(commentMessage);
+    }
+
+    @GetMapping("readAllThumbCollectMessage")
+    public BaseResponse readAllThumbCollectMessage(Long userId) {
+        return ResultUtils.success(messageService.readAllThumbCollectMessage(userId));
+    }
+
+    @GetMapping("removeAllThumb")
+    public BaseResponse removeAllThumb(Long userId) {
+        return ResultUtils.success(messageService.removeAllThumbCollectMessage(userId));
+    }
+
+    @GetMapping("readAllSystemMessage")
+    public BaseResponse readAllSystemMessage(Long userId) {
+        return ResultUtils.success(messageService.readAllSystemMessage(userId));
+    }
+
+
+    @GetMapping("systemMessage")
+    public BaseResponse systemMessage(Long userId, Long curPage, Long pageSize) {
+        MessageResultDTO commentMessage = messageService.systemMessage(userId, curPage, pageSize);
+        return ResultUtils.success(commentMessage);
+    }
+
+    @GetMapping("removeAllSystem")
+    public BaseResponse removeAllSystem(Long userId) {
+        return ResultUtils.success(messageService.removeAllSystemMessage(userId));
+    }
+
+    @GetMapping("readMessage")
+    public BaseResponse readMessage(Long messageId){
+        return ResultUtils.success(messageService.readMessage(messageId));
+
     }
 }

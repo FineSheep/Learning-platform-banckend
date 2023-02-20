@@ -24,5 +24,19 @@ public interface MessageService extends IService<Message> {
 
     Boolean removeAllComment(Long userId);
 
-    Boolean removeComment(Long id);
+    Boolean removeMessage(Long id);
+
+    MessageResultDTO thumbCollectMessage(Long userId, Long curPage, Long pageSize);
+
+    Boolean readAllThumbCollectMessage(Long userId);
+
+    Boolean removeAllThumbCollectMessage(Long userId);
+
+    MessageResultDTO systemMessage(Long userId, Long curPage, Long pageSize);
+
+    Boolean readAllSystemMessage(Long userId);
+
+    Boolean removeAllSystemMessage(Long userId);
+
+    Boolean readMessage(Long messageId);
 }

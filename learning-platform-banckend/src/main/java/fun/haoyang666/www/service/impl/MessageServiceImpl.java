@@ -1,6 +1,7 @@
 package fun.haoyang666.www.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -43,14 +44,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Override
     @Transactional(rollbackFor = RuntimeException.class, propagation = Propagation.REQUIRED)
     public void thumbAndCollect(Long postId, Long userId) {
+        Post post = postMapper.selectById(postId);
         //发送点赞消息
         Message message = new Message();
         message.setPostId(postId);
         message.setCreateId(userId);
         message.setType(SysMessageEnum.THUMB_COLLECT.getCode());
+        message.setTitle(post.getTitle());
         this.save(message);
         //存储用户信息表
-        Post post = postMapper.selectById(postId);
         Long createId = post.getUserId();
         MessageUser messageUser = new MessageUser();
         messageUser.setMessageId(message.getId());
@@ -83,12 +85,36 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         messageUserService.save(messageUser);
     }
 
+
     @Override
-    public MessageResultDTO commentMessage(Long userId, Long curPage, Long pageSize) {
+    public Long dotMessage(Long userId) {
+        Long count = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getIsRead, ReadMenum.UN_READ.getCode()).count();
+        return count;
+    }
+
+    @Override
+    public MessageCountDTO dotMessageAll(Long userId) {
+        Map<Integer, List<MessageUser>> map = messageUserService.lambdaQuery()
+                .eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getIsRead, ReadMenum.UN_READ.getCode())
+                .list().stream().collect(Collectors.groupingBy(MessageUser::getType));
+        MessageCountDTO dto = new MessageCountDTO();
+        for (Integer type : map.keySet()) {
+            if (SysMessageEnum.COMMENT.getCode().equals(type)) {
+                dto.setComment(map.get(type).size());
+            } else if (SysMessageEnum.THUMB_COLLECT.getCode().equals(type)) {
+                dto.setThumbCollect(map.get(type).size());
+            } else if (SysMessageEnum.SYSTEM.getCode().equals(type)) {
+                dto.setSystem(map.get(type).size());
+            }
+        }
+        return dto;
+    }
+
+
+    private MessageResultDTO getDTO(Page<MessageUser> page) {
         MessageResultDTO resultDTO = new MessageResultDTO();
-        Page<MessageUser> page = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
-                .eq(MessageUser::getType, SysMessageEnum.COMMENT.getCode())
-                .orderByDesc(MessageUser::getCreateTime).page(new Page<>(curPage, pageSize));
         resultDTO.setCount(page.getTotal());
         List<MessageUser> list = page.getRecords();
         LinkedList<MessageThumbCollectDTO> linkedList = new LinkedList<>();
@@ -114,30 +140,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         return resultDTO;
     }
 
+    /**
+     * 针对评论消息的操作
+     */
     @Override
-    public Long dotMessage(Long userId) {
-        Long count = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
-                .eq(MessageUser::getIsRead, ReadMenum.UN_READ.getCode()).count();
-        return count;
-    }
-
-    @Override
-    public MessageCountDTO dotMessageAll(Long userId) {
-        Map<Integer, List<MessageUser>> map = messageUserService.lambdaQuery()
-                .eq(MessageUser::getUserId,userId)
-                .eq(MessageUser::getIsRead, ReadMenum.UN_READ.getCode())
-                .list().stream().collect(Collectors.groupingBy(MessageUser::getType));
-        MessageCountDTO dto = new MessageCountDTO();
-        for (Integer type : map.keySet()) {
-            if (SysMessageEnum.COMMENT.getCode().equals(type)) {
-                dto.setComment(map.get(type).size());
-            } else if (SysMessageEnum.THUMB_COLLECT.getCode().equals(type)) {
-                dto.setThumbCollect(map.get(type).size());
-            } else if (SysMessageEnum.SYSTEM.getCode().equals(type)) {
-                dto.setSystem(map.get(type).size());
-            }
-        }
-        return dto;
+    public MessageResultDTO commentMessage(Long userId, Long curPage, Long pageSize) {
+        Page<MessageUser> page = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getType, SysMessageEnum.COMMENT.getCode())
+                .orderByDesc(MessageUser::getCreateTime).page(new Page<>(curPage, pageSize));
+        return getDTO(page);
     }
 
     @Override
@@ -156,9 +167,68 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public Boolean removeComment(Long id) {
+    public Boolean removeMessage(Long id) {
         return messageUserService.removeById(id);
     }
 
 
+    /**
+     * 针对点赞收藏
+     */
+    @Override
+    public MessageResultDTO thumbCollectMessage(Long userId, Long curPage, Long pageSize) {
+        Page<MessageUser> page = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getType, SysMessageEnum.THUMB_COLLECT.getCode())
+                .orderByDesc(MessageUser::getCreateTime).page(new Page<>(curPage, pageSize));
+        return getDTO(page);
+    }
+
+    @Override
+    public Boolean readAllThumbCollectMessage(Long userId) {
+        return messageUserService.lambdaUpdate()
+                .eq(MessageUser::getUserId, userId).eq(MessageUser::getType, SysMessageEnum.THUMB_COLLECT.getCode())
+                .set(MessageUser::getIsRead, ReadMenum.READ.getCode()).update();
+    }
+
+    @Override
+    public Boolean removeAllThumbCollectMessage(Long userId) {
+        LambdaQueryWrapper<MessageUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getType, SysMessageEnum.THUMB_COLLECT.getCode());
+        return messageUserService.remove(wrapper);
+    }
+
+    /**
+     * 系统通知
+     */
+    @Override
+    public MessageResultDTO systemMessage(Long userId, Long curPage, Long pageSize) {
+        Page<MessageUser> page = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getType, SysMessageEnum.SYSTEM.getCode())
+                .orderByDesc(MessageUser::getCreateTime).page(new Page<>(curPage, pageSize));
+        return getDTO(page);
+    }
+
+    @Override
+    public Boolean readAllSystemMessage(Long userId) {
+        return messageUserService.lambdaUpdate()
+                .eq(MessageUser::getUserId, userId).eq(MessageUser::getType, SysMessageEnum.SYSTEM.getCode())
+                .set(MessageUser::getIsRead, ReadMenum.READ.getCode()).update();
+    }
+
+    @Override
+    public Boolean removeAllSystemMessage(Long userId) {
+        LambdaQueryWrapper<MessageUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MessageUser::getUserId, userId)
+                .eq(MessageUser::getType, SysMessageEnum.SYSTEM.getCode());
+        return messageUserService.remove(wrapper);
+    }
+
+    @Override
+    public Boolean readMessage(Long messageId) {
+        LambdaUpdateWrapper<MessageUser> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(MessageUser::getMessageId, messageId).eq(MessageUser::getIsRead, ReadMenum.UN_READ.getCode());
+        wrapper.set(MessageUser::getIsRead, ReadMenum.READ.getCode());
+        return messageUserService.update(wrapper);
+    }
 }

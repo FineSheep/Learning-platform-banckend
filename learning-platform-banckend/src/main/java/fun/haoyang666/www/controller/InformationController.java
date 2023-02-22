@@ -1,16 +1,23 @@
 package fun.haoyang666.www.controller;
 
+import com.google.gson.Gson;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.entity.Information;
 import fun.haoyang666.www.domain.req.PageREQ;
+import fun.haoyang666.www.domain.vo.SpiderVO;
 import fun.haoyang666.www.service.InformationService;
 import fun.haoyang666.www.utils.ResultUtils;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,4 +45,5 @@ public class InformationController {
         Information info = informationService.getNewById(id);
         return ResultUtils.success(info);
     }
+
 }

@@ -1,5 +1,6 @@
 package fun.haoyang666.www.service;
 
+import fun.haoyang666.www.domain.dto.PKRecordDTO;
 import fun.haoyang666.www.domain.entity.Questions;
 import com.baomidou.mybatisplus.extension.service.IService;
 import fun.haoyang666.www.domain.req.GetAnswerREQ;
@@ -27,4 +28,8 @@ public interface QuestionsService extends IService<Questions> {
     Map<Integer, List<QuesVO>> getQuesRandom();
 
     CorrectVO beforeJudge(List<Long> quesIds, Map<Long, String> answer,Long time);
+
+    PKRecordDTO recordDetail(Long recordId);
+
+    PKRecordDTO getPkDetails(Long recordId);
 }

@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.QuesEnum;
+import fun.haoyang666.www.domain.dto.PKRecordDTO;
+import fun.haoyang666.www.domain.entity.Quesrecord;
+import fun.haoyang666.www.domain.entity.Records;
 import fun.haoyang666.www.domain.entity.User;
 import fun.haoyang666.www.domain.vo.*;
 import fun.haoyang666.www.domain.entity.Questions;
@@ -16,6 +19,7 @@ import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.mapper.QuestionsMapper;
 import fun.haoyang666.www.service.RecordsService;
 import fun.haoyang666.www.service.UserService;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,6 +29,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,7 +89,7 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public void judgeGrade(GetAnswerREQ getAnswerReq) {
         List<Long> quesIds = getAnswerReq.getQuesIds();
-        Long userId = getAnswerReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         Long time = getAnswerReq.getTime();
         Long opponent = getAnswerReq.getOpponent();
         Boolean result = getAnswerReq.getResult();
@@ -94,14 +100,13 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         int correctCount = correctList.size();
         int falseCount = failure.size();
         //形成做题记录
-        long recordId = recordsService.saveRecord(userId, time, correctCount + falseCount, correctCount, opponent, result);
+        long recordId = recordsService.saveRecord(userId, time, correctCount + falseCount, correctCount, opponent, result, null);
         //记录日榜
-        dayLeader(getAnswerReq.getUserId(), correctCount);
+        dayLeader(userId, correctCount);
         //修改用户正确数,写入数据库
-        log.info("user:{}", getAnswerReq.getUserId());
         //存储做题记录
         quesrecordService.saveRecordQues(recordId, userId, correctList, failure);
-        userService.updateScore(getAnswerReq.getUserId(), correctCount);
+        userService.updateScore(userId, correctCount);
     }
 
     @Override
@@ -116,7 +121,7 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         Long opponent = Long.parseLong(pkResultVO.getOpponent());
         Boolean result = pkResultVO.getResult();
         //形成做题记录
-        long recordId = recordsService.saveRecord(userId, time, correctCount + falseCount, correctCount, opponent, result);
+        long recordId = recordsService.saveRecord(userId, time, correctCount + falseCount, correctCount, opponent, result, pkResultVO.getPkId());
         //记录日榜
         dayLeader(userId, correctCount);
         //修改用户正确数,写入数据库
@@ -149,6 +154,58 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         vo.setFailure(falseList);
         vo.setTime(time);
         return vo;
+    }
+
+    @Override
+    public PKRecordDTO recordDetail(Long recordId) {
+        PKRecordDTO dto = new PKRecordDTO();
+        List<Quesrecord> list = quesrecordService.lambdaQuery().eq(Quesrecord::getRecordId, recordId).list();
+        HashMap<Long, String> recordMap = new HashMap<>();
+        for (Quesrecord quesrecord : list) {
+            recordMap.put(quesrecord.getQuestionId(), quesrecord.getUserAnswer());
+        }
+        Set<Long> quesIds = recordMap.keySet();
+        List<Questions> questions = this.listByIds(quesIds);
+        ArrayList<RecordDetailVO> recordDetailVOS = new ArrayList<>();
+        for (Questions question : questions) {
+            RecordDetailVO recordDetailVO = new RecordDetailVO();
+            BeanUtils.copyProperties(question, recordDetailVO);
+            recordDetailVO.setUserAnswer(recordMap.get(question.getId()));
+            recordDetailVOS.add(recordDetailVO);
+        }
+
+        for (RecordDetailVO recordDetailVO : recordDetailVOS) {
+            if (recordDetailVO.getType() == 0) {
+                dto.getRadio().add(recordDetailVO);
+            } else {
+                dto.getMulti().add(recordDetailVO);
+            }
+        }
+        return dto;
+    }
+
+    @Override
+    public PKRecordDTO getPkDetails(Long recordId) {
+        //题目信息
+        PKRecordDTO pkRecordDTO = this.recordDetail(recordId);
+        //对手记录
+        Records records = recordsService.getById(recordId);
+        Long opponent = records.getOpponent();
+        User user = userService.getById(opponent);
+        pkRecordDTO.setOpponentUrl(user.getAvatarUrl());
+        pkRecordDTO.setOpponentName(user.getUsername());
+        String pkId = records.getPkId();
+        Records opponentRecord = recordsService.lambdaQuery()
+                .eq(Records::getUserId, opponent)
+                .eq(Records::getPkId, pkId)
+                .one();
+        pkRecordDTO.setCorrect(opponentRecord.getCurrectSum());
+        LocalDateTime startTime = opponentRecord.getStartTime();
+        LocalDateTime endTime = opponentRecord.getEndTime();
+        long seconds = Duration.between(startTime, endTime).getSeconds();
+        pkRecordDTO.setTime(seconds);
+        pkRecordDTO.setResult(records.getResult() == 1);
+        return pkRecordDTO;
     }
 
 

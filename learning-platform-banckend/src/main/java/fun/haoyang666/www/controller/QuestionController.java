@@ -13,6 +13,7 @@ import fun.haoyang666.www.domain.vo.QuesVO;
 import fun.haoyang666.www.listener.QuestionListener;
 import fun.haoyang666.www.service.QuestionsService;
 
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,14 +36,6 @@ public class QuestionController {
     @Resource
     private QuestionsService questionsService;
 
-/*    @GetMapping("getQues")
-    public BaseResponse getQues(int num) {
-        if (num <= 0) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        Map<Integer, List<Questions>> ques = questionsService.getQuesRandom(num);
-        return ResultUtils.success(ques);
-    }*/
 
     @PostMapping("uploadQues")
     public BaseResponse uploadQues(MultipartFile file) {
@@ -62,7 +55,7 @@ public class QuestionController {
         long sum = quesReq.getSum();
         String difficulty = quesReq.getDifficulty();
         String source = quesReq.getSource();
-        long userId = quesReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         Map<Integer, List<QuesVO>> questions = questionsService.getQuestions(userId, sum, source, difficulty);
         return ResultUtils.success(questions);
     }
@@ -78,5 +71,14 @@ public class QuestionController {
     public BaseResponse getQuesRandom() {
         Map<Integer, List<QuesVO>> questions = questionsService.getQuesRandom();
         return ResultUtils.success(questions);
+    }
+    @GetMapping("recordDetail")
+    public BaseResponse recordDetail(Long recordId) {
+        return ResultUtils.success(questionsService.recordDetail(recordId));
+    }
+
+    @GetMapping("getPkDetails")
+    public BaseResponse getPkDetails(Long recordId){
+        return ResultUtils.success(questionsService.getPkDetails(recordId));
     }
 }

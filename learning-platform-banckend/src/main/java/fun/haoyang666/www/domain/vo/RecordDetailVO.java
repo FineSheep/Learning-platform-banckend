@@ -1,8 +1,5 @@
 package fun.haoyang666.www.domain.vo;
 
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class QuesVO {
+public class RecordDetailVO {
 
     private Long id;
 
@@ -30,5 +27,8 @@ public class QuesVO {
      * 题型  0-单选 1-多选
      */
     private Integer type;
+
+    private String correct;
+    private String userAnswer;
 
 }

@@ -24,7 +24,12 @@
             <optional>true</optional>
             <scope>true</scope>
         </dependency>-->
-
+        <!-- jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.10.3</version>
+        </dependency>
         <!--文件存储-->
         <dependency>
             <groupId>cn.xuyanwu</groupId>

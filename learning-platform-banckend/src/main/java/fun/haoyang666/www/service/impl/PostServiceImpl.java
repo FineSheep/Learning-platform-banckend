@@ -12,6 +12,7 @@ import fun.haoyang666.www.service.CollectPostService;
 import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.service.TagService;
 import fun.haoyang666.www.service.ThumbPostService;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -157,6 +158,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             offset = (curPage - 1) * pageSize;
         }
         req.setOffset(offset);
+        req.setUserId(ThreadLocalUtils.get());
         List<PostVO> postVOS = postMapper.getPostActions(req);
         return postVOS;
     }

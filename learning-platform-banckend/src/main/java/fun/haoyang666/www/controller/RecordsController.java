@@ -5,6 +5,7 @@ import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.vo.RecordVO;
 import fun.haoyang666.www.service.RecordsService;
 import fun.haoyang666.www.utils.ResultUtils;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,18 +27,21 @@ public class RecordsController {
     private RecordsService recordsService;
 
     @GetMapping("getRecords")
-    public BaseResponse getRecords(long uid, int curPage, int pageSize) {
+    public BaseResponse getRecords(int curPage, int pageSize) {
         if (curPage < 0 || pageSize > 50) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        List<RecordVO> record = recordsService.getRecordsByUid(uid, curPage, pageSize);
+        Long userId = ThreadLocalUtils.get();
+        List<RecordVO> record = recordsService.getRecordsByUid(userId, curPage, pageSize);
         return ResultUtils.success(record);
     }
 
     @GetMapping("pkRecords")
-    public BaseResponse pkRecords(long uid) {
-        log.info("uid---->{}", uid);
-        List<RecordVO> pkRecords = recordsService.getPKRecords(uid);
+    public BaseResponse pkRecords() {
+        Long userId = ThreadLocalUtils.get();
+        List<RecordVO> pkRecords = recordsService.getPKRecords(userId);
         return ResultUtils.success(pkRecords);
     }
+
+
 }

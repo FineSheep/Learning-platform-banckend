@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 public class SavePostREQ implements Serializable {
-    private long userId;
+//    private long userId;
     private List<Long> tags;
     private String content;
     private String title;

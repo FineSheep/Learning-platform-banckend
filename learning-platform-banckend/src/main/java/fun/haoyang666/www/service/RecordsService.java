@@ -15,8 +15,9 @@ public interface RecordsService extends IService<Records> {
 
     List<RecordVO> getRecordsByUid(long uid, int curPage, int pageSize);
 
-    long saveRecord(long userId, long time, long sum, long correct, Long opponent, Boolean result);
+    long saveRecord(long userId, long time, long sum, long correct, Long opponent, Boolean result,String pkId);
 
 
     List<RecordVO> getPKRecords(long uid);
+
 }

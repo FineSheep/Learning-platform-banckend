@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +41,7 @@ public class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public long saveRecord(long userId, long time, long sum, long correct, Long opponent, Boolean result) {
+    public long saveRecord(long userId, long time, long sum, long correct, Long opponent, Boolean result, String pkId) {
         Records records = new Records();
         records.setUserId(userId);
         LocalDateTime endTime = LocalDateTime.now();
@@ -52,6 +51,7 @@ public class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records>
         records.setCurrectSum(correct);
         records.setEndTime(endTime);
         records.setOpponent(opponent);
+        records.setPkId(pkId);
         if (result == null) {
             records.setResult(null);
         } else {

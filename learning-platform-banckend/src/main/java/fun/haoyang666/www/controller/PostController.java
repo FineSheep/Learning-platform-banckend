@@ -4,16 +4,18 @@ import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.SuccessCode;
 import fun.haoyang666.www.domain.req.GetPostActionsREQ;
-import fun.haoyang666.www.domain.req.GetPostREQ;
+import fun.haoyang666.www.domain.req.PageREQ;
 import fun.haoyang666.www.domain.req.SavePostREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
 import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.utils.ResultUtils;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ public class PostController {
         String title = postReq.getTitle();
         String description = postReq.getDescription();
         String photo = postReq.getPhoto();
-        long userId = postReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         List<Long> tags = postReq.getTags();
         if (StringUtils.isAnyBlank(content, title, description)) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
@@ -48,29 +50,29 @@ public class PostController {
     }
 
     @GetMapping("getPost")
-    public BaseResponse<PostVO> getPost(Long postId, Long userId) {
-//        Post post = postService.lambdaQuery().eq(Post::getId, postId).one();
+    public BaseResponse<PostVO> getPost(Long postId) {
+        Long userId = ThreadLocalUtils.get();
         PostVO vo = postService.getPost(postId, userId);
         return ResultUtils.success(vo);
     }
 
     @GetMapping("getPosts")
-    public BaseResponse<List<PostVO>> getPosts(GetPostREQ getPostReq) {
+    public BaseResponse<List<PostVO>> getPosts(PageREQ getPostReq, HttpServletRequest request) {
         if (getPostReq == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = getPostReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         List<PostVO> posts = postService.getPosts(userId, curPage, pageSize);
         return ResultUtils.success(posts);
     }
 
     @GetMapping("getPostByUserId")
-    public BaseResponse getPostByUserId(GetPostREQ getPostReq) {
+    public BaseResponse getPostByUserId(PageREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = getPostReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         List<PostVO> vos = postService.getPostUid(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }
@@ -81,19 +83,19 @@ public class PostController {
     }
 
     @GetMapping("getPostThumb")
-    public BaseResponse getPostThumb(GetPostREQ getPostReq) {
+    public BaseResponse getPostThumb(PageREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = getPostReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         List<PostVO> vos = postService.getPostThumb(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }
 
     @GetMapping("getPostCollect")
-    public BaseResponse getPostCollect(GetPostREQ getPostReq) {
+    public BaseResponse getPostCollect(PageREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = getPostReq.getUserId();
+        Long userId = ThreadLocalUtils.get();
         List<PostVO> vos = postService.getPostCollect(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }

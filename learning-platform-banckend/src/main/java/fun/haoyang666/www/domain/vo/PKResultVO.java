@@ -17,4 +17,5 @@ public class PKResultVO {
     private List<GradeVO> failureList;
     private Long time;
     private Boolean result;
+    private String pkId;
 }

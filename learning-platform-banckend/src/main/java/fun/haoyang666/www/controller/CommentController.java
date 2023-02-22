@@ -7,6 +7,7 @@ import fun.haoyang666.www.domain.entity.Comment;
 import fun.haoyang666.www.domain.vo.CommentVo;
 import fun.haoyang666.www.service.CommentService;
 import fun.haoyang666.www.utils.ResultUtils;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,8 @@ public class CommentController {
         String id = comment.getId();
         String content = comment.getContent();
         Long postId = comment.getPostId();
-        Long userId = comment.getUserId();
+        Long userId = ThreadLocalUtils.get();
+        comment.setUserId(userId);
         if (StringUtils.isAnyBlank(id, content, Long.toString(postId), Long.toString(userId))) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }

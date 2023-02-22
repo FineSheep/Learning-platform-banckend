@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 @Data
 public class UserInfoREQ {
-    private Long userId;
+//    private Long userId;
     private Integer gender;
     private String phone;
     private String profile;

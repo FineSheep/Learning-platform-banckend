@@ -1,5 +1,6 @@
 package fun.haoyang666.www.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import com.google.gson.Gson;
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
@@ -11,6 +12,7 @@ import fun.haoyang666.www.service.QuestionsService;
 import fun.haoyang666.www.socket.MatchSocket;
 import fun.haoyang666.www.utils.MatchCacheUtil;
 import fun.haoyang666.www.utils.ResultUtils;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import fun.haoyang666.www.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -166,12 +168,13 @@ public class MatchImpl {
             //写入胜利者
             PKResultVO victory;
             PKResultVO failure;
+            String pkId = IdUtil.nanoId();
             if (victoryId.equals(userId)) {
-                victory = convertPKResultVO(userInfo, true, opponent);
-                failure = convertPKResultVO(opponentInfo, false, userId);
+                victory = convertPKResultVO(userInfo, true, opponent, pkId);
+                failure = convertPKResultVO(opponentInfo, false, userId, pkId);
             } else {
-                victory = convertPKResultVO(opponentInfo, true, userId);
-                failure = convertPKResultVO(userInfo, false, opponent);
+                victory = convertPKResultVO(opponentInfo, true, userId, pkId);
+                failure = convertPKResultVO(userInfo, false, opponent, pkId);
             }
             //写入数据库
             questionsService.PKGrade(victory);
@@ -183,7 +186,7 @@ public class MatchImpl {
         }
     }
 
-    public PKResultVO convertPKResultVO(CorrectVO vo, Boolean isVictory, String opponent) {
+    public PKResultVO convertPKResultVO(CorrectVO vo, Boolean isVictory, String opponent, String pkId) {
         PKResultVO pkResultVO = new PKResultVO();
         pkResultVO.setResult(isVictory);
         pkResultVO.setOpponent(opponent);
@@ -191,6 +194,7 @@ public class MatchImpl {
         pkResultVO.setFailureList(vo.getFailure());
         pkResultVO.setUserId(vo.getUserId());
         pkResultVO.setTime(vo.getTime());
+        pkResultVO.setPkId(pkId);
         return pkResultVO;
     }
 

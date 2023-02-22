@@ -4,7 +4,11 @@ import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.domain.req.UpdatePasswordREQ;
 import fun.haoyang666.www.domain.req.UserInfoREQ;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author yang
@@ -18,11 +22,11 @@ public interface UserService extends IService<User> {
     void getCode(String email);
 
 
-    UserDTO userLogin(String email, String password);
+    UserDTO userLogin(String email, String password,HttpServletRequest request, HttpServletResponse response);
 
 //    UserDto loginByCode(String email, String code);
 
-    UserDTO loginOrRegister(String email, String code);
+    UserDTO loginOrRegister(String email, String code,HttpServletRequest request, HttpServletResponse response);
 
     UserInfoDTO userInfo(Long userId);
 
@@ -30,4 +34,9 @@ public interface UserService extends IService<User> {
     int updateScore(long userId, long num);
 
     void updateUserInfo(UserInfoREQ req);
+
+    boolean updatePassword(UpdatePasswordREQ updatePasswordREQ);
+
+    void getCodeById(Long userId);
+
 }

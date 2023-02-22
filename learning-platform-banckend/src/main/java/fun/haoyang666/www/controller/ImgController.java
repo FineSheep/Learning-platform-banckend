@@ -6,6 +6,7 @@ import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.service.UploadImgService;
 import fun.haoyang666.www.utils.ResultUtils;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("img")
 public class ImgController {
     @Autowired
-    private FileStorageService fileStorageService;//注入实列
-    @Autowired
     private UploadImgService uploadImgService;
 
     /**
@@ -28,10 +27,11 @@ public class ImgController {
      * 图片处理使用的是 https://github.com/coobird/thumbnailator
      */
     @PostMapping("/personUrl")
-    public BaseResponse uploadImage(@RequestParam("file") MultipartFile file, @RequestParam Long userId) {
-        if (file == null || userId == null) {
+    public BaseResponse uploadImage(@RequestParam("file") MultipartFile file) {
+        if (file == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
+        Long userId = ThreadLocalUtils.get();
         FileInfo fileInfo = uploadImgService.userUrl(file, userId);
         return ResultUtils.success(fileInfo);
     }

@@ -15,7 +15,7 @@ import java.util.Map;
 public class GetAnswerREQ implements Serializable {
     private Map<Long, String> answer;
     private List<Long> quesIds;
-    private Long userId;
+//    private Long userId;
     private Long time;
     private Long opponent;
     private Boolean result;

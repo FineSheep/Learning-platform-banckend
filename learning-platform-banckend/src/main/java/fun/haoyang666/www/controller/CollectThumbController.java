@@ -5,11 +5,13 @@ import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.SuccessCode;
 import fun.haoyang666.www.service.CollectPostService;
 import fun.haoyang666.www.service.ThumbPostService;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author yang
@@ -26,14 +28,16 @@ public class CollectThumbController {
     private ThumbPostService thumbPostService;
 
     @GetMapping("thumb")
-    public BaseResponse thumb(long userId, long postId) {
+    public BaseResponse thumb(long postId, HttpServletRequest request) {
+        Long userId = ThreadLocalUtils.get();
         thumbPostService.thumb(userId, postId);
         return ResultUtils.success(SuccessCode.SUCCESS);
     }
 
     @GetMapping("collect")
-    public BaseResponse collect(long userId, long postId){
-        collectPostService.collect(userId,postId);
+    public BaseResponse collect(long postId, HttpServletRequest request) {
+        Long userId = ThreadLocalUtils.get();
+        collectPostService.collect(userId, postId);
         return ResultUtils.success(SuccessCode.SUCCESS);
     }
 

@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 public class GetQuesREQ implements Serializable {
-    private long userId;
+//    private long userId;
     private long sum;
     private String source;
     private String difficulty;

@@ -1,8 +1,6 @@
 package fun.haoyang666.www.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.mail.MailAccount;
-import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.common.enums.ErrorCode;
@@ -12,6 +10,7 @@ import fun.haoyang666.www.domain.entity.CollectPost;
 import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.domain.entity.ThumbPost;
 import fun.haoyang666.www.domain.entity.User;
+import fun.haoyang666.www.domain.req.UpdatePasswordREQ;
 import fun.haoyang666.www.domain.req.UserInfoREQ;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.CollectPostService;
@@ -19,6 +18,8 @@ import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.service.ThumbPostService;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
+import fun.haoyang666.www.utils.JwtUtil;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import fun.haoyang666.www.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -31,7 +32,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -84,7 +89,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserDTO userLogin(String email, String password) {
+    public UserDTO userLogin(String email, String password, HttpServletRequest request, HttpServletResponse response) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail, email);
         User user = this.getOne(queryWrapper);
@@ -96,6 +101,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (safePass.equals(user.getUserPassword())) {
             UserDTO safeUser = new UserDTO();
             BeanUtils.copyProperties(user, safeUser);
+            //jwt回写
+            Map<String, String> payload = new HashMap<>();
+            payload.put("userId", String.valueOf(safeUser.getId())); // 加入一些非敏感的用户信息
+            String newJwt = JwtUtil.generateToken(payload);
+            // 加入返回头
+            response.addHeader("token", newJwt);
             return safeUser;
         } else {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
@@ -104,7 +115,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserDTO loginOrRegister(String email, String code) {
+    public UserDTO loginOrRegister(String email, String code, HttpServletRequest request, HttpServletResponse response) {
         String redisCode = redisTemplate.opsForValue().get("code:" + email);
         if (!code.equals(redisCode)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码错误或失效");
@@ -124,12 +135,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             insertUser.setCreateTime(LocalDateTime.now());
             this.save(insertUser);
             BeanUtils.copyProperties(insertUser, userDto);
-            return userDto;
         } else {
             //已注册
             BeanUtils.copyProperties(user, userDto);
-            return userDto;
         }
+        //jwt回写
+        Map<String, String> payload = new HashMap<>();
+        payload.put("userId", String.valueOf(userDto.getId())); // 加入一些非敏感的用户信息
+        String newJwt = JwtUtil.generateToken(payload);
+        // 加入返回头
+        response.addHeader("token", newJwt);
+        return userDto;
     }
 
     @Override
@@ -160,7 +176,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void updateUserInfo(UserInfoREQ req) {
         User user = new User();
-        user.setId(req.getUserId());
+        user.setId(ThreadLocalUtils.get());
         user.setUsername(req.getUsername());
         user.setGender(req.getGender());
         user.setProfile(req.getProfile());
@@ -169,12 +185,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         this.updateById(user);
     }
 
+    @Override
+    public boolean updatePassword(UpdatePasswordREQ req) {
+        User user = this.getById(ThreadLocalUtils.get());
+        String code = req.getCode();
+        String redisCode = redisTemplate.opsForValue().get("code:" + user.getEmail());
+        if (!code.equals(redisCode)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码错误或失效");
+        }
+        Long userId = user.getId();
+        String onePass = req.getOnePass();
+        String twoPass = req.getTwoPass();
+        if (!onePass.equals(twoPass)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码不一致");
+        }
+        //todo 加密
+        //String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
+        this.lambdaUpdate().eq(User::getId, userId).set(User::getUserPassword, onePass).update();
+        return false;
+    }
+
+    @Override
+    public void getCodeById(Long userId) {
+        User byId = this.getById(userId);
+        getCode(byId.getEmail());
+    }
+
     private User getUserById(Long id) {
         User user = this.lambdaQuery().eq(User::getId, id).one();
         if (user == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "查无此人");
         }
         return user;
+    }
+
+    private void returnDown(Long userId){
+        ThreadLocal<Long> threadLocal = new ThreadLocal<>();
+        threadLocal.set(userId);
     }
 }
 

@@ -7,6 +7,7 @@ package fun.haoyang666.www.common.enums;
  */
 public enum ErrorCode {
     PARAMS_ERROR(40000, "用户发生错误", ""),
+    LOGIN_EXPIRE(40001, "登录过期", ""),
     SYSTEM_ERROR(50000, "系统内部异常", "");
 
     private final int code;

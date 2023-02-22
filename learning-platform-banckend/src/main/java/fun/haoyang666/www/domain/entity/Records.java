@@ -75,6 +75,8 @@ public class Records implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    private String pkId;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

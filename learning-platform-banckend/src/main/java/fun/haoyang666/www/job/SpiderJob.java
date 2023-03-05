@@ -1,5 +1,6 @@
 package fun.haoyang666.www.job;
 
+import cn.hutool.core.text.StrBuilder;
 import com.google.gson.Gson;
 import fun.haoyang666.www.domain.entity.Information;
 import fun.haoyang666.www.domain.vo.SpiderVO;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @author yang

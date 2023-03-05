@@ -31,14 +31,14 @@ public class RecordsController {
         if (curPage < 0 || pageSize > 50) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<RecordVO> record = recordsService.getRecordsByUid(userId, curPage, pageSize);
         return ResultUtils.success(record);
     }
 
     @GetMapping("pkRecords")
     public BaseResponse pkRecords() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<RecordVO> pkRecords = recordsService.getPKRecords(userId);
         return ResultUtils.success(pkRecords);
     }

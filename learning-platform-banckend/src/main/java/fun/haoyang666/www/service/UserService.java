@@ -1,5 +1,7 @@
 package fun.haoyang666.www.service;
 
+import fun.haoyang666.www.admin.UserParamReq;
+import fun.haoyang666.www.admin.dto.SysUserDto;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
@@ -9,6 +11,7 @@ import fun.haoyang666.www.domain.req.UserInfoREQ;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author yang
@@ -38,5 +41,7 @@ public interface UserService extends IService<User> {
     boolean updatePassword(UpdatePasswordREQ updatePasswordREQ);
 
     void getCodeById(Long userId);
+
+    List<SysUserDto> listSysUser(UserParamReq req);
 
 }

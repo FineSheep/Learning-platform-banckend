@@ -40,7 +40,7 @@ public class PostController {
         String title = postReq.getTitle();
         String description = postReq.getDescription();
         String photo = postReq.getPhoto();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<Long> tags = postReq.getTags();
         if (StringUtils.isAnyBlank(content, title, description)) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
@@ -51,7 +51,7 @@ public class PostController {
 
     @GetMapping("getPost")
     public BaseResponse<PostVO> getPost(Long postId) {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         PostVO vo = postService.getPost(postId, userId);
         return ResultUtils.success(vo);
     }
@@ -63,7 +63,7 @@ public class PostController {
         }
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<PostVO> posts = postService.getPosts(userId, curPage, pageSize);
         return ResultUtils.success(posts);
     }
@@ -72,7 +72,7 @@ public class PostController {
     public BaseResponse getPostByUserId(PageREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<PostVO> vos = postService.getPostUid(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }
@@ -86,7 +86,7 @@ public class PostController {
     public BaseResponse getPostThumb(PageREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<PostVO> vos = postService.getPostThumb(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }
@@ -95,7 +95,7 @@ public class PostController {
     public BaseResponse getPostCollect(PageREQ getPostReq) {
         int curPage = getPostReq.getCurPage();
         int pageSize = getPostReq.getPageSize();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         List<PostVO> vos = postService.getPostCollect(curPage, pageSize, userId);
         return ResultUtils.success(vos);
     }

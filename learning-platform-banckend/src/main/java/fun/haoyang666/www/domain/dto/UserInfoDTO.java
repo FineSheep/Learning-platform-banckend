@@ -55,4 +55,5 @@ public class UserInfoDTO implements Serializable {
     private Long postNum;
     private Long thumbNum;
     private Long collectNum;
+    private Integer userRole;
 }

@@ -55,7 +55,7 @@ public class QuestionController {
         long sum = quesReq.getSum();
         String difficulty = quesReq.getDifficulty();
         String source = quesReq.getSource();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         Map<Integer, List<QuesVO>> questions = questionsService.getQuestions(userId, sum, source, difficulty);
         return ResultUtils.success(questions);
     }

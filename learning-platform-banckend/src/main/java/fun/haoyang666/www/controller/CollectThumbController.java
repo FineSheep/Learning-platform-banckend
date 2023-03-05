@@ -29,14 +29,14 @@ public class CollectThumbController {
 
     @GetMapping("thumb")
     public BaseResponse thumb(long postId, HttpServletRequest request) {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         thumbPostService.thumb(userId, postId);
         return ResultUtils.success(SuccessCode.SUCCESS);
     }
 
     @GetMapping("collect")
     public BaseResponse collect(long postId, HttpServletRequest request) {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         collectPostService.collect(userId, postId);
         return ResultUtils.success(SuccessCode.SUCCESS);
     }

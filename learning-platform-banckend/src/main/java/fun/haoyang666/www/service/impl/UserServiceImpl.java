@@ -3,6 +3,8 @@ package fun.haoyang666.www.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import fun.haoyang666.www.admin.UserParamReq;
+import fun.haoyang666.www.admin.dto.SysUserDto;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
@@ -36,9 +38,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static fun.haoyang666.www.common.Constant.*;
 
@@ -104,6 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             //jwt回写
             Map<String, String> payload = new HashMap<>();
             payload.put("userId", String.valueOf(safeUser.getId())); // 加入一些非敏感的用户信息
+            payload.put("auth", safeUser.getUserRole() == 0 ? "user" : "admin");
             String newJwt = JwtUtil.generateToken(payload);
             // 加入返回头
             response.addHeader("token", newJwt);
@@ -142,6 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //jwt回写
         Map<String, String> payload = new HashMap<>();
         payload.put("userId", String.valueOf(userDto.getId())); // 加入一些非敏感的用户信息
+        payload.put("auth", user.getUserRole() == 0 ? "user" : "admin");
         String newJwt = JwtUtil.generateToken(payload);
         // 加入返回头
         response.addHeader("token", newJwt);
@@ -176,7 +182,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void updateUserInfo(UserInfoREQ req) {
         User user = new User();
-        user.setId(ThreadLocalUtils.get());
+        user.setId(ThreadLocalUtils.get().getUserId());
         user.setUsername(req.getUsername());
         user.setGender(req.getGender());
         user.setProfile(req.getProfile());
@@ -187,7 +193,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public boolean updatePassword(UpdatePasswordREQ req) {
-        User user = this.getById(ThreadLocalUtils.get());
+        User user = this.getById(ThreadLocalUtils.get().getUserId());
         String code = req.getCode();
         String redisCode = redisTemplate.opsForValue().get("code:" + user.getEmail());
         if (!code.equals(redisCode)) {
@@ -211,6 +217,41 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         getCode(byId.getEmail());
     }
 
+    @Override
+    public List<SysUserDto> listSysUser(UserParamReq req) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        Long userId = req.getUserId();
+        String name = req.getName();
+        String email = req.getEmail();
+        Integer userStatus = req.getUserStatus();
+        Integer gender = req.getGender();
+        String phone = req.getPhone();
+        if (userId != null) {
+            queryWrapper.eq(User::getId, userId);
+        }
+        if (name != null) {
+            queryWrapper.like(User::getUsername,name);
+        }
+        if (email != null) {
+            queryWrapper.like(User::getEmail,email);
+        }
+        if (userStatus != null) {
+            queryWrapper.eq(User::getUserStatus, userStatus);
+        }
+        if (gender != null) {
+            queryWrapper.eq(User::getGender,gender);
+        }
+        if (phone != null) {
+            queryWrapper.like(User::getPhone, phone);
+        }
+        List<SysUserDto> res = this.list(queryWrapper).stream().map(user -> {
+            SysUserDto sysUserDto = new SysUserDto();
+            BeanUtils.copyProperties(user, sysUserDto);
+            return sysUserDto;
+        }).collect(Collectors.toList());
+        return res;
+    }
+
     private User getUserById(Long id) {
         User user = this.lambdaQuery().eq(User::getId, id).one();
         if (user == null) {
@@ -219,10 +260,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return user;
     }
 
-    private void returnDown(Long userId){
-        ThreadLocal<Long> threadLocal = new ThreadLocal<>();
-        threadLocal.set(userId);
-    }
 }
 
 

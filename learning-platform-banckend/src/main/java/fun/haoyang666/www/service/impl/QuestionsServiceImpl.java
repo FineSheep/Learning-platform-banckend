@@ -89,7 +89,7 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public void judgeGrade(GetAnswerREQ getAnswerReq) {
         List<Long> quesIds = getAnswerReq.getQuesIds();
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         Long time = getAnswerReq.getTime();
         Long opponent = getAnswerReq.getOpponent();
         Boolean result = getAnswerReq.getResult();

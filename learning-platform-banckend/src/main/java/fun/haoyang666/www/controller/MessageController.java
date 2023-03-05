@@ -26,34 +26,34 @@ public class MessageController {
 
     @GetMapping("commentMessage")
     public BaseResponse commentMessage(Long curPage, Long pageSize) {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         MessageResultDTO commentMessage = messageService.commentMessage(userId, curPage, pageSize);
         return ResultUtils.success(commentMessage);
     }
 
     @GetMapping("dotMessage")
     public BaseResponse dotMessage() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         Long count = messageService.dotMessage(userId);
         return ResultUtils.success(count);
     }
 
     @GetMapping("dotMessageAll")
     public BaseResponse dotMessageAll() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         MessageCountDTO dto = messageService.dotMessageAll(userId);
         return ResultUtils.success(dto);
     }
 
     @GetMapping("readAllComment")
     public BaseResponse readAllComment() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         return ResultUtils.success(messageService.readAllComment(userId));
     }
 
     @GetMapping("removeAllComment")
     public BaseResponse removeAllComment() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         return ResultUtils.success(messageService.removeAllComment(userId));
     }
 
@@ -64,40 +64,40 @@ public class MessageController {
 
     @GetMapping("thumbCollectMessage")
     public BaseResponse thumbCollectMessage( Long curPage, Long pageSize) {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         MessageResultDTO commentMessage = messageService.thumbCollectMessage(userId, curPage, pageSize);
         return ResultUtils.success(commentMessage);
     }
 
     @GetMapping("readAllThumbCollectMessage")
     public BaseResponse readAllThumbCollectMessage() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         return ResultUtils.success(messageService.readAllThumbCollectMessage(userId));
     }
 
     @GetMapping("removeAllThumb")
     public BaseResponse removeAllThumb() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         return ResultUtils.success(messageService.removeAllThumbCollectMessage(userId));
     }
 
     @GetMapping("readAllSystemMessage")
     public BaseResponse readAllSystemMessage() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         return ResultUtils.success(messageService.readAllSystemMessage(userId));
     }
 
 
     @GetMapping("systemMessage")
     public BaseResponse systemMessage( Long curPage, Long pageSize) {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         MessageResultDTO commentMessage = messageService.systemMessage(userId, curPage, pageSize);
         return ResultUtils.success(commentMessage);
     }
 
     @GetMapping("removeAllSystem")
     public BaseResponse removeAllSystem() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         return ResultUtils.success(messageService.removeAllSystemMessage(userId));
     }
 

@@ -1,5 +1,7 @@
 package fun.haoyang666.www.utils;
 
+import fun.haoyang666.www.domain.vo.UserAuth;
+
 /**
  * @author yang
  * @createTime 2023/2/21 19:44
@@ -8,17 +10,17 @@ package fun.haoyang666.www.utils;
 
 public class ThreadLocalUtils {
 
-    private static final ThreadLocal<Long> THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<UserAuth> THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void set(Long userId) {
-        THREAD_LOCAL.set(userId);
+    public static void set(UserAuth userAuth) {
+        THREAD_LOCAL.set(userAuth);
     }
 
     public static void remove() {
         THREAD_LOCAL.remove();
     }
 
-    public static Long get() {
+    public static UserAuth get() {
         return THREAD_LOCAL.get();
     }
 }

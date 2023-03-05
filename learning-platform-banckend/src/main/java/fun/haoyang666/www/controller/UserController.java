@@ -75,14 +75,14 @@ public class UserController {
 
     @GetMapping("userInfo")
     public BaseResponse<UserInfoDTO> userInfo() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         UserInfoDTO userDto = userService.userInfo(userId);
         return ResultUtils.success(userDto);
     }
 
     @GetMapping("getCodeById")
     public BaseResponse getCodeById() {
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         userService.getCodeById(userId);
         return ResultUtils.success("success");
     }

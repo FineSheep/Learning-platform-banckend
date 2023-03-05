@@ -158,7 +158,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             offset = (curPage - 1) * pageSize;
         }
         req.setOffset(offset);
-        req.setUserId(ThreadLocalUtils.get());
+        req.setUserId(ThreadLocalUtils.get().getUserId());
         List<PostVO> postVOS = postMapper.getPostActions(req);
         return postVOS;
     }

@@ -31,7 +31,7 @@ public class ImgController {
         if (file == null) {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        Long userId = ThreadLocalUtils.get();
+        Long userId = ThreadLocalUtils.get().getUserId();
         FileInfo fileInfo = uploadImgService.userUrl(file, userId);
         return ResultUtils.success(fileInfo);
     }

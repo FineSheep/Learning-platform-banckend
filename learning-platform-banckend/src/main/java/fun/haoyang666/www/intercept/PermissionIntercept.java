@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.entity.User;
+import fun.haoyang666.www.domain.vo.UserAuth;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.utils.JwtUtil;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
@@ -40,7 +41,9 @@ public class PermissionIntercept implements HandlerInterceptor {
         try {
             DecodedJWT dj = JwtUtil.decodeToken(token);
             String userId = dj.getClaim("userId").asString();
-            ThreadLocalUtils.set(Long.valueOf(userId));
+            String auth = dj.getClaim("auth").asString();
+            UserAuth userAuth = new UserAuth(Long.valueOf(userId), auth);
+            ThreadLocalUtils.set(userAuth);
             // -------------------------------------------------------------------------------------------------------
             // 计算当前时间是否超过过期时间的一半，如果是就帮用户续签 --------------------------
             // 此处并不是永久续签，只是为 大于过期时间的一半 且 小于过期时间 的 token 续签
@@ -52,6 +55,7 @@ public class PermissionIntercept implements HandlerInterceptor {
                 log.info("令牌续约");
                 Map<String, String> payload = new HashMap<>();
                 payload.put("userId", userId); // 加入一些非敏感的用户信息
+                payload.put("auth", auth);
                 String newJwt = JwtUtil.generateToken(payload);
                 // 加入返回头
                 response.addHeader("token", newJwt);

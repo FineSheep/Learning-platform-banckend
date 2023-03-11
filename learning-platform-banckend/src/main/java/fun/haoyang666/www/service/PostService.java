@@ -1,5 +1,7 @@
 package fun.haoyang666.www.service;
 
+import fun.haoyang666.www.admin.dto.CheckPost;
+import fun.haoyang666.www.admin.dto.SysPostDto;
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
 import fun.haoyang666.www.domain.req.GetPostActionsREQ;
@@ -28,4 +30,8 @@ public interface PostService extends IService<Post> {
     List<PostVO> getPostCollect(int curPage, int pageSize, Long userId);
 
     List<PostVO> getPostActions(GetPostActionsREQ req);
+
+    List<PostVO> listPost(SysPostDto postDto);
+
+    Boolean checkPost(CheckPost checkPost);
 }

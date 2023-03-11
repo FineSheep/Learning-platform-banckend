@@ -1,5 +1,6 @@
 package fun.haoyang666.www.service;
 
+import fun.haoyang666.www.admin.dto.ListQuesDto;
 import fun.haoyang666.www.domain.dto.PKRecordDTO;
 import fun.haoyang666.www.domain.entity.Questions;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -32,4 +33,8 @@ public interface QuestionsService extends IService<Questions> {
     PKRecordDTO recordDetail(Long recordId);
 
     PKRecordDTO getPkDetails(Long recordId);
+
+    List<Questions> listQuestion(ListQuesDto dto);
+
+    Boolean saveOrUpdateQues(Questions questions);
 }

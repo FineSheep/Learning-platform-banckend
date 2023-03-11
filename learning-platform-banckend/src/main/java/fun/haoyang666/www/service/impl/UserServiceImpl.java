@@ -2,6 +2,7 @@ package fun.haoyang666.www.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import fun.haoyang666.www.admin.UserParamReq;
 import fun.haoyang666.www.admin.dto.SysUserDto;
@@ -24,6 +25,7 @@ import fun.haoyang666.www.utils.JwtUtil;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
 import fun.haoyang666.www.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +34,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -226,30 +229,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Integer userStatus = req.getUserStatus();
         Integer gender = req.getGender();
         String phone = req.getPhone();
-        if (userId != null) {
-            queryWrapper.eq(User::getId, userId);
-        }
-        if (name != null) {
-            queryWrapper.like(User::getUsername,name);
-        }
-        if (email != null) {
-            queryWrapper.like(User::getEmail,email);
-        }
-        if (userStatus != null) {
-            queryWrapper.eq(User::getUserStatus, userStatus);
-        }
-        if (gender != null) {
-            queryWrapper.eq(User::getGender,gender);
-        }
-        if (phone != null) {
-            queryWrapper.like(User::getPhone, phone);
-        }
+        //移除空值
+        queryWrapper.eq(userId != null, User::getId, userId);
+        queryWrapper.eq(userStatus != null, User::getUserStatus, userStatus);
+        queryWrapper.eq(gender != null, User::getGender, gender);
+        queryWrapper.like(StringUtils.isNotBlank(name), User::getUsername, name);
+        queryWrapper.like(StringUtils.isNotBlank(email), User::getEmail, email);
+        queryWrapper.like(StringUtils.isNotBlank(phone), User::getPhone, phone);
         List<SysUserDto> res = this.list(queryWrapper).stream().map(user -> {
             SysUserDto sysUserDto = new SysUserDto();
             BeanUtils.copyProperties(user, sysUserDto);
             return sysUserDto;
         }).collect(Collectors.toList());
         return res;
+    }
+
+    @Override
+    public Integer forbiddenUser(Long userId, Integer status) {
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getId, userId);
+        updateWrapper.set(User::getUserStatus, status);
+        this.update(updateWrapper);
+        return 1;
+    }
+
+    @Override
+    public Boolean removeUser(Long userId) {
+        return this.removeById(userId);
+    }
+
+    @Override
+    public Boolean resetUser(Long userId) {
+        User user = getUserById(userId);
+        //todo 加密
+        String password = "";
+//        password = DigestUtils.md5DigestAsHex((SALTY + user.getEmail()).getBytes());
+        return this.lambdaUpdate()
+                .eq(User::getId, userId)
+                .set(User::getUserPassword, password)
+                .update();
+    }
+
+    @Override
+    public Boolean updateUser(SysUserDto dto) {
+        User user = new User();
+        BeanUtils.copyProperties(dto, user);
+        return this.updateById(user);
     }
 
     private User getUserById(Long id) {

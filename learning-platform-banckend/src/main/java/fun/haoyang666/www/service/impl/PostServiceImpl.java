@@ -1,7 +1,10 @@
 package fun.haoyang666.www.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
+import fun.haoyang666.www.admin.dto.CheckPost;
+import fun.haoyang666.www.admin.dto.SysPostDto;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.entity.*;
 import fun.haoyang666.www.domain.req.GetPostActionsREQ;
@@ -13,6 +16,7 @@ import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.service.TagService;
 import fun.haoyang666.www.service.ThumbPostService;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +52,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         Gson gson = new Gson();
         String jsonTags = gson.toJson(tags);
         Post post = new Post();
-
         post.setDescription(description);
         post.setContent(content);
         post.setPhoto(photo);
@@ -76,12 +79,15 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             String tagsStr = item.getTags();
             Gson gson = new Gson();
             Long[] tags = gson.fromJson(tagsStr, Long[].class);
-            ArrayList<String> tagsName = new ArrayList<>();
-            Arrays.stream(tags).forEach(index -> {
-                tagsName.add(tagMap.get(index));
-            });
+            if (tags != null) {
+                ArrayList<String> tagsName = new ArrayList<>();
+                Arrays.stream(tags).forEach(index -> {
+                    tagsName.add(tagMap.get(index));
+                });
+                item.setTagsName(tagsName);
+            }
+
             //判断是否收藏，点赞
-            item.setTagsName(tagsName);
             if (isCollected(userId, item.getId())) {
                 item.setCollected(true);
             }
@@ -113,19 +119,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             offset = (curPage - 1) * pageSize;
         }
         List<PostVO> postVOS = postMapper.selectPostsUid(offset, pageSize, userId);
-        //获取标签，转换为map
-/*        Map<Long, String> tagMap = tagService.list().stream().collect(Collectors.toMap(Tag::getId, Tag::getTagName));
-        //标签转化为名字
-        postVOS.forEach(item -> {
-            String tagsStr = item.getTags();
-            Gson gson = new Gson();
-            Long[] tags = gson.fromJson(tagsStr, Long[].class);
-            ArrayList<String> tagsName = new ArrayList<>();
-            Arrays.stream(tags).forEach(index -> {
-                tagsName.add(tagMap.get(index));
-            });
-            item.setTagsName(tagsName);
-        });*/
         return postVOS;
     }
 
@@ -161,6 +154,36 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         req.setUserId(ThreadLocalUtils.get().getUserId());
         List<PostVO> postVOS = postMapper.getPostActions(req);
         return postVOS;
+    }
+
+    @Override
+    public List<PostVO> listPost(SysPostDto postDto) {
+        List<PostVO> postVOS = postMapper.listPost(postDto);
+        //获取标签，转换为map
+        Map<Long, String> tagMap = tagService.list().stream().collect(Collectors.toMap(Tag::getId, Tag::getTagName));
+        //标签转化为名字
+        postVOS.forEach(item -> {
+            String tagsStr = item.getTags();
+            Gson gson = new Gson();
+            Long[] tags = gson.fromJson(tagsStr, Long[].class);
+            if (tags != null) {
+                ArrayList<String> tagsName = new ArrayList<>();
+                Arrays.stream(tags).forEach(index -> {
+                    tagsName.add(tagMap.get(index));
+                });
+                item.setTagsName(tagsName);
+            }
+        });
+        return postVOS;
+    }
+
+    @Override
+    public Boolean checkPost(CheckPost checkPost) {
+        Post post = new Post();
+        post.setId(checkPost.getPostId());
+        post.setReviewStatus(checkPost.getReviewStatus());
+        post.setReviewMessage(checkPost.getReviewMessage());
+        return this.updateById(post);
     }
 
     private boolean isCollected(long userId, long postId) {

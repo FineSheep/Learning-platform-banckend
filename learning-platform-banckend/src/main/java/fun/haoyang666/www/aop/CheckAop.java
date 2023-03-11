@@ -18,10 +18,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CheckAop {
 
-    @Around("@annotation(checkAuth)")
-    public Object checkAuth(ProceedingJoinPoint jp, CheckAuth checkAuth) throws Throwable {
+    @Around("execution(* fun.haoyang666.www.admin.controller.*.*(..))")
+    public Object checkAuth(ProceedingJoinPoint jp) throws Throwable {
+        CheckAuth annotation = jp.getTarget().getClass().getAnnotation(CheckAuth.class);
         String auth = ThreadLocalUtils.get().getAuth();
-        if (auth.equals(checkAuth.value())){
+        if (annotation.value().equals(auth)) {
             return jp.proceed();
         }
         throw new BusinessException(ErrorCode.NO_AUTH);

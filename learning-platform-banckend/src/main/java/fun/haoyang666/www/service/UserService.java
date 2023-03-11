@@ -44,4 +44,11 @@ public interface UserService extends IService<User> {
 
     List<SysUserDto> listSysUser(UserParamReq req);
 
+    Integer forbiddenUser(Long userId, Integer status);
+
+    Boolean removeUser(Long userId);
+
+    Boolean resetUser(Long userId);
+
+    Boolean updateUser(SysUserDto dto);
 }

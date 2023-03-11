@@ -1,7 +1,10 @@
 package fun.haoyang666.www.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import fun.haoyang666.www.admin.dto.ListQuesDto;
 import fun.haoyang666.www.common.Constant;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.QuesEnum;
@@ -21,6 +24,7 @@ import fun.haoyang666.www.service.RecordsService;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -208,6 +212,21 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         return pkRecordDTO;
     }
 
+    @Override
+    public List<Questions> listQuestion(ListQuesDto dto) {
+        Long id = dto.getId();
+        String type = dto.getType();
+        LambdaQueryWrapper<Questions> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(id != null, Questions::getId, id);
+        queryWrapper.eq(StringUtils.isNotBlank(type), Questions::getType, type);
+        return this.list(queryWrapper);
+    }
+
+    @Override
+    public Boolean saveOrUpdateQues(Questions questions) {
+        return this.saveOrUpdate(questions);
+    }
+
 
     private void dayLeader(long userId, long count) {
         ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
@@ -217,9 +236,9 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
         day.setId(userId);
         day.setUsername(username);
         Double score = Optional.ofNullable(zSet.score(Constant.REDIS_DAY_LEADER, day)).orElse((double) 0);
-        log.info("--->score:{}", score);
+//        log.info("--->score:{}", score);
         score += count;
-        log.info("score:{}", score);
+//        log.info("score:{}", score);
         zSet.add(Constant.REDIS_DAY_LEADER, day, score);
     }
 
@@ -241,12 +260,17 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     private Map<Integer, List<QuesVO>> mistakeQues(long userId, long sum) {
         List<Long> ids = quesrecordMapper.selectIdsByUserIdMistack(userId);
         Map<Integer, List<QuesVO>> map = new HashMap<>();
-        if (ids.size() <= sum) {
-            map = randomQues(sum);
-        } else {
-            List<Long> randomIds = RandomUtil.randomEleList(ids, (int) sum);
-            map = this.listByIds(randomIds).stream().map(this::convertVo).collect(Collectors.groupingBy(QuesVO::getType));
+        if (ids.size()<sum){
+          return   randomQues(sum);
+        }else {
+            if (ids.size() <= sum) {
+                map = randomQues(sum);
+            } else {
+                List<Long> randomIds = RandomUtil.randomEleList(ids, (int) sum);
+                map = this.listByIds(randomIds).stream().map(this::convertVo).collect(Collectors.groupingBy(QuesVO::getType));
+            }
         }
+
         return map;
     }
 

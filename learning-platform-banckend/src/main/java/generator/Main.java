@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @author yang
@@ -22,6 +23,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         Main main = new Main();
         main.test();
+        Queue<String> queue = new LinkedList<>();
     }
 
     public void test() throws IOException, InterruptedException {

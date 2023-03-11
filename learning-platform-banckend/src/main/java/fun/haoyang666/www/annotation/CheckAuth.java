@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author yang
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD,ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CheckAuth {
     String value() default "";

@@ -27,8 +27,8 @@ public class PostVO {
     private String title;
     private User user;
     private List<String> tagsName;
-    private boolean collected;
-    private boolean thumbed;
+    private Boolean collected;
+    private Boolean thumbed;
 
 
 }

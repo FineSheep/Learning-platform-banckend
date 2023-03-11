@@ -37,15 +37,7 @@ public class QuestionController {
     private QuestionsService questionsService;
 
 
-    @PostMapping("uploadQues")
-    public BaseResponse uploadQues(MultipartFile file) {
-        try {
-            EasyExcel.read(file.getInputStream(), Questions.class, new QuestionListener(questionsService)).sheet().doRead();
-        } catch (IOException e) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
-        }
-        return ResultUtils.success(null);
-    }
+
 
     @PostMapping("getQuesBy")
     public BaseResponse<Map<Integer, List<QuesVO>>> getQuesBy(@RequestBody GetQuesREQ quesReq) {

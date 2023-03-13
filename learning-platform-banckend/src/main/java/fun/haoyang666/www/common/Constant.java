@@ -17,4 +17,9 @@ public interface Constant {
     String REDIS_TOTAL_LEADER = "leader:total";
     String DAY_LEADER = "day";
     String TOTAL_LEADER = "total";
+    String MESS_TYPE_ALL = "1";
+    String MESS_TYPE_SINGLE = "0";
+    String ADMIN="1";
+    Integer NO_DEAL = 1;
+    Integer DEAL = 0;
 }

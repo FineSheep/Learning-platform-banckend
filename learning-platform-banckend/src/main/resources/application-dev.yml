@@ -1,0 +1,43 @@
+server:
+  port: 9001
+spring:
+  file-storage: #文件存储配置
+    default-platform: qiniu-kodo-1 #默认使用的存储平台
+    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    qiniu-kodo: # 七牛云 kodo ，不使用的情况下可以不写
+      - platform: qiniu-kodo-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: RkYx79Axf0D2pm_Zg--_crNWn6ZoE4fGnyLYcLve
+        secret-key: -2WhnF7NIcgp3lMTidYnHDqaswN93m91YAEsEcYX
+        bucket-name: learn-school
+        domain: http://cdn.haoyang666.fun/ # 访问域名，注意“/”结尾，例如：http://abc.hn-bkt.clouddn.com/
+        base-path: school/ # 基础路径
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://gz-cynosdbmysql-grp-ehexrgc7.sql.tencentcdb.com:28785/learningplat
+    username: admin
+    password: yh18574859405..
+  redis:
+    port: 6379
+    host: 43.139.90.246
+    password: yh18574859405
+    database: 0
+    #knife4j配置
+  servlet:
+    multipart:
+      max-file-size: 10MB # 单个文件大小
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+      #mybatis-plus日志打印
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
+

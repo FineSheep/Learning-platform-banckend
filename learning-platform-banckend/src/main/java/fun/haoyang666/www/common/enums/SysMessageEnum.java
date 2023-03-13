@@ -23,7 +23,11 @@ public enum SysMessageEnum {
     /**
      * 反馈
      */
-    BACK(2, "反馈");
+    BACK(2, "反馈"),
+    /**
+     * 举报
+     */
+    REPORT(4, "举报");
     private Integer code;
     private String message;
 

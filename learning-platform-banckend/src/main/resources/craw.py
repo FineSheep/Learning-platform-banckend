@@ -6,9 +6,9 @@ if __name__ == '__main__':
     headers = {"User-Agent": User_Agent}
     for page in range(0, 2):
         if page == 0:
-            url = "http://cyberpolice.mps.gov.cn/wfjb/html/gzdt/index.shtml"
+            url = "http://cyberpolice.mps.gov.cn/wfjb/html/bgl/index.shtml"
         else:
-            url = "http://cyberpolice.mps.gov.cn/wfjb/html/gzdt/index_" + str(page) + ".shtml"
+            url = "http://cyberpolice.mps.gov.cn/wfjb/html/bgl/index_" + str(page) + ".shtml"
         page_text = requests.get(url=url, headers=headers).content.decode('UTF-8')
         tree = etree.HTML(page_text)
         tr_list = tree.xpath(

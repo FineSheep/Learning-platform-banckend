@@ -3,12 +3,11 @@ package fun.haoyang666.www.controller;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.domain.dto.MessageCountDTO;
 import fun.haoyang666.www.domain.dto.MessageResultDTO;
+import fun.haoyang666.www.domain.dto.ReportDto;
 import fun.haoyang666.www.service.MessageService;
 import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -104,6 +103,10 @@ public class MessageController {
     @GetMapping("readMessage")
     public BaseResponse readMessage(Long messageId){
         return ResultUtils.success(messageService.readMessage(messageId));
+    }
 
+    @PostMapping("reportPost")
+    public BaseResponse reportPost(@RequestBody ReportDto reportDto){
+        return ResultUtils.success(messageService.reportPost(reportDto));
     }
 }

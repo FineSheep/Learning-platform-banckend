@@ -1,6 +1,7 @@
 package fun.haoyang666.www.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.admin.dto.InfoParamDto;
 import fun.haoyang666.www.domain.entity.Information;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface InformationService extends IService<Information> {
     List<Information> getInformationPage(int curPage, int pageSize);
 
     Information getNewById(Long id);
+
+    List<Information> listInfo(InfoParamDto infoParamDto);
+
+    Boolean changeInfo(Long id, Integer type);
 }

@@ -1,11 +1,11 @@
 package fun.haoyang666.www.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
-import fun.haoyang666.www.admin.dto.CheckPost;
+import fun.haoyang666.www.admin.dto.CheckPostDto;
 import fun.haoyang666.www.admin.dto.SysPostDto;
 import fun.haoyang666.www.common.enums.ErrorCode;
+import fun.haoyang666.www.common.enums.StatusEnum;
 import fun.haoyang666.www.domain.entity.*;
 import fun.haoyang666.www.domain.req.GetPostActionsREQ;
 import fun.haoyang666.www.domain.vo.PostVO;
@@ -16,12 +16,10 @@ import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.service.TagService;
 import fun.haoyang666.www.service.ThumbPostService;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -178,12 +176,17 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     }
 
     @Override
-    public Boolean checkPost(CheckPost checkPost) {
+    public Boolean checkPost(CheckPostDto checkPostDto) {
         Post post = new Post();
-        post.setId(checkPost.getPostId());
-        post.setReviewStatus(checkPost.getReviewStatus());
-        post.setReviewMessage(checkPost.getReviewMessage());
+        post.setId(checkPostDto.getPostId());
+        post.setReviewStatus(checkPostDto.getReviewStatus());
+        post.setReviewMessage(checkPostDto.getReviewMessage());
         return this.updateById(post);
+    }
+
+    @Override
+    public Boolean recheck(Long id) {
+        return this.lambdaUpdate().eq(Post::getId,id).set(Post::getReviewStatus, 0).update();
     }
 
     private boolean isCollected(long userId, long postId) {

@@ -9,7 +9,7 @@ import lombok.Data;
  * @description
  */
 @Data
-@TableName("Thumb_post")
+@TableName("thumb_post")
 public class ThumbPost {
     private long id;
     private long postId;

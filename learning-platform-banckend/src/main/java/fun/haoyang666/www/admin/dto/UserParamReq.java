@@ -1,4 +1,4 @@
-package fun.haoyang666.www.admin;
+package fun.haoyang666.www.admin.dto;
 
 import lombok.Data;
 

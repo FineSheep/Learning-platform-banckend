@@ -2,20 +2,27 @@ package fun.haoyang666.www.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import fun.haoyang666.www.admin.dto.MessageParamDto;
+import fun.haoyang666.www.admin.dto.MessageSendDto;
+import fun.haoyang666.www.common.Constant;
+import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.common.enums.ReadMenum;
 import fun.haoyang666.www.common.enums.SysMessageEnum;
 import fun.haoyang666.www.domain.dto.MessageCountDTO;
 import fun.haoyang666.www.domain.dto.MessageResultDTO;
 import fun.haoyang666.www.domain.dto.MessageThumbCollectDTO;
+import fun.haoyang666.www.domain.dto.ReportDto;
 import fun.haoyang666.www.domain.entity.*;
+import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.mapper.MessageMapper;
 import fun.haoyang666.www.mapper.PostMapper;
 import fun.haoyang666.www.mapper.UserMapper;
 import fun.haoyang666.www.service.MessageService;
 import fun.haoyang666.www.service.MessageUserService;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -230,5 +237,83 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         wrapper.eq(MessageUser::getMessageId, messageId).eq(MessageUser::getIsRead, ReadMenum.UN_READ.getCode());
         wrapper.set(MessageUser::getIsRead, ReadMenum.READ.getCode());
         return messageUserService.update(wrapper);
+    }
+
+    @Override
+    public Boolean messageSend(MessageSendDto messageSendDto) {
+        String content = messageSendDto.getContent();
+        String type = messageSendDto.getType();
+        Message message = new Message();
+        message.setTitle("系统通知");
+        message.setContent(content);
+        message.setType(SysMessageEnum.SYSTEM.getCode());
+        message.setCreateId(ThreadLocalUtils.get().getUserId());
+        this.save(message);
+        if (Constant.MESS_TYPE_SINGLE.equals(type)) {
+            Long userId = messageSendDto.getUserId();
+            MessageUser messageUser = new MessageUser();
+            messageUser.setMessageId(message.getId());
+            messageUser.setType(SysMessageEnum.SYSTEM.getCode());
+            messageUser.setUserId(userId);
+            messageUserService.save(messageUser);
+        } else {
+            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.ne(User::getUserRole, Constant.ADMIN);
+            List<Long> userIds = userMapper.selectList(queryWrapper)
+                    .stream().map(User::getId).collect(Collectors.toList());
+            LinkedList<MessageUser> list = new LinkedList<>();
+            userIds.forEach(id -> {
+                MessageUser messageUser = new MessageUser();
+                messageUser.setMessageId(message.getId());
+                messageUser.setType(SysMessageEnum.SYSTEM.getCode());
+                messageUser.setUserId(id);
+                list.add(messageUser);
+            });
+            messageUserService.saveBatch(list);
+        }
+        return true;
+    }
+
+    @Override
+    public List<Message> listMessage(MessageParamDto messageParamDto) {
+        LambdaQueryWrapper<Message> queryWrapper = new LambdaQueryWrapper<>();
+        Integer type = messageParamDto.getType();
+        String title = messageParamDto.getTitle();
+        String content = messageParamDto.getContent();
+        Long id = messageParamDto.getId();
+        Long deal = messageParamDto.getDeal();
+        Long userId = messageParamDto.getUserId();
+        queryWrapper.ne(Message::getType, SysMessageEnum.THUMB_COLLECT.getCode());
+        queryWrapper.eq(id != null, Message::getId, id);
+        queryWrapper.like(StringUtils.isNotBlank(content), Message::getContent, content);
+        queryWrapper.eq(type != null, Message::getType, type);
+        queryWrapper.like(StringUtils.isNotBlank(title), Message::getTitle, title);
+        queryWrapper.eq(userId != null, Message::getCreateId, userId);
+        queryWrapper.eq(deal != null, Message::getDeal, deal);
+        List<Message> list = this.list(queryWrapper);
+        return list;
+    }
+
+    @Override
+    public Boolean dealMessage(Long id, Integer deal) {
+        boolean b = this.lambdaUpdate().eq(Message::getId, id).set(Message::getDeal, deal).update();
+        return b;
+    }
+
+    @Override
+    public Boolean reportPost(ReportDto reportDto) {
+        Long id = reportDto.getId();
+        String content = reportDto.getContent();
+        if (id == null || StringUtils.isBlank(content)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Message message = new Message();
+        message.setTitle("举报通知");
+        message.setType(SysMessageEnum.REPORT.getCode());
+        message.setContent(content);
+        message.setCreateId(ThreadLocalUtils.get().getUserId());
+        message.setDeal(Constant.NO_DEAL);
+        message.setPostId(id);
+        return this.save(message);
     }
 }

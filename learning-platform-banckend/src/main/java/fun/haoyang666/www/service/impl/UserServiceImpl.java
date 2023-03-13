@@ -4,8 +4,8 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import fun.haoyang666.www.admin.UserParamReq;
 import fun.haoyang666.www.admin.dto.SysUserDto;
+import fun.haoyang666.www.admin.dto.UserParamReq;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
@@ -40,6 +40,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (user == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "未注册");
         }
-//        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
-        String safePass = password;
+        String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
         if (safePass.equals(user.getUserPassword())) {
             UserDTO safeUser = new UserDTO();
             BeanUtils.copyProperties(user, safeUser);
@@ -141,6 +141,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             insertUser.setUsername(RandomUtil.randomString(10));
             insertUser.setAvatarUrl(DEFAULT_AVATAR);
             insertUser.setCreateTime(LocalDateTime.now());
+            insertUser.setUserRole(0);
             this.save(insertUser);
             BeanUtils.copyProperties(insertUser, userDto);
         } else {
@@ -150,7 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //jwt回写
         Map<String, String> payload = new HashMap<>();
         payload.put("userId", String.valueOf(userDto.getId())); // 加入一些非敏感的用户信息
-        payload.put("auth", user.getUserRole() == 0 ? "user" : "admin");
+        payload.put("auth", userDto.getUserRole() == 0 ? "user" : "admin");
         String newJwt = JwtUtil.generateToken(payload);
         // 加入返回头
         response.addHeader("token", newJwt);
@@ -209,9 +210,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码不一致");
         }
         //todo 加密
-        //String safePass = DigestUtils.md5DigestAsHex((SALTY + password).getBytes());
-        this.lambdaUpdate().eq(User::getId, userId).set(User::getUserPassword, onePass).update();
-        return false;
+        String safePass = DigestUtils.md5DigestAsHex((SALTY + onePass).getBytes());
+        this.lambdaUpdate().eq(User::getId, userId).set(User::getUserPassword, safePass).update();
+        return true;
     }
 
     @Override
@@ -263,7 +264,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = getUserById(userId);
         //todo 加密
         String password = "";
-//        password = DigestUtils.md5DigestAsHex((SALTY + user.getEmail()).getBytes());
+        password = DigestUtils.md5DigestAsHex((SALTY + user.getEmail()).getBytes());
         return this.lambdaUpdate()
                 .eq(User::getId, userId)
                 .set(User::getUserPassword, password)
@@ -275,6 +276,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         BeanUtils.copyProperties(dto, user);
         return this.updateById(user);
+    }
+
+    @Override
+    public List<UserDTO> byName(String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return this.lambdaQuery().like(User::getUsername, name).list().stream()
+                    .map(item -> {
+                        UserDTO userDTO = new UserDTO();
+                        userDTO.setId(item.getId());
+                        userDTO.setUsername(item.getUsername());
+                        userDTO.setEmail(item.getEmail());
+                        return userDTO;
+                    }).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     private User getUserById(Long id) {

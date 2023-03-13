@@ -106,4 +106,9 @@ public class PostController {
         return ResultUtils.success(vos);
     }
 
+    @GetMapping("recheck")
+    public BaseResponse recheck(Long id){
+        return ResultUtils.success(postService.recheck(id));
+    }
+
 }

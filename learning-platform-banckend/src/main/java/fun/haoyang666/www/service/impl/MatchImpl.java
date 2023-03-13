@@ -219,7 +219,7 @@ public class MatchImpl {
         }
         if (userInfo.getCorrect().size() == opponentInfo.getCorrect().size()) {
             if (userInfo.getTime() > opponentInfo.getTime()) {
-                return userInfo.getUserId();
+                return opponentInfo.getUserId();
             }
         }
         return opponentInfo.getUserId();

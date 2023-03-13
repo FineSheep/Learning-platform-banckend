@@ -27,4 +27,6 @@ public class Message {
     private LocalDateTime updateTime;
     @TableLogic
     private Integer isDelete;
+    private Integer deal;
+    private Integer quesId;
 }

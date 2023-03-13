@@ -7,6 +7,7 @@ import fun.haoyang666.www.domain.entity.User;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.UploadImgService;
 import fun.haoyang666.www.service.UserService;
+import fun.haoyang666.www.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ public class UploadImgImpl implements UploadImgService {
     public FileInfo userUrl(MultipartFile file, Long userId) {
         FileInfo upload = null;
         try {
-            upload = upload(file);
+            String path = "person/" + userId + "/";
+            upload = upload(path, file);
             String url = upload.getUrl();
             userService.lambdaUpdate().eq(User::getId, userId).set(User::getAvatarUrl, url).update();
         } catch (Exception e) {
@@ -42,12 +44,13 @@ public class UploadImgImpl implements UploadImgService {
 
     @Override
     public FileInfo uploadImg(MultipartFile img) {
-        return upload(img);
+        String path = "post/" + ThreadLocalUtils.get().getUserId() + "/";
+        return upload(path, img);
     }
 
-    private FileInfo upload(MultipartFile file) {
+    private FileInfo upload(String path, MultipartFile file) {
         return fileStorageService.of(file)
-                .setPath("person/")
+                .setPath(path)
                 .image(img -> img.size(1000, 1000))  //将图片大小调整到 1000*1000
                 .thumbnail(th -> th.size(200, 200))  //再生成一张 200*200 的缩略图
                 .upload();

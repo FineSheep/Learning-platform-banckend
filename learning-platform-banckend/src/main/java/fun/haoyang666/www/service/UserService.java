@@ -1,7 +1,8 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.admin.UserParamReq;
+
 import fun.haoyang666.www.admin.dto.SysUserDto;
+import fun.haoyang666.www.admin.dto.UserParamReq;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
@@ -51,4 +52,6 @@ public interface UserService extends IService<User> {
     Boolean resetUser(Long userId);
 
     Boolean updateUser(SysUserDto dto);
+
+    List<UserDTO> byName(String name);
 }

@@ -48,11 +48,8 @@ public class Information implements Serializable {
      * 图片链接
      */
     private String photo;
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Integer isDelete;
+
+    private Integer type;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

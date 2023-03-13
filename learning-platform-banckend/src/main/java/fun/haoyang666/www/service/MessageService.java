@@ -1,12 +1,17 @@
 package fun.haoyang666.www.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import fun.haoyang666.www.admin.dto.MessageParamDto;
+import fun.haoyang666.www.admin.dto.MessageSendDto;
 import fun.haoyang666.www.domain.dto.MessageCountDTO;
 import fun.haoyang666.www.domain.dto.MessageResultDTO;
+import fun.haoyang666.www.domain.dto.ReportDto;
 import fun.haoyang666.www.domain.entity.Comment;
 import fun.haoyang666.www.domain.entity.Message;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 public interface MessageService extends IService<Message> {
     void thumbAndCollect(Long postId, Long userId);
@@ -39,4 +44,12 @@ public interface MessageService extends IService<Message> {
     Boolean removeAllSystemMessage(Long userId);
 
     Boolean readMessage(Long messageId);
+
+    Boolean messageSend(MessageSendDto messageSendDto);
+
+    List<Message> listMessage(MessageParamDto messageParamDto);
+
+    Boolean dealMessage(Long id, Integer deal);
+
+    Boolean reportPost(ReportDto reportDto);
 }

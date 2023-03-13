@@ -1,6 +1,6 @@
 package fun.haoyang666.www.service;
 
-import fun.haoyang666.www.admin.dto.CheckPost;
+import fun.haoyang666.www.admin.dto.CheckPostDto;
 import fun.haoyang666.www.admin.dto.SysPostDto;
 import fun.haoyang666.www.domain.entity.Post;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -33,5 +33,7 @@ public interface PostService extends IService<Post> {
 
     List<PostVO> listPost(SysPostDto postDto);
 
-    Boolean checkPost(CheckPost checkPost);
+    Boolean checkPost(CheckPostDto checkPostDto);
+
+    Boolean recheck(Long id);
 }

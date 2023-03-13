@@ -1,6 +1,6 @@
 package fun.haoyang666.www.admin.controller;
 
-import fun.haoyang666.www.admin.UserParamReq;
+import fun.haoyang666.www.admin.dto.UserParamReq;
 import fun.haoyang666.www.admin.dto.SysUserDto;
 import fun.haoyang666.www.annotation.CheckAuth;
 import fun.haoyang666.www.common.BaseResponse;
@@ -49,5 +49,10 @@ public class SysUserController {
     @PostMapping("updateUser")
     public BaseResponse updateUser(@RequestBody SysUserDto dto){
         return ResultUtils.success(userService.updateUser(dto));
+    }
+
+    @GetMapping("byName")
+    public BaseResponse byName(String name){
+        return ResultUtils.success(userService.byName(name));
     }
 }

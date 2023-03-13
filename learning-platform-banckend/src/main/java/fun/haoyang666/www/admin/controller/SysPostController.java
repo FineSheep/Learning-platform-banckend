@@ -1,6 +1,6 @@
 package fun.haoyang666.www.admin.controller;
 
-import fun.haoyang666.www.admin.dto.CheckPost;
+import fun.haoyang666.www.admin.dto.CheckPostDto;
 import fun.haoyang666.www.admin.dto.SysPostDto;
 import fun.haoyang666.www.annotation.CheckAuth;
 import fun.haoyang666.www.common.BaseResponse;
@@ -31,8 +31,8 @@ public class SysPostController {
     }
 
     @PostMapping("checkPost")
-    public BaseResponse checkPost(@RequestBody CheckPost checkPost){
-        return ResultUtils.success(postService.checkPost(checkPost));
+    public BaseResponse checkPost(@RequestBody CheckPostDto checkPostDto){
+        return ResultUtils.success(postService.checkPost(checkPostDto));
     }
 
 }

@@ -19,7 +19,7 @@ public class ThreadPool {
         if (threadPool == null) {
             synchronized (ThreadPool.class) {
                 if (threadPool == null) {
-                    threadPool = new ThreadPoolExecutor(3, 5, 3,
+                    threadPool = new ThreadPoolExecutor(5, 10, 3,
                             TimeUnit.MINUTES, new LinkedBlockingQueue<>(100),
                             Executors.defaultThreadFactory(),
                             new ThreadPoolExecutor.DiscardOldestPolicy());

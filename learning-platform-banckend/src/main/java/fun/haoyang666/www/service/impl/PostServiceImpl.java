@@ -1,5 +1,6 @@
 package fun.haoyang666.www.service.impl;
 
+import cn.hutool.core.date.StopWatch;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import fun.haoyang666.www.admin.dto.CheckPostDto;
@@ -16,6 +17,9 @@ import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.service.TagService;
 import fun.haoyang666.www.service.ThumbPostService;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
+import fun.haoyang666.www.utils.ThreadPool;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +38,7 @@ import java.util.stream.Collectors;
  * @createDate 2022-12-10 16:20:50
  */
 @Service
+@Slf4j
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         implements PostService {
 
@@ -64,36 +71,47 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     }
 
     @Override
+    @SneakyThrows
     public List<PostVO> getPosts(long userId, int curPage, int pageSize) {
         int offset = 0;
         if ((curPage - 1) * pageSize > 0) {
             offset = (curPage - 1) * pageSize;
         }
+        ExecutorService instance = ThreadPool.instance();
         //获取标签，转换为map
         Map<Long, String> tagMap = tagService.list().stream().collect(Collectors.toMap(Tag::getId, Tag::getTagName));
         List<PostVO> postVOS = postMapper.selectPosts(offset, pageSize);
-        //标签转化为名字
+        //标签转化为名字,并行流操作
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        CountDownLatch count = new CountDownLatch(postVOS.size());
         postVOS.forEach(item -> {
-            String tagsStr = item.getTags();
-            Gson gson = new Gson();
-            Long[] tags = gson.fromJson(tagsStr, Long[].class);
-            if (tags != null) {
-                ArrayList<String> tagsName = new ArrayList<>();
-                Arrays.stream(tags).forEach(index -> {
-                    tagsName.add(tagMap.get(index));
-                });
-                item.setTagsName(tagsName);
-            }
-
-            //判断是否收藏，点赞
-            if (isCollected(userId, item.getId())) {
-                item.setCollected(true);
-            }
-            if (isThumbed(userId, item.getId())) {
-                item.setThumbed(true);
-            }
+            instance.execute(()->{
+                String tagsStr = item.getTags();
+                Gson gson = new Gson();
+                Long[] tags = gson.fromJson(tagsStr, Long[].class);
+                if (tags != null) {
+                    ArrayList<String> tagsName = new ArrayList<>();
+                    Arrays.stream(tags).forEach(index -> {
+                        tagsName.add(tagMap.get(index));
+                    });
+                    item.setTagsName(tagsName);
+                }
+                //判断是否收藏，点赞
+                if (isCollected(userId, item.getId())) {
+                    item.setCollected(true);
+                }
+                if (isThumbed(userId, item.getId())) {
+                    item.setThumbed(true);
+                }
+//                log.info("当前线程：{}",Thread.currentThread().getId());
+                count.countDown();
+            });
         });
-
+        count.await();
+        stopWatch.stop();
+        long totalTimeMillis = stopWatch.getTotalTimeMillis();
+        log.info("查询用时：{}",totalTimeMillis);
         return postVOS;
     }
 

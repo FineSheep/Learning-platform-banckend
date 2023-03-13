@@ -21,6 +21,7 @@ import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.service.ThumbPostService;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.mapper.UserMapper;
+import fun.haoyang666.www.utils.AvatarRandom;
 import fun.haoyang666.www.utils.JwtUtil;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
 import fun.haoyang666.www.utils.ThreadPool;
@@ -139,7 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             User insertUser = new User();
             insertUser.setEmail(email);
             insertUser.setUsername(RandomUtil.randomString(10));
-            insertUser.setAvatarUrl(DEFAULT_AVATAR);
+            insertUser.setAvatarUrl(AvatarRandom.randomAvatar());
             insertUser.setCreateTime(LocalDateTime.now());
             insertUser.setUserRole(0);
             this.save(insertUser);

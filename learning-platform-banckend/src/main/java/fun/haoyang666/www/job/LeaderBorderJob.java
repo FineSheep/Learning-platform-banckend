@@ -30,7 +30,7 @@ public class LeaderBorderJob {
     @Resource
     private UserService userService;
 
-    @Scheduled(cron = "0 0 12 * * ? ")
+    @Scheduled(cron = "0 0 4 * * ? ")
     public void leaderBorder() {
         cleaDayLeader();
         totalLeader();

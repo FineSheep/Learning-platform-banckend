@@ -28,15 +28,16 @@ public class SpiderJob {
     @Resource
     private InformationService informationService;
 
-    @Scheduled(cron = "0 0 0 ? * 7 ")
+    //每月最后一日的上午10:15触发
+    @Scheduled(cron = "0 15 10 L * ?")
     @SneakyThrows
     public void spider() {
         log.info("爬虫定时任务开启。。。。。");
-        //todo 使用相对路径
-        String args1 = "python " + "E:\\workspace\\idea\\learning-platform-banckend\\learning-platform-banckend\\src\\main\\resources\\craw.py";
+        //todo 服务器路径
+        String args1 = "python3 " + "/usr/spider/craw.py";
         System.out.println(args1);
         Process process = Runtime.getRuntime().exec(args1);
-        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
+        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream(), "utf-8"));
         String line;
         Gson gson = new Gson();
         LinkedList<Information> informationList = new LinkedList<>();

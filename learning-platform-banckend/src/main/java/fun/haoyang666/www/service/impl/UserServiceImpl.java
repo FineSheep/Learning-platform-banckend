@@ -85,7 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         SimpleMailMessage message = new SimpleMailMessage();
                         message.setSubject("验证码");
                         //todo 修改发件人
-                        message.setFrom("xxxxxx");
+                        message.setFrom("2245275262@qq.com");
                         message.setTo(email);
                         message.setText(content);
                         javaMailSender.send(message);

@@ -85,7 +85,28 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         CountDownLatch count = new CountDownLatch(postVOS.size());
-        postVOS.forEach(item -> {
+        postVOS.parallelStream().forEach(item -> {
+                String tagsStr = item.getTags();
+                Gson gson = new Gson();
+                Long[] tags = gson.fromJson(tagsStr, Long[].class);
+                if (tags != null) {
+                    ArrayList<String> tagsName = new ArrayList<>();
+                    Arrays.stream(tags).forEach(index -> {
+                        tagsName.add(tagMap.get(index));
+                    });
+                    item.setTagsName(tagsName);
+                }
+                //判断是否收藏，点赞
+                if (isCollected(userId, item.getId())) {
+                    item.setCollected(true);
+                }
+                if (isThumbed(userId, item.getId())) {
+                    item.setThumbed(true);
+                }
+//                log.info("当前线程：{}",Thread.currentThread().getId());
+                count.countDown();
+            });
+     /*   postVOS.forEach(item -> {
             instance.execute(()->{
                 String tagsStr = item.getTags();
                 Gson gson = new Gson();
@@ -107,8 +128,8 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
 //                log.info("当前线程：{}",Thread.currentThread().getId());
                 count.countDown();
             });
-        });
-        count.await();
+        });*/
+//        count.await();
         stopWatch.stop();
         long totalTimeMillis = stopWatch.getTotalTimeMillis();
         log.info("查询用时：{}",totalTimeMillis);

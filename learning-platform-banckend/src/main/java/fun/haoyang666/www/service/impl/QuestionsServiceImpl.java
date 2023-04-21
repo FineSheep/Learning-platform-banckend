@@ -1,6 +1,7 @@
 package fun.haoyang666.www.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -33,6 +34,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -225,6 +228,21 @@ public class QuestionsServiceImpl extends ServiceImpl<QuestionsMapper, Questions
     @Override
     public Boolean saveOrUpdateQues(Questions questions) {
         return this.saveOrUpdate(questions);
+    }
+
+    @Override
+    public void downloadTemplate(HttpServletResponse response) {
+        // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        try {
+            String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+            EasyExcel.write(response.getOutputStream(), QuestionsDownloadVO.class).sheet("模板").doWrite(new ArrayList<>());
+        }catch (Exception e){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+        }
+
     }
 
 

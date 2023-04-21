@@ -4,7 +4,7 @@ from lxml import etree
 if __name__ == '__main__':
     User_Agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36 Edg/98.0.1108.43"
     headers = {"User-Agent": User_Agent}
-    for page in range(0, 2):
+    for page in range(1, 5):
         if page == 0:
             url = "http://cyberpolice.mps.gov.cn/wfjb/html/bgl/index.shtml"
         else:

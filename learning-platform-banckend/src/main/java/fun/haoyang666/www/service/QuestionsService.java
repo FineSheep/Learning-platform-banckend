@@ -9,6 +9,7 @@ import fun.haoyang666.www.domain.vo.CorrectVO;
 import fun.haoyang666.www.domain.vo.PKResultVO;
 import fun.haoyang666.www.domain.vo.QuesVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -37,4 +38,6 @@ public interface QuestionsService extends IService<Questions> {
     List<Questions> listQuestion(ListQuesDto dto);
 
     Boolean saveOrUpdateQues(Questions questions);
+
+    void downloadTemplate(HttpServletResponse response);
 }

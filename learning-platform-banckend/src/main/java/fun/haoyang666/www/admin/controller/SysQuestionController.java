@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -51,5 +53,10 @@ public class SysQuestionController {
     @GetMapping("removeQuestion")
     public BaseResponse removeQuestion(Long id){
         return ResultUtils.success(questionsService.removeById(id));
+    }
+
+    @GetMapping("downloadTemplate")
+    public void downloadTemplate(HttpServletRequest request, HttpServletResponse response){
+        questionsService.downloadTemplate(response);
     }
 }

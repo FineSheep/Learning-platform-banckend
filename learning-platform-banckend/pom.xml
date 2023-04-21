@@ -41,11 +41,11 @@
             <version>0.7.0</version>
         </dependency>
         <!--本地minio-->
-        <dependency>
+<!--        <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.4.3</version>
-        </dependency>
+        </dependency>-->
         <!-- 测试 七牛云 Kodo 不使用的情况下可以不引入 -->
         <dependency>
             <groupId>com.qiniu</groupId>

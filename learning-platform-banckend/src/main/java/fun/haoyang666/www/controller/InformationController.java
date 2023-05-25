@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.entity.Information;
+import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.domain.req.PageREQ;
 import fun.haoyang666.www.domain.vo.SpiderVO;
 import fun.haoyang666.www.service.InformationService;
+import fun.haoyang666.www.service.PostService;
 import fun.haoyang666.www.utils.ResultUtils;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +33,8 @@ import java.util.List;
 public class InformationController {
     @Resource
     private InformationService informationService;
+    @Resource
+    private PostService postService;
 
     @GetMapping("getInfo")
     public BaseResponse getInfo(PageREQ pageReq) {
@@ -44,6 +49,20 @@ public class InformationController {
     public BaseResponse getNewById(Long id) {
         Information info = informationService.getNewById(id);
         return ResultUtils.success(info);
+    }
+
+    @GetMapping("hotAndNew")
+    public BaseResponse hotAndNew() {
+        List<Information> infos = informationService.lambdaQuery()
+                .orderByDesc(Information::getPutTime)
+                .last("limit 10").list();
+        List<Post> post = postService.lambdaQuery()
+                .orderByDesc(Post::getThumbNum)
+                .last("limit 10").list();
+        HashMap<String, List> map = new HashMap<>();
+        map.put("info", infos);
+        map.put("post", post);
+        return ResultUtils.success(map);
     }
 
 }

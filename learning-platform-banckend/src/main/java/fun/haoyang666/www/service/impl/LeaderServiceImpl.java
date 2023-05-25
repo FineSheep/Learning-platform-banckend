@@ -56,13 +56,27 @@ public class LeaderServiceImpl implements LeaderService {
 
     private List<LeaderVO> totalLeader() {
         ZSetOperations<String, LeaderVO> zSet = redisTemplate.opsForZSet();
-        Set<LeaderVO> range = zSet.reverseRange(Constant.REDIS_TOTAL_LEADER, 0, 4);
-        if (range == null || range.size() == 0) {
-            setTotalLeader();
-            range = zSet.reverseRange(Constant.REDIS_TOTAL_LEADER, 0, 4);
-
+        Set<ZSetOperations.TypedTuple<LeaderVO>> typedTuples = zSet.reverseRangeWithScores(Constant.REDIS_TOTAL_LEADER, 0, 4);
+        if (typedTuples == null || typedTuples.size() == 0) {
+            List<LeaderVO> collect = userService.lambdaQuery()
+                    .orderByDesc(User::getCorrectNum)
+                    .last("limit 5")
+                    .list()
+                    .stream().map(item -> {
+                        LeaderVO vo = new LeaderVO();
+                        vo.setId(item.getId());
+                        vo.setCorrectNum(item.getCorrectNum());
+                        vo.setUsername(item.getUsername());
+                        zSet.add(Constant.REDIS_TOTAL_LEADER, vo, item.getCorrectNum());
+                        return vo;
+                    }).collect(Collectors.toList());
+            return new ArrayList<>(collect);
         }
-        ArrayList<LeaderVO> list = new ArrayList<>(range);
+        List<LeaderVO> list = typedTuples.stream().map(item -> {
+            double score = item.getScore();
+            item.getValue().setCorrectNum((int) score);
+            return item.getValue();
+        }).collect(Collectors.toList());
         return list;
     }
 

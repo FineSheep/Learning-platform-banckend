@@ -8,6 +8,7 @@ import fun.haoyang666.www.domain.dto.UserInfoDTO;
 import fun.haoyang666.www.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import fun.haoyang666.www.domain.req.UpdatePasswordREQ;
+import fun.haoyang666.www.domain.req.UserDescREQ;
 import fun.haoyang666.www.domain.req.UserInfoREQ;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,4 +55,6 @@ public interface UserService extends IService<User> {
     Boolean updateUser(SysUserDto dto);
 
     List<UserDTO> byName(String name);
+
+    String concat(UserDescREQ userDescREQ);
 }

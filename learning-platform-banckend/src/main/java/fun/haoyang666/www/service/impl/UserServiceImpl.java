@@ -1,5 +1,6 @@
 package fun.haoyang666.www.service.impl;
 
+import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -14,6 +15,7 @@ import fun.haoyang666.www.domain.entity.Post;
 import fun.haoyang666.www.domain.entity.ThumbPost;
 import fun.haoyang666.www.domain.entity.User;
 import fun.haoyang666.www.domain.req.UpdatePasswordREQ;
+import fun.haoyang666.www.domain.req.UserDescREQ;
 import fun.haoyang666.www.domain.req.UserInfoREQ;
 import fun.haoyang666.www.exception.BusinessException;
 import fun.haoyang666.www.service.CollectPostService;
@@ -85,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         SimpleMailMessage message = new SimpleMailMessage();
                         message.setSubject("验证码");
                         //todo 修改发件人
-                        message.setFrom("2245275262@qq.com");
+                        message.setFrom("");
                         message.setTo(email);
                         message.setText(content);
                         javaMailSender.send(message);
@@ -302,6 +304,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return user;
     }
 
+    /**
+     * 要求加一个联系管理员，简单发个邮件交差。。。。。
+     *
+     * @param userDescREQ
+     * @return
+     */
+    @Override
+    public String concat(UserDescREQ userDescREQ) {
+        if (userDescREQ == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数不能为空");
+        }
+        String desc = userDescREQ.getDesc();
+        String phone = userDescREQ.getPhone();
+        if (StringUtils.isAnyBlank(desc, phone)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数不能为空");
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("求助");
+        //todo 修改发件人
+        message.setFrom("");
+        //向自己发送。。。。。
+        message.setTo("");
+        Long userId = ThreadLocalUtils.get().getUserId();
+        String content = StrFormatter.format("用户id为{}需要帮助，其联系方式为 {}，内容为：{} ",
+                userId, phone, desc);
+        message.setText(content);
+        javaMailSender.send(message);
+        return "1";
+    }
 }
 
 

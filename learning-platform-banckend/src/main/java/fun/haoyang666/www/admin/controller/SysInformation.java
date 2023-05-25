@@ -17,6 +17,7 @@ import javax.annotation.Resource;
  * @createTime 2023/3/12 19:46
  * @description
  */
+//全面淘汰-----使用若依管理后台=======
 @RequestMapping("sysInfo")
 @RestController
 @CheckAuth("admin")

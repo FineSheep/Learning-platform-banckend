@@ -2,14 +2,11 @@ package fun.haoyang666.www.controller;
 
 import fun.haoyang666.www.common.BaseResponse;
 import fun.haoyang666.www.common.Constant;
-import fun.haoyang666.www.domain.req.UpdatePasswordREQ;
-import fun.haoyang666.www.domain.req.UserInfoREQ;
+import fun.haoyang666.www.domain.req.*;
 import fun.haoyang666.www.utils.ResultUtils;
 import fun.haoyang666.www.common.enums.ErrorCode;
 import fun.haoyang666.www.domain.dto.UserDTO;
 import fun.haoyang666.www.domain.dto.UserInfoDTO;
-import fun.haoyang666.www.domain.req.UserLoginByCodeREQ;
-import fun.haoyang666.www.domain.req.UserLoginByPassWordREQ;
 import fun.haoyang666.www.service.UserService;
 import fun.haoyang666.www.utils.ThreadLocalUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -96,6 +93,11 @@ public class UserController {
     public BaseResponse<UserInfoDTO> userInfo(Long personId) {
         UserInfoDTO userDto = userService.userInfo(personId);
         return ResultUtils.success(userDto);
+    }
+
+    @PostMapping("concat")
+    public BaseResponse concat(@RequestBody UserDescREQ userDescREQ){
+        return ResultUtils.success(userService.concat(userDescREQ));
     }
 
 }

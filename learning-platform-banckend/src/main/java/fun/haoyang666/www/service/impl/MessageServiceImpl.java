@@ -213,7 +213,27 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         Page<MessageUser> page = messageUserService.lambdaQuery().eq(MessageUser::getUserId, userId)
                 .eq(MessageUser::getType, SysMessageEnum.SYSTEM.getCode())
                 .orderByDesc(MessageUser::getCreateTime).page(new Page<>(curPage, pageSize));
-        return getDTO(page);
+        MessageResultDTO resultDTO = new MessageResultDTO();
+        resultDTO.setCount(page.getTotal());
+        List<MessageUser> list = page.getRecords();
+        LinkedList<MessageThumbCollectDTO> linkedList = new LinkedList<>();
+        for (MessageUser messageUser : list) {
+            MessageThumbCollectDTO dto = new MessageThumbCollectDTO();
+            Long messageId = messageUser.getMessageId();
+            Message message = this.getById(messageId);
+            Long createId = message.getCreateId();
+            dto.setId(messageUser.getId());
+            dto.setPostId(message.getPostId());
+            dto.setSendId(createId);
+            dto.setMessageId(messageId);
+            dto.setTitle(message.getTitle());
+            dto.setContent(message.getContent());
+            dto.setIsRead(messageUser.getIsRead());
+            dto.setTime(messageUser.getCreateTime());
+            linkedList.add(dto);
+        }
+        resultDTO.setData(linkedList);
+        return resultDTO;
     }
 
     @Override

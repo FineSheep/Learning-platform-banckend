@@ -11,7 +11,7 @@
 - 文章中心：文章发表以及预览，采用markdown编辑器实现效果。
 - 个人中心：修改个人信息、密码、头像。
 
-前端地址：[前端地址]([FineSheep/learning-platform-fronted: 毕设前端 (github.com)](https://github.com/FineSheep/learning-platform-fronted))
+前端地址：[前端地址]([FineSheep/learning-platform-fronted: 毕设前端 (github.com)](https://github.com/FineSheep/learning-platform-fronted)
 
 后端地址：[后端地址](https://github.com/FineSheep/learning-platform-banckend)
 
@@ -23,7 +23,7 @@
 - jwt续约以及强制登录
 - 邮件发送
 - 定时任务+爬虫
-- easy-excel实现excelsa'hsah上传
+- easy-excel实现excel上传
 - websocket实现匹配对战
 - knife4j接口文档
 - aop实现简单的权限控制（后面弃用，改用ruoyi:cold_sweat:）
